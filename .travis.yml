@@ -1,0 +1,27 @@
+sudo:
+  false
+
+language:
+  node_js
+
+node_js:
+  - 4
+  - 6
+
+script:
+  - npm run build
+  - npm run test
+
+after_script:
+  - npm install codecov
+  - cat ./coverage/lcov.info | codecov
+
+deploy:
+  provider: npm
+  email: "eskarev@gmail.com"
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master
+  api_key:
+    secure: 2hejtSkm3IeHwsE5H4rJntrreNrTGOKYQlSBtfvSVeGL0l1AH0GksghudoLBk8XAILYiQ2ZD5jelETVf9UAPq373r/hnvZCGja9MUE+PMiCpM2IjJJ8BRen185xI0RjL5hPIF1s2LBg/i8FWwNc7GG8zfS/vmpP4aZ+bngKNIBby9s9IfvFloP2hUM7/3BNF3VK3BSZ+GgpCzdicnkthMaRtZkBfFDoTODwged0/1lKDyIX4DsuNDGc9x+XGQQ7CssJKsX6i4+Ot68F8eG1u6DP+BX5aGfIyflShA8qyI8fsP8rH9TonC0ihNXqvqt+qv+WtNS2I4NOuecUUyo6mPk1tMorO434k6Af5pyF/Wg7UGZm5I+82oix29+SCn2OCoiiALViiSbB4QwV7CHA/sdrxEuqQS2lfsfu4fonuPD7C2sdLRi6LkqXgPwPFaacgUpzwoAf45W1Wt/0m5sUMcEyqB6eAczZdXrVeSprxCdqbJ2qVWs2zRfWKXwFhQFAXOtv5zKgMG0H0n9BG+dukYeBIjTpvgvnPlVeehVhAsp1Zod2vwr4lGIvdPR0C6AtTaQcI2bpHNJ+QnoBh8JnPB4v4sF9WP/ncTUJZrvxGU0ZKT698xBW2yv1d80BWg+D9cGVW2SPZAl+gf+E7DsIlZv6MGkNjLz9wiyRxJtFL94w=

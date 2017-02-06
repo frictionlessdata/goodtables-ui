@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>goodtables-vue</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="//unpkg.com/whatwg-fetch@2.0.2/fetch.js"></script>
+    <script src="//unpkg.com/react@15.4.2/dist/react.js"></script>
+    <script src="//unpkg.com/react-dom@15.4.2/dist/react-dom.js"></script>
+    <script src="dist/goodtables-react.js"></script>
+    <script>
+      fetch('data/report.json').then(response => {
+        response.json().then(report => {
+          ReactDOM.render(
+            React.createElement(goodtablesReact.Report, {report}, null),
+            document.getElementById('app')
+          );
+        })
+      })
+    </script>
+  </body>
+</html>
