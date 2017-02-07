@@ -4,7 +4,7 @@ React component to show goodtables report
 
 ## Demo
 
-https://roll.github.io/goodtables-react-js/
+https://frictionlessdata.github.io/goodtables-react-js/
 
 ## Usage
 
