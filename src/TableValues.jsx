@@ -1,15 +1,15 @@
 import React from 'react'
+import {propTypes} from 'react-props-decorators'
 import classNames from 'classnames'
 
 // Module API
 
+@propTypes({
+  table: React.PropTypes.object.isRequired,
+})
 export default class TableValues extends React.Component {
 
   // Public
-
-  static propTypes = {
-    table: React.PropTypes.object.isRequired,
-  }
 
   constructor(props) {
     super(props)

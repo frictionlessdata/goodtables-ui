@@ -18,13 +18,14 @@
     "build:umd-min": "NODE_ENV=production webpack --progress --hide-modules",
     "dev": "webpack-dev-server --open --inline --hot",
     "lint": "eslint --ext js,jsx src test",
-    "precommit": "npm run test",
+    "prepush": "npm run test",
     "pretest": "npm run lint",
     "test": "NODE_ENV=test nyc mocha --opts .mocharc"
   },
   "peerDependencies": {
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-props-decorators": "^0.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
@@ -52,9 +53,7 @@
     "husky": "^0.13.1",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
-    "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"

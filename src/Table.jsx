@@ -1,16 +1,16 @@
 import React from 'react'
+import {propTypes} from 'react-props-decorators'
 import TableErrors from './TableErrors.jsx'
 import TableValues from './TableValues.jsx'
 
 // Module API
 
+@propTypes({
+  table: React.PropTypes.object.isRequired,
+})
 export default class Table extends React.Component {
 
   // Public
-
-  static propTypes = {
-    table: React.PropTypes.object.isRequired,
-  }
 
   constructor(props) {
     super(props)

@@ -64,7 +64,7 @@ var goodtablesReact =
 /******/ 	__webpack_require__.p = "/dist/";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -142,6 +142,61 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /* 2 */
 /* unknown exports provided */
 /* all exports used */
+/*!***********************************************!*\
+  !*** ./~/react-props-decorators/lib/index.js ***!
+  \***********************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports.propTypes = propTypes;
+exports.defaultProps = defaultProps;
+exports.contextTypes = contextTypes;
+exports.childContextTypes = childContextTypes;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _objectAssign = __webpack_require__(/*! object-assign */ 10);
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+function propTypes(param) {
+  return function (clazz) {
+    clazz.propTypes = (0, _objectAssign2['default'])({}, clazz.propTypes || {}, param);
+    return clazz;
+  };
+}
+
+function defaultProps(param) {
+  return function (clazz) {
+    clazz.defaultProps = (0, _objectAssign2['default'])({}, clazz.defaultProps || {}, param);
+    return clazz;
+  };
+}
+
+function contextTypes(param) {
+  return function (clazz) {
+    clazz.contextTypes = (0, _objectAssign2['default'])({}, clazz.contextTypes || {}, param);
+    return clazz;
+  };
+}
+
+function childContextTypes(param) {
+  return function (clazz) {
+    clazz.childContextTypes = (0, _objectAssign2['default'])({}, clazz.contextTypes || {}, param);
+    return clazz;
+  };
+}
+
+
+/***/ }),
+/* 3 */
+/* unknown exports provided */
+/* all exports used */
 /*!************************!*\
   !*** ./src/Report.jsx ***!
   \************************/
@@ -163,7 +218,7 @@ var _classnames = __webpack_require__(/*! classnames */ 1);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _Table = __webpack_require__(/*! ./Table.jsx */ 4);
+var _Table = __webpack_require__(/*! ./Table.jsx */ 5);
 
 var _Table2 = _interopRequireDefault(_Table);
 
@@ -261,7 +316,7 @@ function Report(_ref) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /* unknown exports provided */
 /* all exports used */
 /*!************************!*\
@@ -272,10 +327,10 @@ function Report(_ref) {
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(/*! !./../~/css-loader!./styles.css */ 7);
+var content = __webpack_require__(/*! !./../~/css-loader!./styles.css */ 8);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(/*! ./../~/style-loader/addStyles.js */ 9)(content, {});
+var update = __webpack_require__(/*! ./../~/style-loader/addStyles.js */ 11)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -292,7 +347,7 @@ if(false) {
 }
 
 /***/ }),
-/* 4 */
+/* 5 */
 /* unknown exports provided */
 /* all exports used */
 /*!***********************!*\
@@ -310,17 +365,19 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _temp;
+var _dec, _class;
 
 var _react = __webpack_require__(/*! react */ 0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _TableErrors = __webpack_require__(/*! ./TableErrors.jsx */ 5);
+var _reactPropsDecorators = __webpack_require__(/*! react-props-decorators */ 2);
+
+var _TableErrors = __webpack_require__(/*! ./TableErrors.jsx */ 6);
 
 var _TableErrors2 = _interopRequireDefault(_TableErrors);
 
-var _TableValues = __webpack_require__(/*! ./TableValues.jsx */ 6);
+var _TableValues = __webpack_require__(/*! ./TableValues.jsx */ 7);
 
 var _TableValues2 = _interopRequireDefault(_TableValues);
 
@@ -334,8 +391,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Module API
 
-var Table = (_temp = _class = function (_React$Component) {
+var Table = (_dec = (0, _reactPropsDecorators.propTypes)({
+  table: _react2.default.PropTypes.object.isRequired
+}), _dec(_class = function (_React$Component) {
   _inherits(Table, _React$Component);
+
+  // Public
 
   function Table(props) {
     _classCallCheck(this, Table);
@@ -348,8 +409,6 @@ var Table = (_temp = _class = function (_React$Component) {
     };
     return _this;
   }
-
-  // Public
 
   _createClass(Table, [{
     key: 'render',
@@ -459,13 +518,11 @@ var Table = (_temp = _class = function (_React$Component) {
   }]);
 
   return Table;
-}(_react2.default.Component), _class.propTypes = {
-  table: _react2.default.PropTypes.object.isRequired
-}, _temp);
+}(_react2.default.Component)) || _class);
 exports.default = Table;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /* unknown exports provided */
 /* all exports used */
 /*!*****************************!*\
@@ -564,7 +621,7 @@ function TableErrors(_ref) {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /* unknown exports provided */
 /* all exports used */
 /*!*****************************!*\
@@ -582,11 +639,13 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _temp;
+var _dec, _class;
 
 var _react = __webpack_require__(/*! react */ 0);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactPropsDecorators = __webpack_require__(/*! react-props-decorators */ 2);
 
 var _classnames = __webpack_require__(/*! classnames */ 1);
 
@@ -604,8 +663,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Module API
 
-var TableValues = (_temp = _class = function (_React$Component) {
+var TableValues = (_dec = (0, _reactPropsDecorators.propTypes)({
+  table: _react2.default.PropTypes.object.isRequired
+}), _dec(_class = function (_React$Component) {
   _inherits(TableValues, _React$Component);
+
+  // Public
 
   function TableValues(props) {
     _classCallCheck(this, TableValues);
@@ -617,8 +680,6 @@ var TableValues = (_temp = _class = function (_React$Component) {
     };
     return _this;
   }
-
-  // Public
 
   _createClass(TableValues, [{
     key: 'render',
@@ -775,13 +836,11 @@ var TableValues = (_temp = _class = function (_React$Component) {
   }]);
 
   return TableValues;
-}(_react2.default.Component), _class.propTypes = {
-  table: _react2.default.PropTypes.object.isRequired
-}, _temp);
+}(_react2.default.Component)) || _class);
 exports.default = TableValues;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /* unknown exports provided */
 /* all exports used */
 /*!***************************************!*\
@@ -789,7 +848,7 @@ exports.default = TableValues;
   \***************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(/*! ./../~/css-loader/lib/css-base.js */ 8)();
+exports = module.exports = __webpack_require__(/*! ./../~/css-loader/lib/css-base.js */ 9)();
 // imports
 
 
@@ -800,7 +859,7 @@ exports.push([module.i, ".goodtables-vue-report {\n  color: #333;\n  font-family
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /* unknown exports provided */
 /* all exports used */
 /*!**************************************!*\
@@ -861,7 +920,109 @@ module.exports = function() {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
+/* unknown exports provided */
+/* all exports used */
+/*!**********************************!*\
+  !*** ./~/object-assign/index.js ***!
+  \**********************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+/* 11 */
 /* unknown exports provided */
 /* all exports used */
 /*!*************************************!*\
@@ -1118,7 +1279,7 @@ function updateLink(linkElement, obj) {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /* unknown exports provided */
 /* all exports used */
 /*!**********************!*\
@@ -1134,11 +1295,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Report = undefined;
 
-var _Report = __webpack_require__(/*! ./Report.jsx */ 2);
+var _Report = __webpack_require__(/*! ./Report.jsx */ 3);
 
 var _Report2 = _interopRequireDefault(_Report);
 
-__webpack_require__(/*! ./styles.css */ 3);
+__webpack_require__(/*! ./styles.css */ 4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
