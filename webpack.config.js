@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const ENV = process.env.NODE_ENV;
 
 // Base
@@ -11,7 +12,7 @@ const webpackConfig = {
     publicPath: '/dist/',
     filename: (ENV === 'production') ? 'goodtables-ui.min.js' : 'goodtables-ui.js',
     library: 'goodtablesUI',
-    libraryTarget: 'var',
+    libraryTarget: 'umd',
   },
   module: {
     rules: [
@@ -22,7 +23,10 @@ const webpackConfig = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -33,6 +37,9 @@ const webpackConfig = {
       }
     ]
   },
+  plugins: [
+    new ExtractTextPlugin('goodtables-ui.css'),
+  ],
   resolve: {
     alias: {
       'react': 'react-lite',
