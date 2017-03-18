@@ -5,6 +5,11 @@ import './styles.css'
 
 // Module API
 
-export function renderReport(report, element) {
+function renderReport(report, element) {
   ReactDOM.render(React.createElement(Report, {report}, null), element)
+}
+
+export {
+  Report,
+  renderReport,
 }
