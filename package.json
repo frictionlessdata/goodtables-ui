@@ -1,9 +1,9 @@
 {
-  "name": "goodtables-react",
+  "name": "goodtables-ui",
   "version": "0.0.0",
-  "description": "React component to render goodtables reports",
+  "description": "UI components for goodtables",
   "author": "roll <eskarev@gmail.com>",
-  "main": "dist/goodtables-react.js",
+  "main": "dist/goodtables-ui.js",
   "license": "MIT",
   "engines": {
     "node": ">=4"

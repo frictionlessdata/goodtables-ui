@@ -4,7 +4,7 @@ React component to show goodtables report
 
 ## Demo
 
-https://frictionlessdata.github.io/goodtables-react-js/
+https://frictionlessdata.github.io/goodtables-ui/
 
 ## Usage
 
@@ -19,7 +19,7 @@ https://frictionlessdata.github.io/goodtables-react-js/
     <div id="app"></div>
     <script src="//unpkg.com/react@15.4.2/dist/react.js"></script>
     <script src="//unpkg.com/react-dom@15.4.2/dist/react-dom.js"></script>
-    <script src="dist/goodtables-react.js"></script>
+    <script src="dist/goodtables-ui.js"></script>
     <script>
       ReactDOM.render(
         // Past your goodtables report

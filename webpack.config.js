@@ -9,7 +9,7 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: (ENV === 'production') ? 'goodtables-react.min.js' : 'goodtables-react.js',
+    filename: (ENV === 'production') ? 'goodtables-ui.min.js' : 'goodtables-ui.js',
     library: 'goodtablesReact',
     libraryTarget: 'var',
   },
