@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "UI components for goodtables",
   "author": "roll <eskarev@gmail.com>",
-  "main": "lib/index.js",
+  "main": "dist/goodtables-ui.js",
   "license": "MIT",
   "engines": {
     "node": ">=4"
