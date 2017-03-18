@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import Table from './Table.jsx'
+import Table from './Table'
 
 // Module API
 

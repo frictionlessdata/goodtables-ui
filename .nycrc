@@ -3,10 +3,10 @@
   "lines": 70,
   "check-coverage": true,
   "include": [
-    "src/**/*.(js|jsx)"
+    "src/**/*.js"
   ],
   "extension": [
-    ".jsx"
+    ".js"
   ],
   "reporter": [
     "lcov",

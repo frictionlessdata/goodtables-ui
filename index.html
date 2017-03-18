@@ -3,14 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>goodtables-vue</title>
+    <link href="dist/goodtables-ui.css" rel="stylesheet">
   </head>
   <body>
     <div id="app"></div>
-    <script src="//unpkg.com/axios@0.15.3/dist/axios.min.js"></script>
+    <script src="//unpkg.com/axios@0.15.3/dist/axios.js"></script>
     <script src="dist/goodtables-ui.js"></script>
     <script>
       axios.get('data/report.json').then(res => {
-        goodtablesUI.renderReport(res.data, document.getElementById('app'))
+        const element = document.getElementById('app')
+        goodtablesUI.render(goodtablesUI.Report, {report: res.data}, element)
       })
     </script>
   </body>

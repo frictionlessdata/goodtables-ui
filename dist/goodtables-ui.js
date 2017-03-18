@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2558,7 +2558,7 @@ exports.childContextTypes = childContextTypes;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _objectAssign = __webpack_require__(/*! object-assign */ 8);
+var _objectAssign = __webpack_require__(/*! object-assign */ 9);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
@@ -2595,9 +2595,9 @@ function childContextTypes(param) {
 /* 3 */
 /* unknown exports provided */
 /* all exports used */
-/*!************************!*\
-  !*** ./src/Report.jsx ***!
-  \************************/
+/*!***********************!*\
+  !*** ./src/Report.js ***!
+  \***********************/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2616,7 +2616,7 @@ var _classnames = __webpack_require__(/*! classnames */ 1);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _Table = __webpack_require__(/*! ./Table.jsx */ 5);
+var _Table = __webpack_require__(/*! ./Table */ 6);
 
 var _Table2 = _interopRequireDefault(_Table);
 
@@ -2717,6 +2717,39 @@ function Report(_ref) {
 /* 4 */
 /* unknown exports provided */
 /* all exports used */
+/*!***********************!*\
+  !*** ./src/render.js ***!
+  \***********************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = render;
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(/*! react-dom */ 0);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Module API
+
+function render(component, props, element) {
+  _reactDom2.default.render(_react2.default.createElement(component, props, null), element);
+}
+
+/***/ }),
+/* 5 */
+/* unknown exports provided */
+/* all exports used */
 /*!************************!*\
   !*** ./src/styles.css ***!
   \************************/
@@ -2725,12 +2758,12 @@ function Report(_ref) {
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 5 */
+/* 6 */
 /* unknown exports provided */
 /* all exports used */
-/*!***********************!*\
-  !*** ./src/Table.jsx ***!
-  \***********************/
+/*!**********************!*\
+  !*** ./src/Table.js ***!
+  \**********************/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2751,11 +2784,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactPropsDecorators = __webpack_require__(/*! react-props-decorators */ 2);
 
-var _TableErrors = __webpack_require__(/*! ./TableErrors.jsx */ 6);
+var _TableErrors = __webpack_require__(/*! ./TableErrors */ 7);
 
 var _TableErrors2 = _interopRequireDefault(_TableErrors);
 
-var _TableValues = __webpack_require__(/*! ./TableValues.jsx */ 7);
+var _TableValues = __webpack_require__(/*! ./TableValues */ 8);
 
 var _TableValues2 = _interopRequireDefault(_TableValues);
 
@@ -2900,12 +2933,12 @@ var Table = (_dec = (0, _reactPropsDecorators.propTypes)({
 exports.default = Table;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /* unknown exports provided */
 /* all exports used */
-/*!*****************************!*\
-  !*** ./src/TableErrors.jsx ***!
-  \*****************************/
+/*!****************************!*\
+  !*** ./src/TableErrors.js ***!
+  \****************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2999,12 +3032,12 @@ function TableErrors(_ref) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /* unknown exports provided */
 /* all exports used */
-/*!*****************************!*\
-  !*** ./src/TableValues.jsx ***!
-  \*****************************/
+/*!****************************!*\
+  !*** ./src/TableValues.js ***!
+  \****************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3218,7 +3251,7 @@ var TableValues = (_dec = (0, _reactPropsDecorators.propTypes)({
 exports.default = TableValues;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /* unknown exports provided */
 /* all exports used */
 /*!**********************************!*\
@@ -3320,7 +3353,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /* unknown exports provided */
 /* all exports used */
 /*!**********************!*\
@@ -3334,32 +3367,29 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.renderReport = exports.Report = undefined;
+exports.Report = exports.render = undefined;
 
-var _react = __webpack_require__(/*! react */ 0);
+var _render = __webpack_require__(/*! ./render */ 4);
 
-var _react2 = _interopRequireDefault(_react);
+Object.defineProperty(exports, 'render', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_render).default;
+  }
+});
 
-var _reactDom = __webpack_require__(/*! react-dom */ 0);
+var _Report = __webpack_require__(/*! ./Report */ 3);
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
+Object.defineProperty(exports, 'Report', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_Report).default;
+  }
+});
 
-var _Report = __webpack_require__(/*! ./Report.jsx */ 3);
-
-var _Report2 = _interopRequireDefault(_Report);
-
-__webpack_require__(/*! ./styles.css */ 4);
+__webpack_require__(/*! ./styles.css */ 5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Module API
-
-function renderReport(report, element) {
-  _reactDom2.default.render(_react2.default.createElement(_Report2.default, { report: report }, null), element);
-}
-
-exports.Report = _Report2.default;
-exports.renderReport = renderReport;
 
 /***/ })
 /******/ ]);

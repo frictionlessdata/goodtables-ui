@@ -1,7 +1,7 @@
 import React from 'react'
 import {propTypes} from 'react-props-decorators'
-import TableErrors from './TableErrors.jsx'
-import TableValues from './TableValues.jsx'
+import TableErrors from './TableErrors'
+import TableValues from './TableValues'
 
 // Module API
 

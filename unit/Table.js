@@ -1,7 +1,7 @@
 import React from 'react'
 import {assert} from 'chai'
 import {shallow} from 'enzyme'
-import Table from '../src/Table.jsx'
+import Table from '../src/Table'
 const report = require('../data/report.json')
 
 // Tests

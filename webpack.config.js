@@ -11,17 +11,12 @@ const webpackConfig = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: (ENV === 'production') ? 'goodtables-ui.min.js' : 'goodtables-ui.js',
+    filename: 'goodtables-ui.js',
     library: 'goodtablesUI',
     libraryTarget: 'umd',
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -30,12 +25,17 @@ const webpackConfig = {
         })
       },
       {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
         }
-      }
+      },
     ]
   },
   plugins: [
@@ -59,7 +59,12 @@ const webpackConfig = {
 // Production
 
 if (ENV === 'production') {
+  webpackConfig.output.filename = 'goodtables-ui.min.js',
   webpackConfig.devtool = '#source-map'
+  webpackConfig.module.rules[0] = {
+    test: /\.css$/,
+    loader: 'style-loader!css-loader',
+  }
   webpackConfig.plugins = (webpackConfig.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
