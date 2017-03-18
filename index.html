@@ -6,13 +6,11 @@
   </head>
   <body>
     <div id="app"></div>
-    <script src="//unpkg.com/whatwg-fetch@2.0.2/fetch.js"></script>
+    <script src="//unpkg.com/axios@0.15.3/dist/axios.min.js"></script>
     <script src="dist/goodtables-ui.min.js"></script>
     <script>
-      fetch('data/report.json').then(response => {
-        response.json().then(report => {
-          goodtablesUI.renderReport(report, document.getElementById('app'))
-        })
+      axios.get('data/report.json').then(res => {
+        goodtablesUI.renderReport(res.data, document.getElementById('app'))
       })
     </script>
   </body>
