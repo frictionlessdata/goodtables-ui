@@ -22,9 +22,9 @@
     "pretest": "npm run lint",
     "test": "NODE_ENV=test nyc mocha --opts .mocharc"
   },
-  "peerDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "react-lite": "^0.15.33",
     "react-props-decorators": "^0.2.0"
   },
   "devDependencies": {
@@ -53,12 +53,11 @@
     "husky": "^0.13.1",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"
-  },
-  "dependencies": {
-    "classnames": "^2.2.5"
   }
 }

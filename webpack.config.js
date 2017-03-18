@@ -33,9 +33,11 @@ const webpackConfig = {
       }
     ]
   },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
+  resolve: {
+    alias: {
+      'react': 'react-lite',
+      'react-dom': 'react-lite',
+    }
   },
   devServer: {
     historyApiFallback: true,
