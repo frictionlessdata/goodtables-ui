@@ -39,7 +39,9 @@ const webpackConfig = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('goodtables-ui.css'),
+    new ExtractTextPlugin(
+      'goodtables-ui.css'
+    ),
   ],
   resolve: {
     alias: {
@@ -61,11 +63,10 @@ const webpackConfig = {
 if (ENV === 'production') {
   webpackConfig.output.filename = 'goodtables-ui.min.js',
   webpackConfig.devtool = '#source-map'
-  webpackConfig.module.rules[0] = {
-    test: /\.css$/,
-    loader: 'style-loader!css-loader',
-  }
-  webpackConfig.plugins = (webpackConfig.plugins || []).concat([
+  webpackConfig.plugins = [
+    new ExtractTextPlugin(
+      'goodtables-ui.min.css'
+    ),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -87,7 +88,7 @@ if (ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
-  ])
+  ]
 }
 
 // Module API
