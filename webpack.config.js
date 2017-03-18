@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const CompressionPlugin = require("compression-webpack-plugin");
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const ENV = process.env.NODE_ENV;
 
@@ -71,9 +72,16 @@ if (ENV === 'production') {
         warnings: false
       }
     }),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.(js|html)$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    })
+    }),
   ])
 }
 
