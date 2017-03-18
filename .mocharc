@@ -1,4 +1,4 @@
 --require babel-core/register
 --timeout 10000
 --recursive
-test/**/*.jsx
+unit/**/*.jsx

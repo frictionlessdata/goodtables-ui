@@ -12,7 +12,7 @@
     "transform-class-properties"
   ],
   "env": {
-    "test": {
+    "testing": {
       "plugins": ["istanbul"]
      }
   }

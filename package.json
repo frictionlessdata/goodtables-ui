@@ -20,7 +20,8 @@
     "lint": "eslint --ext js,jsx src test",
     "prepush": "npm run test",
     "pretest": "npm run lint",
-    "test": "NODE_ENV=test nyc mocha --opts .mocharc"
+    "test": "npm run unit",
+    "unit": "NODE_ENV=testing nyc mocha --opts .mocharc"
   },
   "dependencies": {
     "classnames": "^2.2.5",
