@@ -69,19 +69,30 @@ ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 
 ### Angular
 
-> This example is for Angular2+.
+> This example is for Angular2+. Use similliar approach for Angular1.
 
-Presented components could be used as `angular` components:
+The package's components could be used as `angular` components:
 
 ```javascript
+import {Component, Input} from '@angular/core';
 import goodtablesUI from 'goodtablesUI'
 
-// TODO: write
+@Component({
+  selector: 'report',
+  template: '<div id="report"></div>'
+})
+class Report {
+  @Input() report: any;
+  ngOnInit() {
+    var element = document.getElementById('report')
+    goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
+  }
+}
 ```
 
 ### Vue
 
-Presented components could be used as `vue` components:
+The package's components could be used as `vue` components:
 
 ```javascript
 import goodtablesUI from 'goodtablesUI'
