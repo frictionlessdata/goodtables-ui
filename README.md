@@ -104,7 +104,7 @@ const Report = {
   props: ['report'],
   template: '<div id="report"></div>',
   created() {
-    var element = document.getElementById('report')
+    const element = document.getElementById('report')
     goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
   },
 }
