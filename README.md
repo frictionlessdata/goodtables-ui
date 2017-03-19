@@ -7,7 +7,7 @@
 
 UI for goodtable as universal browser components:
 
-- Report (visual representation of [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables))
+- `Report` (visual representation of [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables))
 
 ## Demo
 
@@ -107,7 +107,7 @@ const Report = {
   template: '<div id="report"></div>',
   created() {
     var element = document.getElementById('report')
-    goodtablesUI.render(goodtablesUI.Report, {report: report}, element)
+    goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
   },
 }
 ```
