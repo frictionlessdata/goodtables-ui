@@ -5,13 +5,11 @@
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtables-ui.svg)](https://saucelabs.com/u/goodtables-ui)
 
-UI for goodtable as universal browser components:
+UI for goodtable as universal browser components.
 
-- `Report` (visual representation of [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables))
+## Components
 
-## Demo
-
-https://frictionlessdata.github.io/goodtables-ui/
+- `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) visual representation ([DEMO](https://frictionlessdata.github.io/goodtables-ui/))
 
 ## Usage
 
