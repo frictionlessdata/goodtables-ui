@@ -3369,27 +3369,22 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Report = exports.render = undefined;
 
+__webpack_require__(/*! ./styles.css */ 5);
+
 var _render = __webpack_require__(/*! ./render */ 4);
 
-Object.defineProperty(exports, 'render', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_render).default;
-  }
-});
+var _render2 = _interopRequireDefault(_render);
 
 var _Report = __webpack_require__(/*! ./Report */ 3);
 
-Object.defineProperty(exports, 'Report', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Report).default;
-  }
-});
-
-__webpack_require__(/*! ./styles.css */ 5);
+var _Report2 = _interopRequireDefault(_Report);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Module API
+
+exports.render = _render2.default;
+exports.Report = _Report2.default;
 
 /***/ })
 /******/ ]);

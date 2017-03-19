@@ -1,6 +1,7 @@
 import './styles.css'
+import render from './render'
+import Report from './Report'
 
 // Module API
 
-export {default as render} from './render'
-export {default as Report} from './Report'
+export {render, Report}
