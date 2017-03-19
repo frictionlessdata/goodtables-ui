@@ -4,4 +4,4 @@ import Report from './Report'
 
 // Module API
 
-export {render, Report}
+export default {render, Report}
