@@ -84,7 +84,7 @@ import goodtablesUI from 'goodtablesUI'
 })
 class Report {
   @Input() report: any;
-  ngOnInit() {
+  ngAfterViewInit() {
     const element = document.getElementById('report')
     goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
   }
@@ -103,7 +103,7 @@ import goodtablesUI from 'goodtablesUI'
 const Report = {
   props: ['report'],
   template: '<div id="report"></div>',
-  created() {
+  mounted() {
     const element = document.getElementById('report')
     goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
   },
