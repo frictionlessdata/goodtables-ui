@@ -34,7 +34,7 @@ The package could be used as pluggable script from CDN:
 <div id="report"></div>
 <script src="//unpkg.com/goodtables-ui/dist/goodtables-ui.min.js"></script>
 <script>
-  var report = <YOUR-REPORT>
+  var report = '<YOUR-REPORT>'
   var element = document.getElementById('report')
   goodtablesUI.render(goodtablesUI.Report, {report: report}, element)
 </script>
@@ -49,7 +49,7 @@ The package could be used as `goodtables-ui` package from NPM:
 ```javascript
 import goodtablesUI from 'goodtables-UI'
 
-const report = <YOUR-REPORT>
+const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
 goodtablesUI.render(goodtablesUI.Report, {report: report}, element)
 ```
@@ -65,7 +65,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import goodtablesUI from 'goodtablesUI/lib'
 
-const report = <YOUR-REPORT>
+const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
 ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 ```
