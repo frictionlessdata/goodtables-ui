@@ -39,6 +39,9 @@ const webpackConfig = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.USER_ENV': JSON.stringify('browser')
+    }),
     new ExtractTextPlugin(
       'goodtables-ui.css'
     ),
@@ -64,14 +67,13 @@ if (ENV === 'production') {
   webpackConfig.output.filename = 'goodtables-ui.min.js',
   webpackConfig.devtool = '#source-map'
   webpackConfig.plugins = [
+    new webpack.DefinePlugin({
+      'process.env.USER_ENV': JSON.stringify('browser'),
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
     new ExtractTextPlugin(
       'goodtables-ui.min.css'
     ),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
