@@ -45,7 +45,7 @@ The package could be used as pluggable script from CDN:
 The package could be used as `goodtables-ui` package from NPM:
 
 ```javascript
-import goodtablesUI from 'goodtables-UI'
+import goodtablesUI from 'goodtables-ui'
 
 const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
@@ -61,7 +61,7 @@ You could use presented components as native React component (import from `goodt
 ```javascript
 import React from 'react'
 import ReactDOM from 'react-dom'
-import goodtablesUI from 'goodtablesUI/lib'
+import goodtablesUI from 'goodtables-ui/lib'
 
 const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
