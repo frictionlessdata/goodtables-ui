@@ -24,7 +24,7 @@ First add bootstrap and component styles:
 
 ### CDN
 
-> The distribution is 40kb minified (10kb gzipped) with no dependencies.
+> The distribution is 60kb minified (20kb gzipped) with no dependencies.
 
 The package could be used as pluggable script from CDN:
 

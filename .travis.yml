@@ -5,7 +5,6 @@ language:
   node_js
 
 node_js:
-  - 4
   - 6
 
 script:
@@ -13,12 +12,11 @@ script:
   - npm run test
 
 after_script:
-  - npm install codecov
-  - cat ./coverage/lcov.info | codecov
+  - npm run coveralls
 
 deploy:
   provider: npm
-  email: "eskarev@gmail.com"
+  email: eskarev@gmail.com
   skip_cleanup: true
   on:
     tags: true
