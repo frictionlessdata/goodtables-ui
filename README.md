@@ -3,7 +3,7 @@
 [![Travis](https://img.shields.io/travis/frictionlessdata/goodtables-ui/master.svg)](https://travis-ci.org/frictionlessdata/goodtables-ui)
 [![Codecov](https://img.shields.io/codecov/c/github/frictionlessdata/goodtables-ui/master.svg)](https://codecov.io/gh/frictionlessdata/goodtables-ui)
 
-[![Saucelabs](https://saucelabs.com/browser-matrix/goodtables-ui.svg)](https://saucelabs.com/u/goodtables-ui)
+[![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
 
 UI for goodtable as universal browser components.
 
