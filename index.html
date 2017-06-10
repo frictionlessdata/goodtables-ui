@@ -29,7 +29,7 @@
         spec: {/* Data Quality Spec here */},
         inspect(source) {
           return new Promise((resolve, reject) => {
-            const baseUrl = 'http://staging.goodtables.io/api'
+            const baseUrl = 'https://staging.goodtables.io/api'
             const sourceId = '90c9b09e-8030-453d-a8de-9f07ae780452'
             const headers = {'Authorization': '4648C12FA72133E03E090787A61B6E4EE78607B0'}
             axios.post(`${baseUrl}/source/${sourceId}/job`, {source: [{source}]}, {headers}).then(res => {

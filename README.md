@@ -34,7 +34,7 @@ The package could be used as pluggable script from CDN:
 <script>
   var report = '<YOUR-REPORT>'
   var element = document.getElementById('report')
-  goodtablesUI.render(goodtablesUI.Report, {report: report}, element)
+  goodtablesUI.render(goodtablesUI.Report, {report}, element)
 </script>
 ```
 
@@ -49,7 +49,7 @@ import goodtablesUI from 'goodtables-UI'
 
 const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
-goodtablesUI.render(goodtablesUI.Report, {report: report}, element)
+goodtablesUI.render(goodtablesUI.Report, {report}, element)
 ```
 
 ### React
