@@ -1,7 +1,9 @@
 {
     "valid": false,
     "time": 0.027,
-    "errors": [],
+    "warnings": [
+        "Dataset inspection has reached 100 table(s) limit"
+    ],
     "tables": [
         {
             "valid": false,

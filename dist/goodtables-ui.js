@@ -16,9 +16,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -73,12 +73,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/* unknown exports provided */
+/* no static exports found */
 /* all exports used */
 /*!************************************************!*\
   !*** ./~/react-lite/dist/react-lite.common.js ***!
@@ -2478,7 +2478,706 @@ module.exports = React;
 
 /***/ }),
 /* 1 */
-/* unknown exports provided */
+/* no static exports found */
+/* all exports used */
+/*!************************!*\
+  !*** ./src/helpers.js ***!
+  \************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getTableErrorGroups = getTableErrorGroups;
+exports.removeBaseUrl = removeBaseUrl;
+// Module API
+
+function getTableErrorGroups(table) {
+  var groups = {};
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = table.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var error = _step.value;
+
+
+      // Get group
+      var group = groups[error.code];
+
+      // Create group
+      if (!group) {
+        group = {
+          code: error.code,
+          rows: {},
+          count: 0,
+          headers: table.headers,
+          messages: []
+        };
+      }
+
+      // Get row
+      var row = group.rows[error['row-number']];
+
+      // Create row
+      if (!row) {
+        var values = error.row;
+        if (!error['row-number']) {
+          values = table.headers;
+        }
+        row = {
+          values: values,
+          badcols: new Set()
+        };
+      }
+
+      // Ensure missing value
+      if (error.code === 'missing-value') {
+        row.values[error['column-number'] - 1] = '';
+      }
+
+      // Add row badcols
+      if (error['column-number']) {
+        row.badcols.add(error['column-number']);
+      } else if (row.values) {
+        row.badcols = new Set(row.values.map(function (value, index) {
+          return index + 1;
+        }));
+      }
+
+      // Save group
+      group.count += 1;
+      group.messages.push(error.message);
+      group.rows[error['row-number']] = row;
+      groups[error.code] = group;
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return groups;
+}
+
+function removeBaseUrl(text) {
+  return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*\/\S*\/[a-z0-9]{40}\//g, '');
+}
+
+/***/ }),
+/* 2 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************!*\
+  !*** ./src/components/Report.js ***!
+  \**********************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Report = Report;
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _helpers = __webpack_require__(/*! ../helpers */ 1);
+
+var _InvalidTable = __webpack_require__(/*! ./InvalidTable */ 6);
+
+var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 7);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Module API
+
+function Report(_ref) {
+  var report = _ref.report;
+
+  var processedWarnings = getProcessedWarnings(report);
+  var validTableFiles = getValidTableFiles(report);
+  var invalidTables = getInvalidTables(report);
+  return _react2.default.createElement(
+    'div',
+    { className: 'goodtables-ui-report' },
+    processedWarnings.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
+      type: 'warning',
+      title: 'There are ' + processedWarnings.length + ' warning(s)',
+      expandText: 'Warning details',
+      messages: processedWarnings
+    }),
+    validTableFiles.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
+      type: 'success',
+      title: 'There are ' + validTableFiles.length + ' valid table(s)',
+      expandText: 'Success details',
+      messages: validTableFiles
+    }),
+    invalidTables.map(function (table, index) {
+      return _react2.default.createElement(_InvalidTable.InvalidTable, {
+        key: table.source,
+        table: table,
+        tableNumber: index + 1,
+        tablesCount: invalidTables.length
+      });
+    })
+  );
+}
+
+// Internal
+
+function getProcessedWarnings(report) {
+  return report.warnings.map(function (warning) {
+    return (0, _helpers.removeBaseUrl)(warning);
+  });
+}
+
+function getValidTableFiles(report) {
+  return report.tables.filter(function (table) {
+    return table.valid;
+  }).map(function (table) {
+    return (0, _helpers.removeBaseUrl)(table.source);
+  });
+}
+
+function getInvalidTables(report) {
+  return report.tables.filter(function (table) {
+    return !table.valid;
+  });
+}
+
+/***/ }),
+/* 3 */
+/* no static exports found */
+/* all exports used */
+/*!***********************!*\
+  !*** ./src/render.js ***!
+  \***********************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.render = render;
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(/*! react-dom */ 0);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Module API
+
+function render(component, props, element) {
+  _reactDom2.default.render(_react2.default.createElement(component, props, null), element);
+}
+
+/***/ }),
+/* 4 */
+/* no static exports found */
+/* all exports used */
+/*!************************!*\
+  !*** ./src/styles.css ***!
+  \************************/
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 5 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************!*\
+  !*** ./src/components/ErrorGroup.js ***!
+  \**************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ErrorGroup = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _marked = __webpack_require__(/*! marked */ 10);
+
+var _marked2 = _interopRequireDefault(_marked);
+
+var _classnames = __webpack_require__(/*! classnames */ 9);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var spec = __webpack_require__(/*! ../spec.json */ 12);
+
+// Module API
+
+var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
+  _inherits(ErrorGroup, _React$Component);
+
+  // Public
+
+  function ErrorGroup(_ref) {
+    var errorGroup = _ref.errorGroup;
+
+    _classCallCheck(this, ErrorGroup);
+
+    var _this = _possibleConstructorReturn(this, (ErrorGroup.__proto__ || Object.getPrototypeOf(ErrorGroup)).call(this, { errorGroup: errorGroup }));
+
+    _this.state = {
+      showErrorDetails: false,
+      visibleRowsCount: 10
+    };
+    return _this;
+  }
+
+  _createClass(ErrorGroup, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var errorGroup = this.props.errorGroup;
+      var _state = this.state,
+          showErrorDetails = _state.showErrorDetails,
+          visibleRowsCount = _state.visibleRowsCount;
+
+      var errorDetails = getErrorDetails(errorGroup);
+      var showHeaders = getShowHeaders(errorDetails);
+      var description = getDescription(errorDetails);
+      var rowNumbers = getRowNumbers(errorGroup);
+      return _react2.default.createElement(
+        'div',
+        { className: 'result panel panel-danger' },
+        _react2.default.createElement(
+          'div',
+          { className: 'panel-heading' },
+          _react2.default.createElement(
+            'span',
+            { className: 'text-uppercase label label-danger' },
+            'Invalid'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: 'text-uppercase label label-info' },
+            errorDetails.type
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: 'count label' },
+            errorGroup.count
+          ),
+          _react2.default.createElement(
+            'h5',
+            { className: 'panel-title' },
+            _react2.default.createElement(
+              'a',
+              { onClick: function onClick() {
+                  return _this2.setState({ showErrorDetails: !showErrorDetails });
+                } },
+              errorDetails.name
+            )
+          ),
+          _react2.default.createElement(
+            'a',
+            { className: 'error-details-link', onClick: function onClick() {
+                return _this2.setState({ showErrorDetails: !showErrorDetails });
+              } },
+            'Error details'
+          )
+        ),
+        showErrorDetails && _react2.default.createElement(
+          'div',
+          { className: 'panel-heading error-details' },
+          _react2.default.createElement(
+            'p',
+            null,
+            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: description } })
+          )
+        ),
+        showErrorDetails && _react2.default.createElement(
+          'div',
+          { className: 'panel-heading error-details' },
+          _react2.default.createElement(
+            'p',
+            null,
+            'The full list of error messages:'
+          ),
+          _react2.default.createElement(
+            'ul',
+            null,
+            errorGroup.messages.map(function (message) {
+              return _react2.default.createElement(
+                'li',
+                null,
+                message
+              );
+            })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'panel-body' },
+          _react2.default.createElement(
+            'div',
+            { className: 'table-container' },
+            _react2.default.createElement(
+              'table',
+              { className: 'table table-bordered table-condensed' },
+              showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
+              _react2.default.createElement(ErrorGroupTableBody, {
+                errorGroup: errorGroup,
+                visibleRowsCount: visibleRowsCount,
+                rowNumbers: rowNumbers
+              })
+            )
+          ),
+          visibleRowsCount < rowNumbers.length && _react2.default.createElement(
+            'div',
+            { className: 'show-more' },
+            _react2.default.createElement(
+              'a',
+              { onClick: this.setState({ visibleRowsCount: visibleRowsCount + 10 }) },
+              'Show next 10 rows'
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return ErrorGroup;
+}(_react2.default.Component);
+
+// Internal
+
+function ErrorGroupTableHead(_ref2) {
+  var headers = _ref2.headers;
+
+  return _react2.default.createElement(
+    'thead',
+    null,
+    _react2.default.createElement(
+      'tr',
+      null,
+      _react2.default.createElement('th', null),
+      headers.map(function (header) {
+        return _react2.default.createElement(
+          'th',
+          null,
+          header
+        );
+      })
+    )
+  );
+}
+
+function ErrorGroupTableBody(_ref3) {
+  var errorGroup = _ref3.errorGroup,
+      visibleRowsCount = _ref3.visibleRowsCount,
+      rowNumbers = _ref3.rowNumbers;
+
+  return _react2.default.createElement(
+    'tbody',
+    null,
+    rowNumbers.map(function (rowNumber, index) {
+      return index < visibleRowsCount && _react2.default.createElement(
+        'tr',
+        { className: 'result-header-row' },
+        rowNumber !== null && _react2.default.createElement(
+          'td',
+          { className: 'result-row-index' },
+          rowNumber
+        ),
+        errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
+          return _react2.default.createElement(
+            'td',
+            { className: (0, _classnames2.default)({ danger: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1) }) },
+            value
+          );
+        })
+      );
+    })
+  );
+}
+
+function getErrorDetails(errorGroup) {
+  return spec.errors[errorGroup.code];
+}
+
+function getShowHeaders(errorDetails) {
+  return errorDetails.context === 'body';
+}
+
+function getDescription(errorDetails) {
+  var description = errorDetails.description.replace('{validator}', '`goodtables.yml`');
+  return (0, _marked2.default)(description);
+}
+
+function getRowNumbers(errorGroup) {
+  return Object.keys(errorGroup.rows).map(function (item) {
+    return parseInt(item, 10) || null;
+  }).sort(function (a, b) {
+    return a - b;
+  });
+}
+
+/***/ }),
+/* 6 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************!*\
+  !*** ./src/components/InvalidTable.js ***!
+  \****************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _objectValues(obj) {
+  var values = [];
+  var keys = Object.keys(obj);
+
+  for (var k = 0; k < keys.length; ++k) values.push(obj[keys[k]]);
+
+  return values;
+}
+
+exports.InvalidTable = InvalidTable;
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ErrorGroup = __webpack_require__(/*! ./ErrorGroup */ 5);
+
+var _helpers = __webpack_require__(/*! ../helpers */ 1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Module API
+
+function InvalidTable(_ref) {
+  var table = _ref.table,
+      tableNumber = _ref.tableNumber,
+      tablesCount = _ref.tablesCount;
+
+  var errorGroups = (0, _helpers.getTableErrorGroups)(table);
+  var tableFile = getTableFile(table);
+  return _react2.default.createElement(
+    'div',
+    { className: 'report-table' },
+    _react2.default.createElement(
+      'h4',
+      { className: 'file-heading' },
+      _react2.default.createElement(
+        'span',
+        null,
+        _react2.default.createElement(
+          'a',
+          { className: 'file-name', href: table.source },
+          tableFile
+        ),
+        _react2.default.createElement(
+          'span',
+          { className: 'file-count' },
+          'Invalid ',
+          tableNumber,
+          ' of ',
+          tablesCount
+        )
+      )
+    ),
+    _objectValues(errorGroups).map(function (errorGroup) {
+      return _react2.default.createElement(_ErrorGroup.ErrorGroup, { key: errorGroup.code, errorGroup: errorGroup });
+    })
+  );
+}
+
+// Internal
+
+function getTableFile(table) {
+  return (0, _helpers.removeBaseUrl)(table.source);
+}
+
+/***/ }),
+/* 7 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************!*\
+  !*** ./src/components/MessageGroup.js ***!
+  \****************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MessageGroup = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Module API
+
+var MessageGroup = exports.MessageGroup = function (_React$Component) {
+  _inherits(MessageGroup, _React$Component);
+
+  // Public
+
+  function MessageGroup(_ref) {
+    var type = _ref.type,
+        title = _ref.title,
+        messages = _ref.messages,
+        expandText = _ref.expandText;
+
+    _classCallCheck(this, MessageGroup);
+
+    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages, expandText: expandText }));
+
+    _this.state = {
+      isExpanded: false
+    };
+    return _this;
+  }
+
+  _createClass(MessageGroup, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _props = this.props,
+          type = _props.type,
+          title = _props.title,
+          messages = _props.messages,
+          expandText = _props.expandText;
+      var isExpanded = this.state.isExpanded;
+
+      return _react2.default.createElement(
+        "div",
+        { className: "alert alert-" + type, role: "alert" },
+        _react2.default.createElement(
+          "span",
+          { className: "title", onClick: function onClick() {
+              return _this2.setState({ isExpanded: !isExpanded });
+            } },
+          title
+        ),
+        _react2.default.createElement(
+          "a",
+          { className: "show-details", onClick: function onClick() {
+              return _this2.setState({ isExpanded: !isExpanded });
+            } },
+          expandText
+        ),
+        isExpanded && _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement("hr", null),
+          _react2.default.createElement(
+            "ul",
+            null,
+            messages.map(function (message) {
+              return _react2.default.createElement(
+                "li",
+                null,
+                message
+              );
+            })
+          )
+        )
+      );
+    }
+  }]);
+
+  return MessageGroup;
+}(_react2.default.Component);
+
+/***/ }),
+/* 8 */
+/* no static exports found */
+/* all exports used */
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Report = exports.render = undefined;
+
+__webpack_require__(/*! ./styles.css */ 4);
+
+var _render = __webpack_require__(/*! ./render */ 3);
+
+var _Report = __webpack_require__(/*! ./components/Report */ 2);
+
+// Module API
+
+exports.default = { render: _render.render, Report: _Report.Report };
+exports.render = _render.render;
+exports.Report = _Report.Report;
+
+/***/ }),
+/* 9 */
+/* no static exports found */
 /* all exports used */
 /*!*******************************!*\
   !*** ./~/classnames/index.js ***!
@@ -2537,855 +3236,1549 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 2 */
-/* unknown exports provided */
+/* 10 */
+/* no static exports found */
 /* all exports used */
-/*!***********************************************!*\
-  !*** ./~/react-props-decorators/lib/index.js ***!
-  \***********************************************/
+/*!********************************!*\
+  !*** ./~/marked/lib/marked.js ***!
+  \********************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * marked - a markdown parser
+ * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
+ * https://github.com/chjj/marked
+ */
 
+;(function() {
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports.propTypes = propTypes;
-exports.defaultProps = defaultProps;
-exports.contextTypes = contextTypes;
-exports.childContextTypes = childContextTypes;
+/**
+ * Block-Level Grammar
+ */
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _objectAssign = __webpack_require__(/*! object-assign */ 9);
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-function propTypes(param) {
-  return function (clazz) {
-    clazz.propTypes = (0, _objectAssign2['default'])({}, clazz.propTypes || {}, param);
-    return clazz;
-  };
-}
-
-function defaultProps(param) {
-  return function (clazz) {
-    clazz.defaultProps = (0, _objectAssign2['default'])({}, clazz.defaultProps || {}, param);
-    return clazz;
-  };
-}
-
-function contextTypes(param) {
-  return function (clazz) {
-    clazz.contextTypes = (0, _objectAssign2['default'])({}, clazz.contextTypes || {}, param);
-    return clazz;
-  };
-}
-
-function childContextTypes(param) {
-  return function (clazz) {
-    clazz.childContextTypes = (0, _objectAssign2['default'])({}, clazz.contextTypes || {}, param);
-    return clazz;
-  };
-}
-
-
-/***/ }),
-/* 3 */
-/* unknown exports provided */
-/* all exports used */
-/*!***********************!*\
-  !*** ./src/Report.js ***!
-  \***********************/
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = Report;
-
-var _react = __webpack_require__(/*! react */ 0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = __webpack_require__(/*! classnames */ 1);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _Table = __webpack_require__(/*! ./Table */ 6);
-
-var _Table2 = _interopRequireDefault(_Table);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Module API
-
-Report.propTypes = {
-  report: _react2.default.PropTypes.object.isRequired
+var block = {
+  newline: /^\n+/,
+  code: /^( {4}[^\n]+\n*)+/,
+  fences: noop,
+  hr: /^( *[-*_]){3,} *(?:\n+|$)/,
+  heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
+  nptable: noop,
+  lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
+  blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
+  list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
+  html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
+  def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
+  table: noop,
+  paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,
+  text: /^[^\n]+/
 };
-function Report(_ref) {
-  var report = _ref.report;
 
-  return _react2.default.createElement(
-    'div',
-    { className: 'goodtables-vue-report' },
-    _react2.default.createElement(
-      'h1',
-      null,
-      'Report'
-    ),
-    _react2.default.createElement(
-      'table',
-      { className: (0, _classnames2.default)({ summary: true, error: !report.valid }) },
-      _react2.default.createElement(
-        'tbody',
-        null,
-        _react2.default.createElement(
-          'tr',
-          null,
-          _react2.default.createElement(
-            'th',
-            null,
-            'valid'
-          ),
-          _react2.default.createElement(
-            'td',
-            null,
-            report.valid ? 'yes' : 'no'
-          )
-        ),
-        _react2.default.createElement(
-          'tr',
-          null,
-          _react2.default.createElement(
-            'th',
-            null,
-            'tables'
-          ),
-          _react2.default.createElement(
-            'td',
-            null,
-            report['table-count']
-          )
-        ),
-        _react2.default.createElement(
-          'tr',
-          null,
-          _react2.default.createElement(
-            'th',
-            null,
-            'errors'
-          ),
-          _react2.default.createElement(
-            'td',
-            null,
-            report['error-count']
-          )
-        ),
-        _react2.default.createElement(
-          'tr',
-          null,
-          _react2.default.createElement(
-            'th',
-            null,
-            'time'
-          ),
-          _react2.default.createElement(
-            'td',
-            null,
-            report.time
-          )
-        )
-      )
-    ),
-    _react2.default.createElement(
-      'h2',
-      null,
-      'Tables'
-    ),
-    report.tables.map(function (table) {
-      return _react2.default.createElement(_Table2.default, { key: table.source, table: table });
-    })
-  );
-}
+block.bullet = /(?:[*+-]|\d+\.)/;
+block.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
+block.item = replace(block.item, 'gm')
+  (/bull/g, block.bullet)
+  ();
 
-/***/ }),
-/* 4 */
-/* unknown exports provided */
-/* all exports used */
-/*!***********************!*\
-  !*** ./src/render.js ***!
-  \***********************/
-/***/ (function(module, exports, __webpack_require__) {
+block.list = replace(block.list)
+  (/bull/g, block.bullet)
+  ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
+  ('def', '\\n+(?=' + block.def.source + ')')
+  ();
 
-"use strict";
+block.blockquote = replace(block.blockquote)
+  ('def', block.def)
+  ();
 
+block._tag = '(?!(?:'
+  + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
+  + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
+  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+block.html = replace(block.html)
+  ('comment', /<!--[\s\S]*?-->/)
+  ('closed', /<(tag)[\s\S]+?<\/\1>/)
+  ('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)
+  (/tag/g, block._tag)
+  ();
+
+block.paragraph = replace(block.paragraph)
+  ('hr', block.hr)
+  ('heading', block.heading)
+  ('lheading', block.lheading)
+  ('blockquote', block.blockquote)
+  ('tag', '<' + block._tag)
+  ('def', block.def)
+  ();
+
+/**
+ * Normal Block Grammar
+ */
+
+block.normal = merge({}, block);
+
+/**
+ * GFM Block Grammar
+ */
+
+block.gfm = merge({}, block.normal, {
+  fences: /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/,
+  paragraph: /^/,
+  heading: /^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/
 });
-exports.default = render;
 
-var _react = __webpack_require__(/*! react */ 0);
+block.gfm.paragraph = replace(block.paragraph)
+  ('(?!', '(?!'
+    + block.gfm.fences.source.replace('\\1', '\\2') + '|'
+    + block.list.source.replace('\\1', '\\3') + '|')
+  ();
 
-var _react2 = _interopRequireDefault(_react);
+/**
+ * GFM + Tables Block Grammar
+ */
 
-var _reactDom = __webpack_require__(/*! react-dom */ 0);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Module API
-
-function render(component, props, element) {
-  _reactDom2.default.render(_react2.default.createElement(component, props, null), element);
-}
-
-/***/ }),
-/* 5 */
-/* unknown exports provided */
-/* all exports used */
-/*!************************!*\
-  !*** ./src/styles.css ***!
-  \************************/
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 6 */
-/* unknown exports provided */
-/* all exports used */
-/*!**********************!*\
-  !*** ./src/Table.js ***!
-  \**********************/
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
+block.tables = merge({}, block.gfm, {
+  nptable: /^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,
+  table: /^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/
 });
-exports.default = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+/**
+ * Block Lexer
+ */
 
-var _dec, _class;
+function Lexer(options) {
+  this.tokens = [];
+  this.tokens.links = {};
+  this.options = options || marked.defaults;
+  this.rules = block.normal;
 
-var _react = __webpack_require__(/*! react */ 0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactPropsDecorators = __webpack_require__(/*! react-props-decorators */ 2);
-
-var _TableErrors = __webpack_require__(/*! ./TableErrors */ 7);
-
-var _TableErrors2 = _interopRequireDefault(_TableErrors);
-
-var _TableValues = __webpack_require__(/*! ./TableValues */ 8);
-
-var _TableValues2 = _interopRequireDefault(_TableValues);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// Module API
-
-var Table = (_dec = (0, _reactPropsDecorators.propTypes)({
-  table: _react2.default.PropTypes.object.isRequired
-}), _dec(_class = function (_React$Component) {
-  _inherits(Table, _React$Component);
-
-  // Public
-
-  function Table(props) {
-    _classCallCheck(this, Table);
-
-    var _this = _possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
-
-    _this.state = {
-      show: false,
-      values: false
-    };
-    return _this;
+  if (this.options.gfm) {
+    if (this.options.tables) {
+      this.rules = block.tables;
+    } else {
+      this.rules = block.gfm;
+    }
   }
+}
 
-  _createClass(Table, [{
-    key: 'render',
-    value: function render() {
-      var table = this.props.table;
+/**
+ * Expose Block Rules
+ */
 
-      if (table.valid) {
-        return this.renderValidTable();
-      } else {
-        return this.renderInvalidTable();
+Lexer.rules = block;
+
+/**
+ * Static Lex Method
+ */
+
+Lexer.lex = function(src, options) {
+  var lexer = new Lexer(options);
+  return lexer.lex(src);
+};
+
+/**
+ * Preprocessing
+ */
+
+Lexer.prototype.lex = function(src) {
+  src = src
+    .replace(/\r\n|\r/g, '\n')
+    .replace(/\t/g, '    ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\u2424/g, '\n');
+
+  return this.token(src, true);
+};
+
+/**
+ * Lexing
+ */
+
+Lexer.prototype.token = function(src, top, bq) {
+  var src = src.replace(/^ +$/gm, '')
+    , next
+    , loose
+    , cap
+    , bull
+    , b
+    , item
+    , space
+    , i
+    , l;
+
+  while (src) {
+    // newline
+    if (cap = this.rules.newline.exec(src)) {
+      src = src.substring(cap[0].length);
+      if (cap[0].length > 1) {
+        this.tokens.push({
+          type: 'space'
+        });
       }
     }
 
-    // Internal
-
-  }, {
-    key: 'renderValidTable',
-    value: function renderValidTable() {
-      var table = this.props.table;
-
-      var source = this.getSource();
-      return _react2.default.createElement(
-        'h3',
-        null,
-        source,
-        '[',
-        table['row-count'],
-        ' rows/',
-        table['error-count'],
-        ' errors]'
-      );
+    // code
+    if (cap = this.rules.code.exec(src)) {
+      src = src.substring(cap[0].length);
+      cap = cap[0].replace(/^ {4}/gm, '');
+      this.tokens.push({
+        type: 'code',
+        text: !this.options.pedantic
+          ? cap.replace(/\n+$/, '')
+          : cap
+      });
+      continue;
     }
-  }, {
-    key: 'renderInvalidTable',
-    value: function renderInvalidTable() {
-      var _this2 = this;
 
-      var table = this.props.table;
-      var _state = this.state,
-          show = _state.show,
-          values = _state.values;
-
-      var _getIdentifiers = this.getIdentifiers(),
-          id1 = _getIdentifiers.id1,
-          id2 = _getIdentifiers.id2;
-
-      var source = this.getSource();
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'h3',
-          { className: 'error', onClick: function onClick() {
-              return _this2.setState({ show: !_this2.state.show });
-            } },
-          source,
-          '[',
-          table['row-count'],
-          ' rows/',
-          table['error-count'],
-          ' errors] [',
-          show ? '-' : '+',
-          ']'
-        ),
-        show && _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement('input', { id: id1, type: 'radio', name: 'tabs', defaultChecked: true }),
-          _react2.default.createElement(
-            'label',
-            { htmlFor: id1, onClick: function onClick() {
-                return _this2.setState({ values: false });
-              } },
-            'Errors view'
-          ),
-          _react2.default.createElement('input', { id: id2, type: 'radio', name: 'tabs' }),
-          _react2.default.createElement(
-            'label',
-            { htmlFor: id2, onClick: function onClick() {
-                return _this2.setState({ values: true });
-              } },
-            'Values view'
-          ),
-          values && _react2.default.createElement(_TableValues2.default, { table: table }),
-          !values && _react2.default.createElement(_TableErrors2.default, { table: table })
-        )
-      );
+    // fences (gfm)
+    if (cap = this.rules.fences.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'code',
+        lang: cap[2],
+        text: cap[3] || ''
+      });
+      continue;
     }
-  }, {
-    key: 'getSource',
-    value: function getSource() {
-      var table = this.props.table;
 
-      if (table.source.length > 50) {
-        return '<truncated>/' + table.source.split('/').pop();
-      }
-      return table.source;
+    // heading
+    if (cap = this.rules.heading.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'heading',
+        depth: cap[1].length,
+        text: cap[2]
+      });
+      continue;
     }
-  }, {
-    key: 'getIdentifiers',
-    value: function getIdentifiers() {
-      return {
-        id1: Math.random().toString(36).substring(10),
-        id2: Math.random().toString(36).substring(10)
+
+    // table no leading pipe (gfm)
+    if (top && (cap = this.rules.nptable.exec(src))) {
+      src = src.substring(cap[0].length);
+
+      item = {
+        type: 'table',
+        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
+        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
+        cells: cap[3].replace(/\n$/, '').split('\n')
       };
+
+      for (i = 0; i < item.align.length; i++) {
+        if (/^ *-+: *$/.test(item.align[i])) {
+          item.align[i] = 'right';
+        } else if (/^ *:-+: *$/.test(item.align[i])) {
+          item.align[i] = 'center';
+        } else if (/^ *:-+ *$/.test(item.align[i])) {
+          item.align[i] = 'left';
+        } else {
+          item.align[i] = null;
+        }
+      }
+
+      for (i = 0; i < item.cells.length; i++) {
+        item.cells[i] = item.cells[i].split(/ *\| */);
+      }
+
+      this.tokens.push(item);
+
+      continue;
     }
-  }]);
 
-  return Table;
-}(_react2.default.Component)) || _class);
-exports.default = Table;
+    // lheading
+    if (cap = this.rules.lheading.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'heading',
+        depth: cap[2] === '=' ? 1 : 2,
+        text: cap[1]
+      });
+      continue;
+    }
 
-/***/ }),
-/* 7 */
-/* unknown exports provided */
-/* all exports used */
-/*!****************************!*\
-  !*** ./src/TableErrors.js ***!
-  \****************************/
-/***/ (function(module, exports, __webpack_require__) {
+    // hr
+    if (cap = this.rules.hr.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'hr'
+      });
+      continue;
+    }
 
-"use strict";
+    // blockquote
+    if (cap = this.rules.blockquote.exec(src)) {
+      src = src.substring(cap[0].length);
 
+      this.tokens.push({
+        type: 'blockquote_start'
+      });
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = TableErrors;
+      cap = cap[0].replace(/^ *> ?/gm, '');
 
-var _react = __webpack_require__(/*! react */ 0);
+      // Pass `top` to keep the current
+      // "toplevel" state. This is exactly
+      // how markdown.pl works.
+      this.token(cap, top, true);
 
-var _react2 = _interopRequireDefault(_react);
+      this.tokens.push({
+        type: 'blockquote_end'
+      });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+      continue;
+    }
 
-// Module API
+    // list
+    if (cap = this.rules.list.exec(src)) {
+      src = src.substring(cap[0].length);
+      bull = cap[2];
 
-TableErrors.propTypes = {
-  table: _react2.default.PropTypes.object.isRequired
-};
-function TableErrors(_ref) {
-  var table = _ref.table;
+      this.tokens.push({
+        type: 'list_start',
+        ordered: bull.length > 1
+      });
 
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'table',
-      { className: 'error' },
-      _react2.default.createElement(
-        'thead',
-        null,
-        _react2.default.createElement(
-          'tr',
-          null,
-          _react2.default.createElement(
-            'th',
-            null,
-            'Row'
-          ),
-          _react2.default.createElement(
-            'th',
-            null,
-            'Col'
-          ),
-          _react2.default.createElement(
-            'th',
-            null,
-            'Code'
-          ),
-          _react2.default.createElement(
-            'th',
-            null,
-            'Message'
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'tbody',
-        null,
-        table.errors.map(function (error, index) {
-          return _react2.default.createElement(
-            'tr',
-            { key: index },
-            _react2.default.createElement(
-              'td',
-              null,
-              error['row-number'] || 'H'
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              error['column-number'] || '-'
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              error.code
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              error.message
-            )
-          );
-        })
-      )
-    )
-  );
-}
+      // Get each top-level item.
+      cap = cap[0].match(this.rules.item);
 
-/***/ }),
-/* 8 */
-/* unknown exports provided */
-/* all exports used */
-/*!****************************!*\
-  !*** ./src/TableValues.js ***!
-  \****************************/
-/***/ (function(module, exports, __webpack_require__) {
+      next = false;
+      l = cap.length;
+      i = 0;
 
-"use strict";
+      for (; i < l; i++) {
+        item = cap[i];
 
+        // Remove the list item's bullet
+        // so it is seen as the next token.
+        space = item.length;
+        item = item.replace(/^ *([*+-]|\d+\.) +/, '');
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = undefined;
+        // Outdent whatever the
+        // list item contains. Hacky.
+        if (~item.indexOf('\n ')) {
+          space -= item.length;
+          item = !this.options.pedantic
+            ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
+            : item.replace(/^ {1,4}/gm, '');
+        }
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+        // Determine whether the next list item belongs here.
+        // Backpedal if it does not belong in this list.
+        if (this.options.smartLists && i !== l - 1) {
+          b = block.bullet.exec(cap[i + 1])[0];
+          if (bull !== b && !(bull.length > 1 && b.length > 1)) {
+            src = cap.slice(i + 1).join('\n') + src;
+            i = l - 1;
+          }
+        }
 
-var _dec, _class;
+        // Determine whether item is loose or not.
+        // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+        // for discount behavior.
+        loose = next || /\n\n(?!\s*$)/.test(item);
+        if (i !== l - 1) {
+          next = item.charAt(item.length - 1) === '\n';
+          if (!loose) loose = next;
+        }
 
-var _react = __webpack_require__(/*! react */ 0);
+        this.tokens.push({
+          type: loose
+            ? 'loose_item_start'
+            : 'list_item_start'
+        });
 
-var _react2 = _interopRequireDefault(_react);
+        // Recurse.
+        this.token(item, false, bq);
 
-var _reactPropsDecorators = __webpack_require__(/*! react-props-decorators */ 2);
+        this.tokens.push({
+          type: 'list_item_end'
+        });
+      }
 
-var _classnames = __webpack_require__(/*! classnames */ 1);
+      this.tokens.push({
+        type: 'list_end'
+      });
 
-var _classnames2 = _interopRequireDefault(_classnames);
+      continue;
+    }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+    // html
+    if (cap = this.rules.html.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: this.options.sanitize
+          ? 'paragraph'
+          : 'html',
+        pre: !this.options.sanitizer
+          && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
+        text: cap[0]
+      });
+      continue;
+    }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+    // def
+    if ((!bq && top) && (cap = this.rules.def.exec(src))) {
+      src = src.substring(cap[0].length);
+      this.tokens.links[cap[1].toLowerCase()] = {
+        href: cap[2],
+        title: cap[3]
+      };
+      continue;
+    }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    // table (gfm)
+    if (top && (cap = this.rules.table.exec(src))) {
+      src = src.substring(cap[0].length);
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+      item = {
+        type: 'table',
+        header: cap[1].replace(/^ *| *\| *$/g, '').split(/ *\| */),
+        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
+        cells: cap[3].replace(/(?: *\| *)?\n$/, '').split('\n')
+      };
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+      for (i = 0; i < item.align.length; i++) {
+        if (/^ *-+: *$/.test(item.align[i])) {
+          item.align[i] = 'right';
+        } else if (/^ *:-+: *$/.test(item.align[i])) {
+          item.align[i] = 'center';
+        } else if (/^ *:-+ *$/.test(item.align[i])) {
+          item.align[i] = 'left';
+        } else {
+          item.align[i] = null;
+        }
+      }
 
-// Module API
+      for (i = 0; i < item.cells.length; i++) {
+        item.cells[i] = item.cells[i]
+          .replace(/^ *\| *| *\| *$/g, '')
+          .split(/ *\| */);
+      }
 
-var TableValues = (_dec = (0, _reactPropsDecorators.propTypes)({
-  table: _react2.default.PropTypes.object.isRequired
-}), _dec(_class = function (_React$Component) {
-  _inherits(TableValues, _React$Component);
+      this.tokens.push(item);
 
-  // Public
+      continue;
+    }
 
-  function TableValues(props) {
-    _classCallCheck(this, TableValues);
+    // top-level paragraph
+    if (top && (cap = this.rules.paragraph.exec(src))) {
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'paragraph',
+        text: cap[1].charAt(cap[1].length - 1) === '\n'
+          ? cap[1].slice(0, -1)
+          : cap[1]
+      });
+      continue;
+    }
 
-    var _this = _possibleConstructorReturn(this, (TableValues.__proto__ || Object.getPrototypeOf(TableValues)).call(this, props));
+    // text
+    if (cap = this.rules.text.exec(src)) {
+      // Top-level should never reach here.
+      src = src.substring(cap[0].length);
+      this.tokens.push({
+        type: 'text',
+        text: cap[0]
+      });
+      continue;
+    }
 
-    _this.state = {
-      expandedRows: []
-    };
-    return _this;
+    if (src) {
+      throw new
+        Error('Infinite loop on byte: ' + src.charCodeAt(0));
+    }
   }
 
-  _createClass(TableValues, [{
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
+  return this.tokens;
+};
 
-      var rows = this.getRows();
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'table',
-          { className: 'values error' },
-          _react2.default.createElement(
-            'tbody',
-            null,
-            rows.map(function (row, rowNumber) {
-              return !!row && [_this2.renderValuesTr(row, rowNumber), _this2.renderErrorListTr(row, rowNumber)];
-            })
-          )
-        ),
-        _react2.default.createElement(
-          'p',
-          { className: 'help' },
-          '*click on a row to see errors'
-        )
-      );
+/**
+ * Inline-Level Grammar
+ */
+
+var inline = {
+  escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
+  autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
+  url: noop,
+  tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
+  link: /^!?\[(inside)\]\(href\)/,
+  reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
+  nolink: /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,
+  strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
+  em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
+  code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
+  br: /^ {2,}\n(?!\s*$)/,
+  del: noop,
+  text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/
+};
+
+inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
+inline._href = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
+
+inline.link = replace(inline.link)
+  ('inside', inline._inside)
+  ('href', inline._href)
+  ();
+
+inline.reflink = replace(inline.reflink)
+  ('inside', inline._inside)
+  ();
+
+/**
+ * Normal Inline Grammar
+ */
+
+inline.normal = merge({}, inline);
+
+/**
+ * Pedantic Inline Grammar
+ */
+
+inline.pedantic = merge({}, inline.normal, {
+  strong: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
+  em: /^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/
+});
+
+/**
+ * GFM Inline Grammar
+ */
+
+inline.gfm = merge({}, inline.normal, {
+  escape: replace(inline.escape)('])', '~|])')(),
+  url: /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,
+  del: /^~~(?=\S)([\s\S]*?\S)~~/,
+  text: replace(inline.text)
+    (']|', '~]|')
+    ('|', '|https?://|')
+    ()
+});
+
+/**
+ * GFM + Line Breaks Inline Grammar
+ */
+
+inline.breaks = merge({}, inline.gfm, {
+  br: replace(inline.br)('{2,}', '*')(),
+  text: replace(inline.gfm.text)('{2,}', '*')()
+});
+
+/**
+ * Inline Lexer & Compiler
+ */
+
+function InlineLexer(links, options) {
+  this.options = options || marked.defaults;
+  this.links = links;
+  this.rules = inline.normal;
+  this.renderer = this.options.renderer || new Renderer;
+  this.renderer.options = this.options;
+
+  if (!this.links) {
+    throw new
+      Error('Tokens array requires a `links` property.');
+  }
+
+  if (this.options.gfm) {
+    if (this.options.breaks) {
+      this.rules = inline.breaks;
+    } else {
+      this.rules = inline.gfm;
+    }
+  } else if (this.options.pedantic) {
+    this.rules = inline.pedantic;
+  }
+}
+
+/**
+ * Expose Inline Rules
+ */
+
+InlineLexer.rules = inline;
+
+/**
+ * Static Lexing/Compiling Method
+ */
+
+InlineLexer.output = function(src, links, options) {
+  var inline = new InlineLexer(links, options);
+  return inline.output(src);
+};
+
+/**
+ * Lexing/Compiling
+ */
+
+InlineLexer.prototype.output = function(src) {
+  var out = ''
+    , link
+    , text
+    , href
+    , cap;
+
+  while (src) {
+    // escape
+    if (cap = this.rules.escape.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += cap[1];
+      continue;
     }
 
-    // Internal
-
-  }, {
-    key: 'renderValuesTr',
-    value: function renderValuesTr(row, rowNumber) {
-      var _this3 = this;
-
-      return _react2.default.createElement(
-        'tr',
-        { key: 'values-' + rowNumber, onClick: function onClick() {
-            return _this3.toggleExpandedRow(rowNumber);
-          } },
-        _react2.default.createElement(
-          'td',
-          { className: 'row-number' },
-          rowNumber || 'H'
-        ),
-        row.values.map(function (value, colNumber) {
-          return !!colNumber && _react2.default.createElement(
-            'td',
-            { key: colNumber, className: (0, _classnames2.default)({ error: row.badcols.includes(colNumber) }) },
-            value
-          );
-        })
-      );
+    // autolink
+    if (cap = this.rules.autolink.exec(src)) {
+      src = src.substring(cap[0].length);
+      if (cap[2] === '@') {
+        text = cap[1].charAt(6) === ':'
+          ? this.mangle(cap[1].substring(7))
+          : this.mangle(cap[1]);
+        href = this.mangle('mailto:') + text;
+      } else {
+        text = escape(cap[1]);
+        href = text;
+      }
+      out += this.renderer.link(href, null, text);
+      continue;
     }
-  }, {
-    key: 'renderErrorListTr',
-    value: function renderErrorListTr(row, rowNumber) {
-      var expandedRows = this.state.expandedRows;
 
-      if (expandedRows.includes(rowNumber)) {
-        return _react2.default.createElement(
-          'tr',
-          { key: 'error-list-' + rowNumber },
-          _react2.default.createElement(
-            'td',
-            { className: 'errors', colSpan: '100%' },
-            row.errors.map(function (error, index) {
-              return _react2.default.createElement(
-                'div',
-                { key: index },
-                '[',
-                error['column-number'] || '-',
-                '] ',
-                error.message
-              );
-            })
-          )
+    // url (gfm)
+    if (!this.inLink && (cap = this.rules.url.exec(src))) {
+      src = src.substring(cap[0].length);
+      text = escape(cap[1]);
+      href = text;
+      out += this.renderer.link(href, null, text);
+      continue;
+    }
+
+    // tag
+    if (cap = this.rules.tag.exec(src)) {
+      if (!this.inLink && /^<a /i.test(cap[0])) {
+        this.inLink = true;
+      } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
+        this.inLink = false;
+      }
+      src = src.substring(cap[0].length);
+      out += this.options.sanitize
+        ? this.options.sanitizer
+          ? this.options.sanitizer(cap[0])
+          : escape(cap[0])
+        : cap[0]
+      continue;
+    }
+
+    // link
+    if (cap = this.rules.link.exec(src)) {
+      src = src.substring(cap[0].length);
+      this.inLink = true;
+      out += this.outputLink(cap, {
+        href: cap[2],
+        title: cap[3]
+      });
+      this.inLink = false;
+      continue;
+    }
+
+    // reflink, nolink
+    if ((cap = this.rules.reflink.exec(src))
+        || (cap = this.rules.nolink.exec(src))) {
+      src = src.substring(cap[0].length);
+      link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
+      link = this.links[link.toLowerCase()];
+      if (!link || !link.href) {
+        out += cap[0].charAt(0);
+        src = cap[0].substring(1) + src;
+        continue;
+      }
+      this.inLink = true;
+      out += this.outputLink(cap, link);
+      this.inLink = false;
+      continue;
+    }
+
+    // strong
+    if (cap = this.rules.strong.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.strong(this.output(cap[2] || cap[1]));
+      continue;
+    }
+
+    // em
+    if (cap = this.rules.em.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.em(this.output(cap[2] || cap[1]));
+      continue;
+    }
+
+    // code
+    if (cap = this.rules.code.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.codespan(escape(cap[2], true));
+      continue;
+    }
+
+    // br
+    if (cap = this.rules.br.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.br();
+      continue;
+    }
+
+    // del (gfm)
+    if (cap = this.rules.del.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.del(this.output(cap[1]));
+      continue;
+    }
+
+    // text
+    if (cap = this.rules.text.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.text(escape(this.smartypants(cap[0])));
+      continue;
+    }
+
+    if (src) {
+      throw new
+        Error('Infinite loop on byte: ' + src.charCodeAt(0));
+    }
+  }
+
+  return out;
+};
+
+/**
+ * Compile Link
+ */
+
+InlineLexer.prototype.outputLink = function(cap, link) {
+  var href = escape(link.href)
+    , title = link.title ? escape(link.title) : null;
+
+  return cap[0].charAt(0) !== '!'
+    ? this.renderer.link(href, title, this.output(cap[1]))
+    : this.renderer.image(href, title, escape(cap[1]));
+};
+
+/**
+ * Smartypants Transformations
+ */
+
+InlineLexer.prototype.smartypants = function(text) {
+  if (!this.options.smartypants) return text;
+  return text
+    // em-dashes
+    .replace(/---/g, '\u2014')
+    // en-dashes
+    .replace(/--/g, '\u2013')
+    // opening singles
+    .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+    // closing singles & apostrophes
+    .replace(/'/g, '\u2019')
+    // opening doubles
+    .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+    // closing doubles
+    .replace(/"/g, '\u201d')
+    // ellipses
+    .replace(/\.{3}/g, '\u2026');
+};
+
+/**
+ * Mangle Links
+ */
+
+InlineLexer.prototype.mangle = function(text) {
+  if (!this.options.mangle) return text;
+  var out = ''
+    , l = text.length
+    , i = 0
+    , ch;
+
+  for (; i < l; i++) {
+    ch = text.charCodeAt(i);
+    if (Math.random() > 0.5) {
+      ch = 'x' + ch.toString(16);
+    }
+    out += '&#' + ch + ';';
+  }
+
+  return out;
+};
+
+/**
+ * Renderer
+ */
+
+function Renderer(options) {
+  this.options = options || {};
+}
+
+Renderer.prototype.code = function(code, lang, escaped) {
+  if (this.options.highlight) {
+    var out = this.options.highlight(code, lang);
+    if (out != null && out !== code) {
+      escaped = true;
+      code = out;
+    }
+  }
+
+  if (!lang) {
+    return '<pre><code>'
+      + (escaped ? code : escape(code, true))
+      + '\n</code></pre>';
+  }
+
+  return '<pre><code class="'
+    + this.options.langPrefix
+    + escape(lang, true)
+    + '">'
+    + (escaped ? code : escape(code, true))
+    + '\n</code></pre>\n';
+};
+
+Renderer.prototype.blockquote = function(quote) {
+  return '<blockquote>\n' + quote + '</blockquote>\n';
+};
+
+Renderer.prototype.html = function(html) {
+  return html;
+};
+
+Renderer.prototype.heading = function(text, level, raw) {
+  return '<h'
+    + level
+    + ' id="'
+    + this.options.headerPrefix
+    + raw.toLowerCase().replace(/[^\w]+/g, '-')
+    + '">'
+    + text
+    + '</h'
+    + level
+    + '>\n';
+};
+
+Renderer.prototype.hr = function() {
+  return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
+};
+
+Renderer.prototype.list = function(body, ordered) {
+  var type = ordered ? 'ol' : 'ul';
+  return '<' + type + '>\n' + body + '</' + type + '>\n';
+};
+
+Renderer.prototype.listitem = function(text) {
+  return '<li>' + text + '</li>\n';
+};
+
+Renderer.prototype.paragraph = function(text) {
+  return '<p>' + text + '</p>\n';
+};
+
+Renderer.prototype.table = function(header, body) {
+  return '<table>\n'
+    + '<thead>\n'
+    + header
+    + '</thead>\n'
+    + '<tbody>\n'
+    + body
+    + '</tbody>\n'
+    + '</table>\n';
+};
+
+Renderer.prototype.tablerow = function(content) {
+  return '<tr>\n' + content + '</tr>\n';
+};
+
+Renderer.prototype.tablecell = function(content, flags) {
+  var type = flags.header ? 'th' : 'td';
+  var tag = flags.align
+    ? '<' + type + ' style="text-align:' + flags.align + '">'
+    : '<' + type + '>';
+  return tag + content + '</' + type + '>\n';
+};
+
+// span level renderer
+Renderer.prototype.strong = function(text) {
+  return '<strong>' + text + '</strong>';
+};
+
+Renderer.prototype.em = function(text) {
+  return '<em>' + text + '</em>';
+};
+
+Renderer.prototype.codespan = function(text) {
+  return '<code>' + text + '</code>';
+};
+
+Renderer.prototype.br = function() {
+  return this.options.xhtml ? '<br/>' : '<br>';
+};
+
+Renderer.prototype.del = function(text) {
+  return '<del>' + text + '</del>';
+};
+
+Renderer.prototype.link = function(href, title, text) {
+  if (this.options.sanitize) {
+    try {
+      var prot = decodeURIComponent(unescape(href))
+        .replace(/[^\w:]/g, '')
+        .toLowerCase();
+    } catch (e) {
+      return '';
+    }
+    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+      return '';
+    }
+  }
+  var out = '<a href="' + href + '"';
+  if (title) {
+    out += ' title="' + title + '"';
+  }
+  out += '>' + text + '</a>';
+  return out;
+};
+
+Renderer.prototype.image = function(href, title, text) {
+  var out = '<img src="' + href + '" alt="' + text + '"';
+  if (title) {
+    out += ' title="' + title + '"';
+  }
+  out += this.options.xhtml ? '/>' : '>';
+  return out;
+};
+
+Renderer.prototype.text = function(text) {
+  return text;
+};
+
+/**
+ * Parsing & Compiling
+ */
+
+function Parser(options) {
+  this.tokens = [];
+  this.token = null;
+  this.options = options || marked.defaults;
+  this.options.renderer = this.options.renderer || new Renderer;
+  this.renderer = this.options.renderer;
+  this.renderer.options = this.options;
+}
+
+/**
+ * Static Parse Method
+ */
+
+Parser.parse = function(src, options, renderer) {
+  var parser = new Parser(options, renderer);
+  return parser.parse(src);
+};
+
+/**
+ * Parse Loop
+ */
+
+Parser.prototype.parse = function(src) {
+  this.inline = new InlineLexer(src.links, this.options, this.renderer);
+  this.tokens = src.reverse();
+
+  var out = '';
+  while (this.next()) {
+    out += this.tok();
+  }
+
+  return out;
+};
+
+/**
+ * Next Token
+ */
+
+Parser.prototype.next = function() {
+  return this.token = this.tokens.pop();
+};
+
+/**
+ * Preview Next Token
+ */
+
+Parser.prototype.peek = function() {
+  return this.tokens[this.tokens.length - 1] || 0;
+};
+
+/**
+ * Parse Text Tokens
+ */
+
+Parser.prototype.parseText = function() {
+  var body = this.token.text;
+
+  while (this.peek().type === 'text') {
+    body += '\n' + this.next().text;
+  }
+
+  return this.inline.output(body);
+};
+
+/**
+ * Parse Current Token
+ */
+
+Parser.prototype.tok = function() {
+  switch (this.token.type) {
+    case 'space': {
+      return '';
+    }
+    case 'hr': {
+      return this.renderer.hr();
+    }
+    case 'heading': {
+      return this.renderer.heading(
+        this.inline.output(this.token.text),
+        this.token.depth,
+        this.token.text);
+    }
+    case 'code': {
+      return this.renderer.code(this.token.text,
+        this.token.lang,
+        this.token.escaped);
+    }
+    case 'table': {
+      var header = ''
+        , body = ''
+        , i
+        , row
+        , cell
+        , flags
+        , j;
+
+      // header
+      cell = '';
+      for (i = 0; i < this.token.header.length; i++) {
+        flags = { header: true, align: this.token.align[i] };
+        cell += this.renderer.tablecell(
+          this.inline.output(this.token.header[i]),
+          { header: true, align: this.token.align[i] }
         );
       }
+      header += this.renderer.tablerow(cell);
+
+      for (i = 0; i < this.token.cells.length; i++) {
+        row = this.token.cells[i];
+
+        cell = '';
+        for (j = 0; j < row.length; j++) {
+          cell += this.renderer.tablecell(
+            this.inline.output(row[j]),
+            { header: false, align: this.token.align[j] }
+          );
+        }
+
+        body += this.renderer.tablerow(cell);
+      }
+      return this.renderer.table(header, body);
     }
-  }, {
-    key: 'getRows',
-    value: function getRows() {
-      var table = this.props.table;
+    case 'blockquote_start': {
+      var body = '';
 
-      var rows = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = table.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var error = _step.value;
-
-          var rowNumber = error['row-number'] || 0;
-          var values = [null].concat(_toConsumableArray(rowNumber === 0 ? table.headers : error.row));
-          var headers = [null].concat(_toConsumableArray(table.headers));
-          // Initial
-          if (!rows[rowNumber]) rows[rowNumber] = { values: [], badcols: [], errors: [] };
-          // Values
-          if (error.code === 'blank-row') {
-            rows[rowNumber].values = headers.map(function () {
-              return '';
-            });
-          } else {
-            rows[rowNumber].values = values;
-            if (error.code === 'missing-value') {
-              rows[rowNumber].values[error['column-number']] = '';
-            }
-          }
-          // Badcols
-          if (!error['column-number']) {
-            var base = error.code === 'blank-row' ? headers : values;
-            rows[rowNumber].badcols = base.map(function (value, index) {
-              return index;
-            }).filter(Boolean);
-          } else {
-            rows[rowNumber].badcols.push(error['column-number']);
-          }
-          // Errors
-          rows[rowNumber].errors.push(error);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+      while (this.next().type !== 'blockquote_end') {
+        body += this.tok();
       }
 
-      return rows;
+      return this.renderer.blockquote(body);
     }
-  }, {
-    key: 'toggleExpandedRow',
-    value: function toggleExpandedRow(rowNumber) {
-      var expandedRows = [].concat(_toConsumableArray(this.state.expandedRows));
-      if (expandedRows.includes(rowNumber)) {
-        expandedRows = expandedRows.filter(function (value) {
-          return value !== rowNumber;
-        });
-      } else {
-        expandedRows.push(rowNumber);
+    case 'list_start': {
+      var body = ''
+        , ordered = this.token.ordered;
+
+      while (this.next().type !== 'list_end') {
+        body += this.tok();
       }
-      this.setState({ expandedRows: expandedRows });
+
+      return this.renderer.list(body, ordered);
     }
-  }]);
+    case 'list_item_start': {
+      var body = '';
 
-  return TableValues;
-}(_react2.default.Component)) || _class);
-exports.default = TableValues;
+      while (this.next().type !== 'list_item_end') {
+        body += this.token.type === 'text'
+          ? this.parseText()
+          : this.tok();
+      }
 
-/***/ }),
-/* 9 */
-/* unknown exports provided */
-/* all exports used */
-/*!**********************************!*\
-  !*** ./~/object-assign/index.js ***!
-  \**********************************/
-/***/ (function(module, exports, __webpack_require__) {
+      return this.renderer.listitem(body);
+    }
+    case 'loose_item_start': {
+      var body = '';
 
-"use strict";
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
+      while (this.next().type !== 'list_item_end') {
+        body += this.tok();
+      }
 
-
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
+      return this.renderer.listitem(body);
+    }
+    case 'html': {
+      var html = !this.token.pre && !this.options.pedantic
+        ? this.inline.output(this.token.text)
+        : this.token.text;
+      return this.renderer.html(html);
+    }
+    case 'paragraph': {
+      return this.renderer.paragraph(this.inline.output(this.token.text));
+    }
+    case 'text': {
+      return this.renderer.paragraph(this.parseText());
+    }
+  }
 };
 
+/**
+ * Helpers
+ */
+
+function escape(html, encode) {
+  return html
+    .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function unescape(html) {
+	// explicitly match decimal, hex, and named HTML entities 
+  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g, function(_, n) {
+    n = n.toLowerCase();
+    if (n === 'colon') return ':';
+    if (n.charAt(0) === '#') {
+      return n.charAt(1) === 'x'
+        ? String.fromCharCode(parseInt(n.substring(2), 16))
+        : String.fromCharCode(+n.substring(1));
+    }
+    return '';
+  });
+}
+
+function replace(regex, opt) {
+  regex = regex.source;
+  opt = opt || '';
+  return function self(name, val) {
+    if (!name) return new RegExp(regex, opt);
+    val = val.source || val;
+    val = val.replace(/(^|[^\[])\^/g, '$1');
+    regex = regex.replace(name, val);
+    return self;
+  };
+}
+
+function noop() {}
+noop.exec = noop;
+
+function merge(obj) {
+  var i = 1
+    , target
+    , key;
+
+  for (; i < arguments.length; i++) {
+    target = arguments[i];
+    for (key in target) {
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        obj[key] = target[key];
+      }
+    }
+  }
+
+  return obj;
+}
+
+
+/**
+ * Marked
+ */
+
+function marked(src, opt, callback) {
+  if (callback || typeof opt === 'function') {
+    if (!callback) {
+      callback = opt;
+      opt = null;
+    }
+
+    opt = merge({}, marked.defaults, opt || {});
+
+    var highlight = opt.highlight
+      , tokens
+      , pending
+      , i = 0;
+
+    try {
+      tokens = Lexer.lex(src, opt)
+    } catch (e) {
+      return callback(e);
+    }
+
+    pending = tokens.length;
+
+    var done = function(err) {
+      if (err) {
+        opt.highlight = highlight;
+        return callback(err);
+      }
+
+      var out;
+
+      try {
+        out = Parser.parse(tokens, opt);
+      } catch (e) {
+        err = e;
+      }
+
+      opt.highlight = highlight;
+
+      return err
+        ? callback(err)
+        : callback(null, out);
+    };
+
+    if (!highlight || highlight.length < 3) {
+      return done();
+    }
+
+    delete opt.highlight;
+
+    if (!pending) return done();
+
+    for (; i < tokens.length; i++) {
+      (function(token) {
+        if (token.type !== 'code') {
+          return --pending || done();
+        }
+        return highlight(token.text, token.lang, function(err, code) {
+          if (err) return done(err);
+          if (code == null || code === token.text) {
+            return --pending || done();
+          }
+          token.text = code;
+          token.escaped = true;
+          --pending || done();
+        });
+      })(tokens[i]);
+    }
+
+    return;
+  }
+  try {
+    if (opt) opt = merge({}, marked.defaults, opt);
+    return Parser.parse(Lexer.lex(src, opt), opt);
+  } catch (e) {
+    e.message += '\nPlease report this to https://github.com/chjj/marked.';
+    if ((opt || marked.defaults).silent) {
+      return '<p>An error occured:</p><pre>'
+        + escape(e.message + '', true)
+        + '</pre>';
+    }
+    throw e;
+  }
+}
+
+/**
+ * Options
+ */
+
+marked.options =
+marked.setOptions = function(opt) {
+  merge(marked.defaults, opt);
+  return marked;
+};
+
+marked.defaults = {
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false,
+  sanitizer: null,
+  mangle: true,
+  smartLists: false,
+  silent: false,
+  highlight: null,
+  langPrefix: 'lang-',
+  smartypants: false,
+  headerPrefix: '',
+  renderer: new Renderer,
+  xhtml: false
+};
+
+/**
+ * Expose
+ */
+
+marked.Parser = Parser;
+marked.parser = Parser.parse;
+
+marked.Renderer = Renderer;
+
+marked.Lexer = Lexer;
+marked.lexer = Lexer.lex;
+
+marked.InlineLexer = InlineLexer;
+marked.inlineLexer = InlineLexer.output;
+
+marked.parse = marked;
+
+if (true) {
+  module.exports = marked;
+} else if (typeof define === 'function' && define.amd) {
+  define(function() { return marked; });
+} else {
+  this.marked = marked;
+}
+
+}).call(function() {
+  return this || (typeof window !== 'undefined' ? window : global);
+}());
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 11)))
 
 /***/ }),
-/* 10 */
-/* unknown exports provided */
+/* 11 */
+/* no static exports found */
 /* all exports used */
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/***/ (function(module, exports, __webpack_require__) {
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/***/ (function(module, exports) {
 
-"use strict";
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Report = exports.render = undefined;
+/***/ }),
+/* 12 */
+/* no static exports found */
+/* all exports used */
+/*!***********************!*\
+  !*** ./src/spec.json ***!
+  \***********************/
+/***/ (function(module, exports) {
 
-__webpack_require__(/*! ./styles.css */ 5);
-
-var _render = __webpack_require__(/*! ./render */ 4);
-
-var _render2 = _interopRequireDefault(_render);
-
-var _Report = __webpack_require__(/*! ./Report */ 3);
-
-var _Report2 = _interopRequireDefault(_Report);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Module API
-
-exports.default = { render: _render2.default, Report: _Report2.default };
-exports.render = _render2.default;
-exports.Report = _Report2.default;
+module.exports = {
+	"version": "1.0.0-alpha3",
+	"errors": {
+		"io-error": {
+			"name": "IO Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source returned an IO Error of type {error_type}",
+			"description": "Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."
+		},
+		"http-error": {
+			"name": "HTTP Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source returned an HTTP error with a status code of {status_code}",
+			"description": "Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."
+		},
+		"source-error": {
+			"name": "Source Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source has not supported or has inconsistent contents; no tabular data can be extracted",
+			"description": "Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."
+		},
+		"scheme-error": {
+			"name": "Scheme Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source is in an unknown scheme; no tabular data can be extracted",
+			"description": "Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."
+		},
+		"format-error": {
+			"name": "Format Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source is in an unknown format; no tabular data can be extracted",
+			"description": "Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."
+		},
+		"encoding-error": {
+			"name": "Encoding Error",
+			"type": "source",
+			"context": "table",
+			"weight": 100,
+			"message": "The data source could not be successfully decoded with {encoding} encoding",
+			"description": "Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."
+		},
+		"blank-header": {
+			"name": "Blank Header",
+			"type": "structure",
+			"context": "head",
+			"weight": 3,
+			"message": "Header in column {column_number} is blank",
+			"description": "A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."
+		},
+		"duplicate-header": {
+			"name": "Duplicate Header",
+			"type": "structure",
+			"context": "head",
+			"weight": 3,
+			"message": "Header in column {column_number} is duplicated to header in column(s) {column_numbers}",
+			"description": "Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."
+		},
+		"blank-row": {
+			"name": "Blank Row",
+			"type": "structure",
+			"context": "body",
+			"weight": 9,
+			"message": "Row {row_number} is completely blank",
+			"description": "This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."
+		},
+		"duplicate-row": {
+			"name": "Duplicate Row",
+			"type": "structure",
+			"context": "body",
+			"weight": 5,
+			"message": "Row {row_number} is duplicated to row(s) {row_numbers}",
+			"description": "The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."
+		},
+		"extra-value": {
+			"name": "Extra Value",
+			"type": "structure",
+			"context": "body",
+			"weight": 9,
+			"message": "Row {row_number} has an extra value in column {column_number}",
+			"description": "This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."
+		},
+		"missing-value": {
+			"name": "Missing Value",
+			"type": "structure",
+			"context": "body",
+			"weight": 9,
+			"message": "Row {row_number} has a missing value in column {column_number}",
+			"description": "This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."
+		},
+		"schema-error": {
+			"name": "Table Schema Error",
+			"type": "schema",
+			"context": "table",
+			"weight": 15,
+			"message": "Table Schema error: {error_message}",
+			"description": "Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."
+		},
+		"non-matching-header": {
+			"name": "Non-Matching Header",
+			"type": "schema",
+			"context": "head",
+			"weight": 9,
+			"message": "Header in column {column_number} doesn't match field name {field_name}",
+			"description": "One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."
+		},
+		"extra-header": {
+			"name": "Extra Header",
+			"type": "schema",
+			"context": "head",
+			"weight": 9,
+			"message": "There is an extra header in column {column_number}",
+			"description": "The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."
+		},
+		"missing-header": {
+			"name": "Missing Header",
+			"type": "schema",
+			"context": "head",
+			"weight": 9,
+			"message": "There is a missing header in column {column_number}",
+			"description": "Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."
+		},
+		"non-castable-value": {
+			"name": "Non-Castable Value",
+			"type": "schema",
+			"context": "body",
+			"weight": 9,
+			"message": "Row {row_number} has non castable value {value} in column {column_number} (type: {field_type}, format: {field_format})",
+			"description": "The value can't be cast based on the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this error should be ignored disable `non-castable-value` check in {validator}. In this case all schema checks for row values will be ignored."
+		},
+		"required-constraint": {
+			"name": "Required Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 9,
+			"message": "Column {column_number} is a required field, but row {row_number} has no value",
+			"description": "This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."
+		},
+		"pattern-constraint": {
+			"name": "Pattern Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}",
+			"description": "This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `pattern` constraint from the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."
+		},
+		"unique-constraint": {
+			"name": "Unique Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 9,
+			"message": "Rows {row_numbers} has unique constraint violation in column {column_number}",
+			"description": "This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."
+		},
+		"enumerable-constraint": {
+			"name": "Enumerable Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}",
+			"description": "This field value should be equal to one of the constraint enumeration.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `enum` constraint from the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."
+		},
+		"minimum-constraint": {
+			"name": "Minimum Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}",
+			"description": "This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `minimum` constraint from the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."
+		},
+		"maximum-constraint": {
+			"name": "Maximum Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}",
+			"description": "This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `maximum` constraint from the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."
+		},
+		"minimum-length-constraint": {
+			"name": "Minimum Length Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}",
+			"description": "A length of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `minimumLength` constraint from the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."
+		},
+		"maximum-length-constraint": {
+			"name": "Maximum Length Constraint",
+			"type": "schema",
+			"context": "body",
+			"weight": 7,
+			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}",
+			"description": "A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `maximumLength` constraint from the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."
+		}
+	}
+};
 
 /***/ })
 /******/ ]);

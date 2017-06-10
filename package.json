@@ -23,7 +23,7 @@
     "build:dist-min": "NODE_ENV=production webpack --progress --hide-modules",
     "dev": "webpack-dev-server --open --inline --hot",
     "e2e": "NODE_ENV=testing node rune2e.js",
-    "lint": "eslint src unit",
+    "lint": "eslint src test",
     "posttest": "npm run e2e",
     "prepush": "npm run test",
     "pretest": "npm run lint",
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "react-props-decorators": "^0.2.0"
+    "marked": "^0.3.6"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
@@ -83,7 +83,7 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.0",
+    "webpack": "^2.6.1",
     "webpack-dev-server": "^2.2.0"
   }
 }
