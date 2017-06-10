@@ -2,7 +2,9 @@ export default {
   home: (client) => {
     client
       .url(client.launch_url)
-      .waitForElementVisible('.goodtables-ui-report', 5000)
+      .waitForElementVisible('#validate', 10000)
+      .click('#validate')
+      .waitForElementVisible('.goodtables-ui-report', 10000)
       .assert.containsText('a.file-name', 'data/invalid.csv')
       .end();
   },

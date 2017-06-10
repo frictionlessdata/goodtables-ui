@@ -13,7 +13,7 @@ export function Report({report}) {
   return (
     <div className="goodtables-ui-report">
 
-      {processedWarnings.length &&
+      {!!processedWarnings.length &&
         <MessageGroup
           type="warning"
           title={`There are ${processedWarnings.length} warning(s)`}
@@ -22,7 +22,7 @@ export function Report({report}) {
         />
       }
 
-      {validTableFiles.length &&
+      {!!validTableFiles.length &&
         <MessageGroup
           type="success"
           title={`There are ${validTableFiles.length} valid table(s)`}

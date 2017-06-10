@@ -2574,7 +2574,7 @@ function getTableErrorGroups(table) {
 }
 
 function removeBaseUrl(text) {
-  return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*\/\S*\/[a-z0-9]{40}\//g, '');
+  return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '');
 }
 
 /***/ }),
@@ -2617,13 +2617,13 @@ function Report(_ref) {
   return _react2.default.createElement(
     'div',
     { className: 'goodtables-ui-report' },
-    processedWarnings.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
+    !!processedWarnings.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
       type: 'warning',
       title: 'There are ' + processedWarnings.length + ' warning(s)',
       expandText: 'Warning details',
       messages: processedWarnings
     }),
-    validTableFiles.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
+    !!validTableFiles.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
       type: 'success',
       title: 'There are ' + validTableFiles.length + ' valid table(s)',
       expandText: 'Success details',

@@ -2,18 +2,64 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>goodtables-vue</title>
+    <title>goodtables-ui</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="dist/goodtables-ui.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div class="container">
+      <form class="form-inline" style="margin-top: 1em">
+        <div class="input-group" style="width: 100%">
+          <input id="source" class="form-control" type="text" value="https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/invalid.csv" />
+          <div class="input-group-btn" style="width: 1%">
+            <button id="validate" class="btn btn-success">Validate</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <hr />
+    <div class="container">
+      <div id="report"></div>
+    </div>
     <script src="//unpkg.com/axios@0.15.3/dist/axios.js"></script>
     <script src="dist/goodtables-ui.js"></script>
     <script>
-      axios.get('data/report.json').then(res => {
-        const element = document.getElementById('app')
-        goodtablesUI.render(goodtablesUI.Report, {report: res.data}, element)
+      // Prototype of `goodtables-js`
+      const goodtables = {
+        spec: {/* Data Quality Spec here */},
+        inspect(source) {
+          return new Promise((resolve, reject) => {
+            const baseUrl = 'http://staging.goodtables.io/api'
+            const sourceId = '90c9b09e-8030-453d-a8de-9f07ae780452'
+            const headers = {'Authorization': '4648C12FA72133E03E090787A61B6E4EE78607B0'}
+            axios.post(`${baseUrl}/source/${sourceId}/job`, {source: [{source}]}, {headers}).then(res => {
+              return res.data.job.id
+            }).then(jobId => {
+              const interval = setInterval(() => {
+                axios.get(`${baseUrl}/source/${sourceId}/job/${jobId}`, {headers}).then(res => {
+                  if (res.data.job.finished) {
+                    resolve(res.data.job.report)
+                  }
+                })
+              }, 1000)
+            })
+          })
+        },
+      }
+    </script>
+    <script>
+      // Usage of `goodtables-js/goostables-ui-js`
+      function inspectAndRender(source) {
+        goodtables.inspect(source).then(report => {
+          goodtablesUI.render(goodtablesUI.Report, {report}, document.getElementById('report'))
+        })
+      }
+    </script>
+    <script>
+      // This example UI code
+      document.getElementById('validate').addEventListener('click', evt => {
+        inspectAndRender(document.getElementById('source').value)
+        evt.preventDefault()
       })
     </script>
   </body>
