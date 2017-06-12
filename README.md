@@ -1,7 +1,7 @@
 # goodtables-ui
 
 [![Travis](https://img.shields.io/travis/frictionlessdata/goodtables-ui/master.svg)](https://travis-ci.org/frictionlessdata/goodtables-ui)
-[![Codecov](https://img.shields.io/codecov/c/github/frictionlessdata/goodtables-ui/master.svg)](https://codecov.io/gh/frictionlessdata/goodtables-ui)
+[![Coveralls](https://coveralls.io/repos/github/frictionlessdata/goodtables-ui/badge.svg?branch=master)](https://coveralls.io/github/frictionlessdata/goodtables-ui?branch=master)
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
 
