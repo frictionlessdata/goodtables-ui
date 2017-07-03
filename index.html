@@ -8,59 +8,52 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-inline" style="margin-top: 1em">
-        <div class="input-group" style="width: 100%">
-          <input id="source" class="form-control" type="text" value="https://raw.githubusercontent.com/frictionlessdata/goodtables-py/master/data/invalid.csv" />
-          <div class="input-group-btn" style="width: 1%">
-            <button id="validate" class="btn btn-success">Validate</button>
-          </div>
-        </div>
-      </form>
+      <div id="form"></div>
     </div>
-    <hr />
-    <div class="container">
-      <div id="report"></div>
-    </div>
-    <script src="//unpkg.com/axios@0.15.3/dist/axios.js"></script>
+    <script src="//unpkg.com/goodtables@0.6.1/dist/goodtables.js"></script>
+    <script src="//unpkg.com/qs@6.5.0/dist/qs.js"></script>
     <script src="dist/goodtables-ui.js"></script>
     <script>
-      // Prototype of `goodtables-js`
-      const goodtables = {
-        spec: {/* Data Quality Spec here */},
-        inspect(source) {
-          return new Promise((resolve, reject) => {
-            const baseUrl = 'https://staging.goodtables.io/api'
-            const sourceId = '90c9b09e-8030-453d-a8de-9f07ae780452'
-            const headers = {'Authorization': '4648C12FA72133E03E090787A61B6E4EE78607B0'}
-            axios.post(`${baseUrl}/source/${sourceId}/job`, {source: [{source}]}, {headers}).then(res => {
-              return res.data.job.id
-            }).then(jobId => {
-              const interval = setInterval(() => {
-                axios.get(`${baseUrl}/source/${sourceId}/job/${jobId}`, {headers}).then(res => {
-                  if (res.data.job.finished) {
-                    resolve(res.data.job.report)
-                  }
-                })
-              }, 1000)
-            })
+      const client = new goodtables.ApiClient({
+        apiUrl: 'https://staging.goodtables.io/api',
+        apiToken: '4648C12FA72133E03E090787A61B6E4EE78607B0',
+        apiSourceId: '90c9b09e-8030-453d-a8de-9f07ae780452',
+      })
+      const validate = (source, options) => {
+        return new Promise((resolve, reject) => {
+          const queryData = Object.assign({source}, options)
+          client.addReport(source, options).then(apiJobId => {
+            queryData.apiJobId = apiJobId
+            return client.getReport(apiJobId)
+          }).then(report => {
+            const queryString = `${location.pathname}?${Qs.stringify(queryData)}`
+            const permalink = `${location.origin}${queryString}`
+            history.pushState(null, null, queryString);
+            report.permalink = permalink
+            resolve(report)
+          }).catch(error => {
+            reject(error)
           })
-        },
-      }
-    </script>
-    <script>
-      // Usage of `goodtables-js/goostables-ui-js`
-      function inspectAndRender(source) {
-        goodtables.inspect(source).then(report => {
-          goodtablesUI.render(goodtablesUI.Report, {report}, document.getElementById('report'))
         })
       }
-    </script>
-    <script>
-      // This example UI code
-      document.getElementById('validate').addEventListener('click', evt => {
-        inspectAndRender(document.getElementById('source').value)
-        evt.preventDefault()
-      })
+      const options = Qs.parse(location.search.slice(1))
+      const apiJobId = options.apiJobId; delete options.apiJobId
+      const source = options.source; delete options.source
+      const props = {source, options, validate}
+      const element = document.getElementById('form')
+      const component = goodtablesUI.Form
+      if (apiJobId) {
+        client.getReport(apiJobId).then(report => {
+          report.permalink = location.href
+          props.report = report
+          goodtablesUI.render(component, props, element)
+        }).catch(error => {
+          props.error = error
+          goodtablesUI.render(component, props, element)
+        })
+      } else {
+        goodtablesUI.render(component, props, element)
+      }
     </script>
   </body>
 </html>

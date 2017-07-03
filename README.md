@@ -5,13 +5,14 @@
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
 
-UI for goodtable as universal browser components.
+UI for goodtable as universal browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
 
-## Components
+## Features
 
-- `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) visual representation ([DEMO](https://frictionlessdata.github.io/goodtables-ui/))
+- `Form` - goodtables validation form component
+- `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) component
 
-## Usage
+## Getting Started
 
 You could use this components in plain JavaScript code or mixing with any modern framework (with native support for React). To render `report` you have use `goodtablesUI.render(goodtablesUI.Report, props, element)` function.
 
@@ -22,7 +23,23 @@ First add bootstrap and component styles:
   <link rel="stylesheet" href="//unpkg.com/goodtables-ui/dist/goodtables-ui.min.css">
 ```
 
-### CDN
+### Installation
+
+#### NPM
+
+> Install the package in your terminal `$ npm install --save goodtables-ui`
+
+The package could be used as `goodtables-ui` package from NPM:
+
+```javascript
+import goodtablesUI from 'goodtables-ui'
+
+const report = '<YOUR-REPORT>'
+const element = document.getElementById('report')
+goodtablesUI.render(goodtablesUI.Report, {report}, element)
+```
+
+#### CDN
 
 > The distribution is 60kb minified (20kb gzipped) with no dependencies.
 
@@ -38,21 +55,9 @@ The package could be used as pluggable script from CDN:
 </script>
 ```
 
-### NPM
+### Examples
 
-> Install the package in your terminal `$ npm install --save goodtables-ui`
-
-The package could be used as `goodtables-ui` package from NPM:
-
-```javascript
-import goodtablesUI from 'goodtables-ui'
-
-const report = '<YOUR-REPORT>'
-const element = document.getElementById('report')
-goodtablesUI.render(goodtablesUI.Report, {report}, element)
-```
-
-### React
+#### React
 
 > In this case your application should provide `react` and `react-dom`.
 
@@ -68,7 +73,7 @@ const element = document.getElementById('report')
 ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 ```
 
-### Angular
+#### Angular
 
 > This example is for Angular2+. Use similliar approach for Angular1.
 
@@ -91,7 +96,7 @@ class Report {
 }
 ```
 
-### Vue
+#### Vue
 
 > This example is for Vue2+. Use similliar approach for Vue1.
 
@@ -110,10 +115,27 @@ const Report = {
 }
 ```
 
-## Development
+## Contributing
+
+The project follows the [Open Knowledge International coding standards](https://github.com/okfn/coding-standards). There are common commands to work with the project:
 
 ```bash
 $ npm run dev
 $ npm run build
 $ npm run test
 ```
+
+## Changelog
+
+Here described only breaking and the most important changes. The full changelog could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
+
+### v0.2
+
+New API added:
+- published `Form` component
+
+### [v0.1](https://github.com/frictionlessdata/goodtables-ui/tree/v0.1.7)
+
+New API added:
+- published `Report` component
+- published `render` function

@@ -59,3 +59,8 @@ export function getTableErrorGroups(table) {
 export function removeBaseUrl(text) {
   return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '')
 }
+
+
+export function merge(...args) {
+  return Object.assign({}, ...args)
+}
