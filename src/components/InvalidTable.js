@@ -7,7 +7,7 @@ import {getTableErrorGroups, removeBaseUrl} from '../helpers'
 
 export function InvalidTable({table, tableNumber, tablesCount}) {
   const errorGroups = getTableErrorGroups(table)
-  const tableFile = getTableFile(table)
+  const tableFile = removeBaseUrl(table.source)
   return (
     <div className="report-table">
 
@@ -24,11 +24,4 @@ export function InvalidTable({table, tableNumber, tablesCount}) {
 
     </div>
   )
-}
-
-
-// Internal
-
-function getTableFile(table) {
-  return removeBaseUrl(table.source)
 }

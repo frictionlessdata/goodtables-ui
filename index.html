@@ -10,7 +10,7 @@
     <div class="container">
       <div id="form"></div>
     </div>
-    <script src="//unpkg.com/goodtables@0.6.1/dist/goodtables.js"></script>
+    <script src="//unpkg.com/goodtables@0.7.1/dist/goodtables.js"></script>
     <script src="//unpkg.com/qs@6.5.0/dist/qs.js"></script>
     <script src="dist/goodtables-ui.js"></script>
     <script>
@@ -20,16 +20,14 @@
         apiSourceId: '90c9b09e-8030-453d-a8de-9f07ae780452',
       })
       const validate = (source, options) => {
+        const queryData = Object.assign({source}, options)
         return new Promise((resolve, reject) => {
-          const queryData = Object.assign({source}, options)
           client.addReport(source, options).then(apiJobId => {
             queryData.apiJobId = apiJobId
             return client.getReport(apiJobId)
           }).then(report => {
             const queryString = `${location.pathname}?${Qs.stringify(queryData)}`
-            const permalink = `${location.origin}${queryString}`
             history.pushState(null, null, queryString);
-            report.permalink = permalink
             resolve(report)
           }).catch(error => {
             reject(error)
@@ -37,23 +35,13 @@
         })
       }
       const options = Qs.parse(location.search.slice(1))
-      const apiJobId = options.apiJobId; delete options.apiJobId
       const source = options.source; delete options.source
-      const props = {source, options, validate}
+      const apiJobId = options.apiJobId; delete options.apiJobId
       const element = document.getElementById('form')
       const component = goodtablesUI.Form
-      if (apiJobId) {
-        client.getReport(apiJobId).then(report => {
-          report.permalink = location.href
-          props.report = report
-          goodtablesUI.render(component, props, element)
-        }).catch(error => {
-          props.error = error
-          goodtablesUI.render(component, props, element)
-        })
-      } else {
-        goodtablesUI.render(component, props, element)
-      }
+      const props = {source, options, validate}
+      if (apiJobId) props.reportPromise = client.getReport(apiJobId)
+      goodtablesUI.render(component, props, element)
     </script>
   </body>
 </html>
