@@ -2890,7 +2890,7 @@ var Form = exports.Form = function (_React$Component) {
           '\xA0 [',
           _react2.default.createElement(
             'a',
-            { href: '#', onClick: function onClick(ev) {
+            { href: '#', onClick: function onClick() {
                 return onSourceTypeChange();
               } },
             isSourceFile ? 'Provide Link' : 'Upload File'
@@ -2949,7 +2949,7 @@ var Form = exports.Form = function (_React$Component) {
             '\xA0 [',
             _react2.default.createElement(
               'a',
-              { href: '#', onClick: function onClick(ev) {
+              { href: '#', onClick: function onClick() {
                   return onSchemaTypeChange();
                 } },
               isSchemaFile ? 'Provide Link' : 'Upload File'
