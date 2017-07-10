@@ -79,6 +79,8 @@ rules:
     - off
   block-spacing:
     - off
+  no-lonely-if:
+    - off
   react/prop-types:
     - off
   react/sort-comp:

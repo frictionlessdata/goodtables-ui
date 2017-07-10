@@ -3,6 +3,32 @@
   padding: 1em;
 }
 
+.goodtables-ui-form .row-source {
+  padding-bottom: 1em;
+  border-bottom: solid 1px #eee;
+  margin-bottom: 1em;
+}
+
+.goodtables-ui-form .row-schema {
+  border-bottom: solid 1px #eee;
+}
+
+.goodtables-ui-form .row-message {
+  margin-top: 1em;
+  border-top: solid 1px #eee;
+  padding-top: 1em;
+}
+
+.goodtables-ui-form .row-report {
+  margin-top: 1em;
+  border-top: solid 1px #eee;
+  padding-top: 1em;
+}
+
+.goodtables-ui-form small {
+  color: #777;
+}
+
 .goodtables-ui-report .alert {
   margin-top: 20px;
 }

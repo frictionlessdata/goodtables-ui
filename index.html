@@ -37,6 +37,12 @@
       const options = Qs.parse(location.search.slice(1))
       const source = options.source; delete options.source
       const apiJobId = options.apiJobId; delete options.apiJobId
+      if ((options.checks || {})['blank-row']){
+        options.checks['blank-row'] = JSON.parse(options.checks['blank-row'])
+      }
+      if ((options.checks || {})['duplicate-row']){
+        options.checks['duplicate-row'] = JSON.parse(options.checks['duplicate-row'])
+      }
       const element = document.getElementById('form')
       const component = goodtablesUI.Form
       const props = {source, options, validate}
