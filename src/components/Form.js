@@ -15,6 +15,7 @@ export class Form extends React.Component {
     this.state = {
       isSourceFile: false,
       isSchemaFile: false,
+      isLoading: false,
       source: source || '',
       options: options || {},
       report: null,
@@ -24,16 +25,17 @@ export class Form extends React.Component {
 
   componentDidMount() {
     if (this.props.reportPromise) {
+      this.setState({report: null, error: null, isLoading: true})
       this.props.reportPromise.then(report => {
-        this.setState({report})
+        this.setState({report, isLoading: false})
       }).catch(error => {
-        this.setState({error})
+        this.setState({error, isLoading: false})
       })
     }
   }
 
   render() {
-    const {isSourceFile, isSchemaFile} = this.state
+    const {isSourceFile, isSchemaFile, isLoading} = this.state
     const {source, options, report, error} = this.state
     const onSourceTypeChange = this.onSourceTypeChange.bind(this)
     const onSchemaTypeChange = this.onSchemaTypeChange.bind(this)
@@ -214,6 +216,14 @@ export class Form extends React.Component {
           </div>
         </div>
 
+        {isLoading &&
+          <div className="row-message">
+            <div className="alert alert-info">
+              Loading...
+            </div>
+          </div>
+        }
+
         {error &&
           <div className="row-message">
             <MessageGroup
@@ -269,10 +279,11 @@ export class Form extends React.Component {
   onSubmit() {
     const {validate} = this.props
     const {source, options} = this.state
+    this.setState({report: null, error: null, isLoading: true})
     validate(source, merge(options)).then(report => {
-      this.setState({report})
+      this.setState({report, isLoading: false})
     }).catch(error => {
-      this.setState({error})
+      this.setState({error, isLoading: false})
     })
   }
 
