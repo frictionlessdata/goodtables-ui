@@ -192,12 +192,21 @@ export class Form extends React.Component {
                   <input
                     type="checkbox"
                     checked={(options.checks || {})['blank-row'] === false}
-                    disabled
+                    onChange={ev => {
+                      if (ev.target.checked) {
+                        if (!(options.checks instanceof Object)) options.checks = {}
+                        options.checks['blank-row'] = false
+                      } else {
+                        if (options.checks instanceof Object) {
+                          delete options.checks['blank-row']
+                        }
+                      }
+                    }}
                   />
-                  Ignore empty rows
+                  Ignore blank rows
                 </label>
               </div>
-              <small>Indicate whether empty rows should be considered as errors, or simply ignored.</small>
+              <small>Indicate whether blank rows should be considered as errors, or simply ignored.</small>
             </div>
 
             <div className="col-md-4">
@@ -206,7 +215,16 @@ export class Form extends React.Component {
                   <input
                     type="checkbox"
                     checked={(options.checks || {})['duplicate-row'] === false}
-                    disabled
+                    onChange={ev => {
+                      if (ev.target.checked) {
+                        if (!(options.checks instanceof Object)) options.checks = {}
+                        options.checks['duplicate-row'] = false
+                      } else {
+                        if (options.checks instanceof Object) {
+                          delete options.checks['duplicate-row']
+                        }
+                      }
+                    }}
                   />
                   Ignore duplicate rows
                 </label>
