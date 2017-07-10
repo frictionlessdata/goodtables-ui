@@ -43,210 +43,191 @@ export class Form extends React.Component {
     return (
       <form className="goodtables-ui-form panel panel-default">
 
-        <div className="form-inline">
-          <label htmlFor="source">Source</label>&nbsp;
-
-          [
-            <a href="#" onClick={() => onSourceTypeChange()}>
-              {(isSourceFile) ? 'Provide Link' : 'Upload File'}
-            </a>
-          ]
-
-          <div className="input-group" style={{width: '100%'}}>
-
-            {!isSourceFile &&
-              <input
-                name="source"
-                className="form-control"
-                type="text"
-                value={source}
-                placeholder="http://data.source/url"
-                onChange={ev => onSourceChange(ev.target.value)}
-              />
-            }
-
-            {isSourceFile &&
-              <input
-                name="source"
-                className="form-control"
-                type="file"
-                placeholder="http://data.source/url"
-                onChange={ev => onSourceChange(ev.target.files[0])}
-              />
-            }
-
-            <div className="input-group-btn" style={{width: '1%'}}>
-              <button
-                className="btn btn-success"
-                onClick={ev => {ev.preventDefault(); onSubmit()}}
-              >
-                Validate
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="row">
-          <div className="form-group col-md-10">
-            <label htmlFor="schema">Schema</label>&nbsp;
-
+        <div className="row-source">
+          <div className="form-inline">
+            <label htmlFor="source">Source</label>&nbsp;
             [
-              <a href="#" onClick={() => onSchemaTypeChange()}>
-                {(isSchemaFile) ? 'Provide Link' : 'Upload File'}
+              <a href="#" onClick={() => onSourceTypeChange()}>
+                {(isSourceFile) ? 'Provide Link' : 'Upload File'}
               </a>
             ]
 
-            {!isSchemaFile &&
-              <input
-                type="text"
-                className="form-control"
-                name="schema"
-                value={options.schema}
-                placeholder="http://table.schema/url"
-                onChange={ev => onOptionsChange('schema', ev.target.value)}
-              />
-            }
+            <div className="input-group" style={{width: '100%'}}>
+              {!isSourceFile &&
+                <input
+                  name="source"
+                  className="form-control"
+                  type="text"
+                  value={source}
+                  placeholder="http://data.source/url"
+                  onChange={ev => onSourceChange(ev.target.value)}
+                />
+              }
 
-            {isSchemaFile &&
-              <input
-                type="file"
-                className="form-control"
-                name="schema"
-                placeholder="http://table.schema/url"
-                onChange={ev => onOptionsChange('schema', ev.target.files[0])}
-              />
-            }
-          </div>
+              {isSourceFile &&
+                <input
+                  name="source"
+                  className="form-control"
+                  type="file"
+                  placeholder="http://data.source/url"
+                  onChange={ev => onSourceChange(ev.target.files[0])}
+                />
+              }
 
-          <div className="form-group col-md-2">
-            <label htmlFor="skipRows">Skip Rows</label>
-            <input
-              type="text"
-              className="form-control"
-              name="skipRows"
-              value={(options.skipRows) ? options.skipRows[options.skipRows.length - 1] : ''}
-              placeholder="0"
-              onChange={ev => {
-                const length = parseInt(ev.target.value, 10) || 0
-                const skipRows = [...Array(length).keys()].map(i => i + 1)
-                onOptionsChange('skipRows', length ? skipRows : null)
-              }}
-            />
-          </div>
-
-        </div>
-
-        <hr />
-
-        <div className="row">
-          <div className="col-md-2">
-            <div className="form-group">
-              <label htmlFor="checks">Checks</label>
-              <select
-                name="checks"
-                value={options.checks}
-                className="form-control"
-                onChange={ev => onOptionsChange('checks', ev.target.value)}
-              >
-                <option value="">Auto</option>
-                <option value="structure">Structure</option>
-                <option value="schema">Schema</option>
-              </select>
+              <div className="input-group-btn" style={{width: '1%'}}>
+                <button
+                  className="btn btn-success"
+                  onClick={ev => {ev.preventDefault(); onSubmit()}}
+                >
+                  Validate
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div className="col-md-2">
-            <div className="form-group">
-              <label htmlFor="format">Format</label>
-              <select
-                name="format"
-                value={options.format}
-                className="form-control"
-                onChange={ev => onOptionsChange('format', ev.target.value)}
-              >
-                <option value="">Auto</option>
-                <option value="csv">CSV</option>
-                <option value="xls">XLS</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="col-md-2">
-            <div className="form-group">
-              <label htmlFor="encoding">Encoding</label>
-              <select
-                name="encoding"
-                value={options.encoding}
-                className="form-control"
-                onChange={ev => onOptionsChange('encoding', ev.target.value)}
-              >
-                <option value="">Auto</option>
-                <option value="utf-8">UTF-8</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-group col-md-2">
-            <label htmlFor="errorLimit">Error Limit</label>
-            <input
-              type="text"
-              className="form-control"
-              name="errorLimit"
-              value={options.errorLimit}
-              placeholder="1000"
-              onChange={ev => onOptionsChange('errorLimit', parseInt(ev.target.value, 10))}
-            />
-          </div>
-
-          <div className="form-group col-md-2">
-            <label htmlFor="tableLimit">Table Limit</label>
-            <input
-              type="text"
-              className="form-control"
-              name="tableLimit"
-              value={options.tableLimit}
-              placeholder="10"
-              onChange={ev => onOptionsChange('tableLimit', parseInt(ev.target.value, 10))}
-            />
-          </div>
-
-          <div className="form-group col-md-2">
-            <label htmlFor="rowLimit">Row Limit</label>
-            <input
-              type="text"
-              className="form-control"
-              name="rowLimit"
-              value={options.rowLimit}
-              placeholder="100"
-              onChange={ev => onOptionsChange('rowLimit', parseInt(ev.target.value, 10))}
-            />
+            <small>
+              <strong>[REQUIRED]</strong> Add a data table to validate.
+            </small>
           </div>
         </div>
 
-        <hr />
+        <div className="row-schema">
+          <div className="row">
+            <div className="form-group col-md-8">
+              <label htmlFor="schema">Schema</label>&nbsp;
+              [
+                <a href="#" onClick={() => onSchemaTypeChange()}>
+                  {(isSchemaFile) ? 'Provide Link' : 'Upload File'}
+                </a>
+              ]
+
+              {!isSchemaFile &&
+                <input
+                  type="text"
+                  className="form-control"
+                  name="schema"
+                  value={options.schema}
+                  placeholder="http://table.schema/url"
+                  onChange={ev => onOptionsChange('schema', ev.target.value)}
+                />
+              }
+
+              {isSchemaFile &&
+                <input
+                  type="file"
+                  className="form-control"
+                  name="schema"
+                  placeholder="http://table.schema/url"
+                  onChange={ev => onOptionsChange('schema', ev.target.files[0])}
+                />
+              }
+              <small>
+                <strong>[OPTIONAL]</strong> Select to validate this data against a Table Schema
+                (<a href="http://specs.frictionlessdata.io/table-schema/">What's that?</a>).
+              </small>
+            </div>
+
+            <div className="form-group col-md-2">
+              <div className="form-group">
+                <label htmlFor="format">Format</label>
+                <select
+                  name="format"
+                  value={options.format}
+                  className="form-control"
+                  onChange={ev => onOptionsChange('format', ev.target.value)}
+                >
+                  <option value="">Auto</option>
+                  <option value="csv">CSV</option>
+                  <option value="xls">XLS</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="col-md-2">
+              <div className="form-group">
+                <label htmlFor="encoding">Encoding</label>
+                <select
+                  name="encoding"
+                  value={options.encoding}
+                  className="form-control"
+                  onChange={ev => onOptionsChange('encoding', ev.target.value)}
+                >
+                  <option value="">Auto</option>
+                  <option value="utf-8">UTF-8</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row-flags">
+          <div className="row">
+            <div className="col-md-4">
+              <div className="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={options.errorLimit === 1}
+                    onChange={ev => {
+                       onOptionsChange('errorLimit', (ev.target.checked) ? 1 : null)
+                    }}
+                  />
+                  Stop on first error
+                </label>
+              </div>
+              <small>Indicate whether validation should stop on the first error, or attempt to collect all errors.</small>
+            </div>
+
+            <div className="col-md-4">
+              <div className="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={(options.checks || {})['blank-row'] === false}
+                    disabled
+                  />
+                  Ignore empty rows
+                </label>
+              </div>
+              <small>Indicate whether empty rows should be considered as errors, or simply ignored.</small>
+            </div>
+
+            <div className="col-md-4">
+              <div className="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={(options.checks || {})['duplicate-row'] === false}
+                    disabled
+                  />
+                  Ignore duplicate rows
+                </label>
+              </div>
+              <small>Indicate whether duplicate rows should be considered as errors, or simply ignored.</small>
+            </div>
+          </div>
+        </div>
 
         {error &&
-          <MessageGroup
-            type="warning"
-            title={'There is fatal error in validation'}
-            expandText="Error details"
-            messages={[error.message]}
-          />
+          <div className="row-message">
+            <MessageGroup
+              type="warning"
+              title={'There is fatal error in validation'}
+              expandText="Error details"
+              messages={[error.message]}
+            />
+          </div>
+        }
+
+        {report && location.search &&
+          <div className="row-message">
+            <div className="alert alert-info">
+              <strong>Permalink:</strong>&nbsp;
+              <a href={location.href}>{location.href}</a>
+            </div>
+          </div>
         }
 
         {report &&
-          <div>
-            {location.search &&
-              <div>
-                <div className="alert alert-info">
-                  <strong>Permalink:</strong>&nbsp;
-                  <a href={location.href}>{location.href}</a>
-                </div>
-                <hr />
-              </div>
-            }
+          <div className="row-report">
             <Report report={report} />
           </div>
         }
