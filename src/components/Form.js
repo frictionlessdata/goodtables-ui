@@ -123,7 +123,7 @@ export class Form extends React.Component {
               }
               <small>
                 <strong>[OPTIONAL]</strong> Select to validate this data against a Table Schema
-                (<a href="http://specs.frictionlessdata.io/table-schema/">What's that?</a>).
+                (<a href="http://specs.frictionlessdata.io/table-schema/" target="_blank">What's that?</a>).
               </small>
             </div>
 
