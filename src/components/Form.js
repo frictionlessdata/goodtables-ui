@@ -12,6 +12,8 @@ export class Form extends React.Component {
 
   constructor({source, options, validate, reportPromise}) {
     super({source, options, validate, reportPromise})
+
+    // Set state
     this.state = {
       isSourceFile: false,
       isSchemaFile: false,
@@ -21,9 +23,8 @@ export class Form extends React.Component {
       report: null,
       error: null,
     }
-  }
 
-  componentDidMount() {
+    // Load report
     if (this.props.reportPromise) {
       this.setState({report: null, error: null, isLoading: true})
       this.props.reportPromise.then(report => {
@@ -48,11 +49,9 @@ export class Form extends React.Component {
         <div className="row-source">
           <div className="form-inline">
             <label htmlFor="source">Source</label>&nbsp;
-            [
-              <a href="#" onClick={() => onSourceTypeChange()}>
-                {(isSourceFile) ? 'Provide Link' : 'Upload File'}
-              </a>
-            ]
+            [<a href="#" onClick={() => onSourceTypeChange()}>
+              {(isSourceFile) ? 'Provide Link' : 'Upload File'}
+            </a>]
 
             <div className="input-group" style={{width: '100%'}}>
               {!isSourceFile &&
@@ -95,11 +94,9 @@ export class Form extends React.Component {
           <div className="row">
             <div className="form-group col-md-8">
               <label htmlFor="schema">Schema</label>&nbsp;
-              [
-                <a href="#" onClick={() => onSchemaTypeChange()}>
-                  {(isSchemaFile) ? 'Provide Link' : 'Upload File'}
-                </a>
-              ]
+              [<a href="#" onClick={() => onSchemaTypeChange()}>
+                {(isSchemaFile) ? 'Provide Link' : 'Upload File'}
+              </a>]
 
               {!isSchemaFile &&
                 <input
@@ -123,7 +120,9 @@ export class Form extends React.Component {
               }
               <small>
                 <strong>[OPTIONAL]</strong> Select to validate this data against a Table Schema
-                (<a href="http://specs.frictionlessdata.io/table-schema/" target="_blank">What's that?</a>).
+                (<a href="http://specs.frictionlessdata.io/table-schema/" target="_blank" rel="noopener noreferrer">
+                  What is it?
+                </a>).
               </small>
             </div>
 
@@ -172,24 +171,28 @@ export class Form extends React.Component {
           <div className="row">
             <div className="col-md-4">
               <div className="checkbox">
-                <label>
+                <label htmlFor="errorLimit">
                   <input
+                    name="errorLimit"
                     type="checkbox"
                     checked={options.errorLimit === 1}
                     onChange={ev => {
-                       onOptionsChange('errorLimit', (ev.target.checked) ? 1 : null)
+                      onOptionsChange('errorLimit', (ev.target.checked) ? 1 : null)
                     }}
                   />
                   Stop on first error
                 </label>
               </div>
-              <small>Indicate whether validation should stop on the first error, or attempt to collect all errors.</small>
+              <small>
+                Indicate whether validation should stop on the first error, or attempt to collect all errors.
+              </small>
             </div>
 
             <div className="col-md-4">
               <div className="checkbox">
-                <label>
+                <label htmlFor="ignoreBlankRows">
                   <input
+                    name="ignoreBlankRows"
                     type="checkbox"
                     checked={(options.checks || {})['blank-row'] === false}
                     onChange={ev => {
@@ -211,8 +214,9 @@ export class Form extends React.Component {
 
             <div className="col-md-4">
               <div className="checkbox">
-                <label>
+                <label htmlFor="ignoreDuplicateRows">
                   <input
+                    name="ignoreDuplicateRows"
                     type="checkbox"
                     checked={(options.checks || {})['duplicate-row'] === false}
                     onChange={ev => {

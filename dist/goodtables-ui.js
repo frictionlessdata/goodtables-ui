@@ -2810,8 +2810,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -2838,6 +2836,7 @@ var Form = exports.Form = function (_React$Component) {
     _this.state = {
       isSourceFile: false,
       isSchemaFile: false,
+      isLoading: false,
       source: source || '',
       options: options || {},
       report: null,
@@ -2852,10 +2851,11 @@ var Form = exports.Form = function (_React$Component) {
       var _this2 = this;
 
       if (this.props.reportPromise) {
+        this.setState({ report: null, error: null, isLoading: true });
         this.props.reportPromise.then(function (report) {
-          _this2.setState({ report: report });
+          _this2.setState({ report: report, isLoading: false });
         }).catch(function (error) {
-          _this2.setState({ error: error });
+          _this2.setState({ error: error, isLoading: false });
         });
       }
     }
@@ -2864,7 +2864,8 @@ var Form = exports.Form = function (_React$Component) {
     value: function render() {
       var _state = this.state,
           isSourceFile = _state.isSourceFile,
-          isSchemaFile = _state.isSchemaFile;
+          isSchemaFile = _state.isSchemaFile,
+          isLoading = _state.isLoading;
       var _state2 = this.state,
           source = _state2.source,
           options = _state2.options,
@@ -2881,328 +2882,385 @@ var Form = exports.Form = function (_React$Component) {
         { className: 'goodtables-ui-form panel panel-default' },
         _react2.default.createElement(
           'div',
-          { className: 'form-inline' },
-          _react2.default.createElement(
-            'label',
-            { htmlFor: 'source' },
-            'Source'
-          ),
-          '\xA0 [',
-          _react2.default.createElement(
-            'a',
-            { href: '#', onClick: function onClick() {
-                return onSourceTypeChange();
-              } },
-            isSourceFile ? 'Provide Link' : 'Upload File'
-          ),
-          ']',
+          { className: 'row-source' },
           _react2.default.createElement(
             'div',
-            { className: 'input-group', style: { width: '100%' } },
-            !isSourceFile && _react2.default.createElement('input', {
-              name: 'source',
-              className: 'form-control',
-              type: 'text',
-              value: source,
-              placeholder: 'http://data.source/url',
-              onChange: function onChange(ev) {
-                return onSourceChange(ev.target.value);
-              }
-            }),
-            isSourceFile && _react2.default.createElement('input', {
-              name: 'source',
-              className: 'form-control',
-              type: 'file',
-              placeholder: 'http://data.source/url',
-              onChange: function onChange(ev) {
-                return onSourceChange(ev.target.files[0]);
-              }
-            }),
-            _react2.default.createElement(
-              'div',
-              { className: 'input-group-btn', style: { width: '1%' } },
-              _react2.default.createElement(
-                'button',
-                {
-                  className: 'btn btn-success',
-                  onClick: function onClick(ev) {
-                    ev.preventDefault();onSubmit();
-                  }
-                },
-                'Validate'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement('hr', null),
-        _react2.default.createElement(
-          'div',
-          { className: 'row' },
-          _react2.default.createElement(
-            'div',
-            { className: 'form-group col-md-10' },
+            { className: 'form-inline' },
             _react2.default.createElement(
               'label',
-              { htmlFor: 'schema' },
-              'Schema'
+              { htmlFor: 'source' },
+              'Source'
             ),
             '\xA0 [',
             _react2.default.createElement(
               'a',
               { href: '#', onClick: function onClick() {
-                  return onSchemaTypeChange();
+                  return onSourceTypeChange();
                 } },
-              isSchemaFile ? 'Provide Link' : 'Upload File'
+              isSourceFile ? 'Provide Link' : 'Upload File'
             ),
             ']',
-            !isSchemaFile && _react2.default.createElement('input', {
-              type: 'text',
-              className: 'form-control',
-              name: 'schema',
-              value: options.schema,
-              placeholder: 'http://table.schema/url',
-              onChange: function onChange(ev) {
-                return onOptionsChange('schema', ev.target.value);
-              }
-            }),
-            isSchemaFile && _react2.default.createElement('input', {
-              type: 'file',
-              className: 'form-control',
-              name: 'schema',
-              placeholder: 'http://table.schema/url',
-              onChange: function onChange(ev) {
-                return onOptionsChange('schema', ev.target.files[0]);
-              }
-            })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'form-group col-md-2' },
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'skipRows' },
-              'Skip Rows'
-            ),
-            _react2.default.createElement('input', {
-              type: 'text',
-              className: 'form-control',
-              name: 'skipRows',
-              value: options.skipRows ? options.skipRows[options.skipRows.length - 1] : '',
-              placeholder: '0',
-              onChange: function onChange(ev) {
-                var length = parseInt(ev.target.value, 10) || 0;
-                var skipRows = [].concat(_toConsumableArray(Array(length).keys())).map(function (i) {
-                  return i + 1;
-                });
-                onOptionsChange('skipRows', length ? skipRows : null);
-              }
-            })
-          )
-        ),
-        _react2.default.createElement('hr', null),
-        _react2.default.createElement(
-          'div',
-          { className: 'row' },
-          _react2.default.createElement(
-            'div',
-            { className: 'col-md-2' },
             _react2.default.createElement(
               'div',
-              { className: 'form-group' },
+              { className: 'input-group', style: { width: '100%' } },
+              !isSourceFile && _react2.default.createElement('input', {
+                name: 'source',
+                className: 'form-control',
+                type: 'text',
+                value: source,
+                placeholder: 'http://data.source/url',
+                onChange: function onChange(ev) {
+                  return onSourceChange(ev.target.value);
+                }
+              }),
+              isSourceFile && _react2.default.createElement('input', {
+                name: 'source',
+                className: 'form-control',
+                type: 'file',
+                placeholder: 'http://data.source/url',
+                onChange: function onChange(ev) {
+                  return onSourceChange(ev.target.files[0]);
+                }
+              }),
               _react2.default.createElement(
-                'label',
-                { htmlFor: 'checks' },
-                'Checks'
-              ),
-              _react2.default.createElement(
-                'select',
-                {
-                  name: 'checks',
-                  value: options.checks,
-                  className: 'form-control',
-                  onChange: function onChange(ev) {
-                    return onOptionsChange('checks', ev.target.value);
-                  }
-                },
+                'div',
+                { className: 'input-group-btn', style: { width: '1%' } },
                 _react2.default.createElement(
-                  'option',
-                  { value: '' },
-                  'Auto'
-                ),
-                _react2.default.createElement(
-                  'option',
-                  { value: 'structure' },
-                  'Structure'
-                ),
-                _react2.default.createElement(
-                  'option',
-                  { value: 'schema' },
-                  'Schema'
+                  'button',
+                  {
+                    className: 'btn btn-success',
+                    onClick: function onClick(ev) {
+                      ev.preventDefault();onSubmit();
+                    }
+                  },
+                  'Validate'
                 )
               )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-md-2' },
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(
-                'label',
-                { htmlFor: 'format' },
-                'Format'
-              ),
-              _react2.default.createElement(
-                'select',
-                {
-                  name: 'format',
-                  value: options.format,
-                  className: 'form-control',
-                  onChange: function onChange(ev) {
-                    return onOptionsChange('format', ev.target.value);
-                  }
-                },
-                _react2.default.createElement(
-                  'option',
-                  { value: '' },
-                  'Auto'
-                ),
-                _react2.default.createElement(
-                  'option',
-                  { value: 'csv' },
-                  'CSV'
-                ),
-                _react2.default.createElement(
-                  'option',
-                  { value: 'xls' },
-                  'XLS'
-                )
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-md-2' },
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(
-                'label',
-                { htmlFor: 'encoding' },
-                'Encoding'
-              ),
-              _react2.default.createElement(
-                'select',
-                {
-                  name: 'encoding',
-                  value: options.encoding,
-                  className: 'form-control',
-                  onChange: function onChange(ev) {
-                    return onOptionsChange('encoding', ev.target.value);
-                  }
-                },
-                _react2.default.createElement(
-                  'option',
-                  { value: '' },
-                  'Auto'
-                ),
-                _react2.default.createElement(
-                  'option',
-                  { value: 'utf-8' },
-                  'UTF-8'
-                )
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'form-group col-md-2' },
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'errorLimit' },
-              'Error Limit'
             ),
-            _react2.default.createElement('input', {
-              type: 'text',
-              className: 'form-control',
-              name: 'errorLimit',
-              value: options.errorLimit,
-              placeholder: '1000',
-              onChange: function onChange(ev) {
-                return onOptionsChange('errorLimit', parseInt(ev.target.value, 10));
-              }
-            })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'form-group col-md-2' },
             _react2.default.createElement(
-              'label',
-              { htmlFor: 'tableLimit' },
-              'Table Limit'
-            ),
-            _react2.default.createElement('input', {
-              type: 'text',
-              className: 'form-control',
-              name: 'tableLimit',
-              value: options.tableLimit,
-              placeholder: '10',
-              onChange: function onChange(ev) {
-                return onOptionsChange('tableLimit', parseInt(ev.target.value, 10));
-              }
-            })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'form-group col-md-2' },
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'rowLimit' },
-              'Row Limit'
-            ),
-            _react2.default.createElement('input', {
-              type: 'text',
-              className: 'form-control',
-              name: 'rowLimit',
-              value: options.rowLimit,
-              placeholder: '100',
-              onChange: function onChange(ev) {
-                return onOptionsChange('rowLimit', parseInt(ev.target.value, 10));
-              }
-            })
-          )
-        ),
-        _react2.default.createElement('hr', null),
-        error && _react2.default.createElement(_MessageGroup.MessageGroup, {
-          type: 'warning',
-          title: 'There is fatal error in validation',
-          expandText: 'Error details',
-          messages: [error.message]
-        }),
-        report && _react2.default.createElement(
-          'div',
-          null,
-          location.search && _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'div',
-              { className: 'alert alert-info' },
+              'small',
+              null,
               _react2.default.createElement(
                 'strong',
                 null,
-                'Permalink:'
+                '[REQUIRED]'
               ),
-              '\xA0',
+              ' Add a data table to validate.'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row-schema' },
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group col-md-8' },
+              _react2.default.createElement(
+                'label',
+                { htmlFor: 'schema' },
+                'Schema'
+              ),
+              '\xA0 [',
               _react2.default.createElement(
                 'a',
-                { href: location.href },
-                location.href
+                { href: '#', onClick: function onClick() {
+                    return onSchemaTypeChange();
+                  } },
+                isSchemaFile ? 'Provide Link' : 'Upload File'
+              ),
+              ']',
+              !isSchemaFile && _react2.default.createElement('input', {
+                type: 'text',
+                className: 'form-control',
+                name: 'schema',
+                value: options.schema,
+                placeholder: 'http://table.schema/url',
+                onChange: function onChange(ev) {
+                  return onOptionsChange('schema', ev.target.value);
+                }
+              }),
+              isSchemaFile && _react2.default.createElement('input', {
+                type: 'file',
+                className: 'form-control',
+                name: 'schema',
+                placeholder: 'http://table.schema/url',
+                onChange: function onChange(ev) {
+                  return onOptionsChange('schema', ev.target.files[0]);
+                }
+              }),
+              _react2.default.createElement(
+                'small',
+                null,
+                _react2.default.createElement(
+                  'strong',
+                  null,
+                  '[OPTIONAL]'
+                ),
+                ' Select to validate this data against a Table Schema (',
+                _react2.default.createElement(
+                  'a',
+                  { href: 'http://specs.frictionlessdata.io/table-schema/', target: '_blank' },
+                  'What\'s that?'
+                ),
+                ').'
               )
             ),
-            _react2.default.createElement('hr', null)
-          ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group col-md-2' },
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'format' },
+                  'Format'
+                ),
+                _react2.default.createElement(
+                  'select',
+                  {
+                    name: 'format',
+                    value: options.format,
+                    className: 'form-control',
+                    onChange: function onChange(ev) {
+                      return onOptionsChange('format', ev.target.value);
+                    }
+                  },
+                  _react2.default.createElement(
+                    'option',
+                    { value: '' },
+                    'Auto'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'csv' },
+                    'CSV'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'gsheet' },
+                    'Google Sheet'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'json' },
+                    'JSON'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'ndjson' },
+                    'NDJSON'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'ods' },
+                    'ODS'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'tsv' },
+                    'TSV'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'xls' },
+                    'XLS'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'xlsx' },
+                    'XLSX'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-2' },
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: 'encoding' },
+                  'Encoding'
+                ),
+                _react2.default.createElement(
+                  'select',
+                  {
+                    name: 'encoding',
+                    value: options.encoding,
+                    className: 'form-control',
+                    onChange: function onChange(ev) {
+                      return onOptionsChange('encoding', ev.target.value);
+                    }
+                  },
+                  _react2.default.createElement(
+                    'option',
+                    { value: '' },
+                    'Auto'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'utf-8' },
+                    'UTF-8'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'ascii' },
+                    'ASCII'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: 'iso-8859-2' },
+                    'ISO-8859-2'
+                  )
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row-flags' },
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-4' },
+              _react2.default.createElement(
+                'div',
+                { className: 'checkbox' },
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  _react2.default.createElement('input', {
+                    type: 'checkbox',
+                    checked: options.errorLimit === 1,
+                    onChange: function onChange(ev) {
+                      onOptionsChange('errorLimit', ev.target.checked ? 1 : null);
+                    }
+                  }),
+                  'Stop on first error'
+                )
+              ),
+              _react2.default.createElement(
+                'small',
+                null,
+                'Indicate whether validation should stop on the first error, or attempt to collect all errors.'
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-4' },
+              _react2.default.createElement(
+                'div',
+                { className: 'checkbox' },
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  _react2.default.createElement('input', {
+                    type: 'checkbox',
+                    checked: (options.checks || {})['blank-row'] === false,
+                    onChange: function onChange(ev) {
+                      if (ev.target.checked) {
+                        if (!(options.checks instanceof Object)) options.checks = {};
+                        options.checks['blank-row'] = false;
+                      } else {
+                        if (options.checks instanceof Object) {
+                          delete options.checks['blank-row'];
+                        }
+                      }
+                    }
+                  }),
+                  'Ignore blank rows'
+                )
+              ),
+              _react2.default.createElement(
+                'small',
+                null,
+                'Indicate whether blank rows should be considered as errors, or simply ignored.'
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-4' },
+              _react2.default.createElement(
+                'div',
+                { className: 'checkbox' },
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  _react2.default.createElement('input', {
+                    type: 'checkbox',
+                    checked: (options.checks || {})['duplicate-row'] === false,
+                    onChange: function onChange(ev) {
+                      if (ev.target.checked) {
+                        if (!(options.checks instanceof Object)) options.checks = {};
+                        options.checks['duplicate-row'] = false;
+                      } else {
+                        if (options.checks instanceof Object) {
+                          delete options.checks['duplicate-row'];
+                        }
+                      }
+                    }
+                  }),
+                  'Ignore duplicate rows'
+                )
+              ),
+              _react2.default.createElement(
+                'small',
+                null,
+                'Indicate whether duplicate rows should be considered as errors, or simply ignored.'
+              )
+            )
+          )
+        ),
+        isLoading && _react2.default.createElement(
+          'div',
+          { className: 'row-message' },
+          _react2.default.createElement(
+            'div',
+            { className: 'alert alert-info' },
+            'Loading...'
+          )
+        ),
+        error && _react2.default.createElement(
+          'div',
+          { className: 'row-message' },
+          _react2.default.createElement(_MessageGroup.MessageGroup, {
+            type: 'warning',
+            title: 'There is fatal error in validation',
+            expandText: 'Error details',
+            messages: [error.message]
+          })
+        ),
+        report && location.search && _react2.default.createElement(
+          'div',
+          { className: 'row-message' },
+          _react2.default.createElement(
+            'div',
+            { className: 'alert alert-info' },
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Permalink:'
+            ),
+            '\xA0',
+            _react2.default.createElement(
+              'a',
+              { href: location.href },
+              location.href
+            )
+          )
+        ),
+        report && _react2.default.createElement(
+          'div',
+          { className: 'row-report' },
           _react2.default.createElement(_Report.Report, { report: report })
         )
       );
@@ -3244,10 +3302,11 @@ var Form = exports.Form = function (_React$Component) {
           source = _state3.source,
           options = _state3.options;
 
+      this.setState({ report: null, error: null, isLoading: true });
       validate(source, (0, _helpers.merge)(options)).then(function (report) {
-        _this3.setState({ report: report });
+        _this3.setState({ report: report, isLoading: false });
       }).catch(function (error) {
-        _this3.setState({ error: error });
+        _this3.setState({ error: error, isLoading: false });
       });
     }
   }]);
