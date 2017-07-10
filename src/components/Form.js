@@ -136,7 +136,13 @@ export class Form extends React.Component {
                 >
                   <option value="">Auto</option>
                   <option value="csv">CSV</option>
+                  <option value="gsheet">Google Sheet</option>
+                  <option value="json">JSON</option>
+                  <option value="ndjson">NDJSON</option>
+                  <option value="ods">ODS</option>
+                  <option value="tsv">TSV</option>
                   <option value="xls">XLS</option>
+                  <option value="xlsx">XLSX</option>
                 </select>
               </div>
             </div>
@@ -152,6 +158,8 @@ export class Form extends React.Component {
                 >
                   <option value="">Auto</option>
                   <option value="utf-8">UTF-8</option>
+                  <option value="ascii">ASCII</option>
+                  <option value="iso-8859-2">ISO-8859-2</option>
                 </select>
               </div>
             </div>
