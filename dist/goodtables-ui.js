@@ -2831,6 +2831,7 @@ var Form = exports.Form = function (_React$Component) {
 
     _classCallCheck(this, Form);
 
+    // Set state
     var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, { source: source, options: options, validate: validate, reportPromise: reportPromise }));
 
     _this.state = {
@@ -2842,24 +2843,20 @@ var Form = exports.Form = function (_React$Component) {
       report: null,
       error: null
     };
+
+    // Load report
+    if (_this.props.reportPromise) {
+      _this.setState({ report: null, error: null, isLoading: true });
+      _this.props.reportPromise.then(function (report) {
+        _this.setState({ report: report, isLoading: false });
+      }).catch(function (error) {
+        _this.setState({ error: error, isLoading: false });
+      });
+    }
     return _this;
   }
 
   _createClass(Form, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      if (this.props.reportPromise) {
-        this.setState({ report: null, error: null, isLoading: true });
-        this.props.reportPromise.then(function (report) {
-          _this2.setState({ report: report, isLoading: false });
-        }).catch(function (error) {
-          _this2.setState({ error: error, isLoading: false });
-        });
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -3002,8 +2999,8 @@ var Form = exports.Form = function (_React$Component) {
                 ' Select to validate this data against a Table Schema (',
                 _react2.default.createElement(
                   'a',
-                  { href: 'http://specs.frictionlessdata.io/table-schema/', target: '_blank' },
-                  'What\'s that?'
+                  { href: 'http://specs.frictionlessdata.io/table-schema/', target: '_blank', rel: 'noopener noreferrer' },
+                  'What is it?'
                 ),
                 ').'
               )
@@ -3137,8 +3134,9 @@ var Form = exports.Form = function (_React$Component) {
                 { className: 'checkbox' },
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'errorLimit' },
                   _react2.default.createElement('input', {
+                    name: 'errorLimit',
                     type: 'checkbox',
                     checked: options.errorLimit === 1,
                     onChange: function onChange(ev) {
@@ -3162,8 +3160,9 @@ var Form = exports.Form = function (_React$Component) {
                 { className: 'checkbox' },
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'ignoreBlankRows' },
                   _react2.default.createElement('input', {
+                    name: 'ignoreBlankRows',
                     type: 'checkbox',
                     checked: (options.checks || {})['blank-row'] === false,
                     onChange: function onChange(ev) {
@@ -3194,8 +3193,9 @@ var Form = exports.Form = function (_React$Component) {
                 { className: 'checkbox' },
                 _react2.default.createElement(
                   'label',
-                  null,
+                  { htmlFor: 'ignoreDuplicateRows' },
                   _react2.default.createElement('input', {
+                    name: 'ignoreDuplicateRows',
                     type: 'checkbox',
                     checked: (options.checks || {})['duplicate-row'] === false,
                     onChange: function onChange(ev) {
@@ -3295,7 +3295,7 @@ var Form = exports.Form = function (_React$Component) {
   }, {
     key: 'onSubmit',
     value: function onSubmit() {
-      var _this3 = this;
+      var _this2 = this;
 
       var validate = this.props.validate;
       var _state3 = this.state,
@@ -3304,9 +3304,9 @@ var Form = exports.Form = function (_React$Component) {
 
       this.setState({ report: null, error: null, isLoading: true });
       validate(source, (0, _helpers.merge)(options)).then(function (report) {
-        _this3.setState({ report: report, isLoading: false });
+        _this2.setState({ report: report, isLoading: false });
       }).catch(function (error) {
-        _this3.setState({ error: error, isLoading: false });
+        _this2.setState({ error: error, isLoading: false });
       });
     }
   }]);
