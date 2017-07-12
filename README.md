@@ -5,12 +5,13 @@
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
 
-UI for goodtable as universal browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
+UI for `goodtables` as an universal browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
 
 ## Features
 
-- `Form` - goodtables validation form component
+- `render` - universal component render
 - `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) component
+- `Form` - goodtables validation form component
 
 ## Getting Started
 
@@ -98,7 +99,7 @@ class Report {
 
 #### Vue
 
-> This example is for Vue2+. Use similliar approach for Vue1.
+> This example is for Vue2+. Use similar approach for Vue1.
 
 The package's components could be used as `vue` component:
 
@@ -114,6 +115,39 @@ const Report = {
   },
 }
 ```
+
+## Documentation
+
+The whole public API of this package is described here and follows semantic versioning rules. Everything outside of this readme are private API and could be changed without any notification on any new version.
+
+### Render
+
+To render one of the provided component `render` function should be used.
+
+#### `render(component, props, element)`
+
+- `component (Component)` - it could be one of provided by the library component e.g. `Report`
+- `props (Object)` - object containing props
+- `element (Element)` - DOM element to render into
+
+### Report
+
+This component represents a `goodtables` report object.
+
+#### `<Report report/>`
+
+- `report (Object)` - goodtables report
+
+### Form
+
+This component represents a validation form.
+
+#### `<Form source options validate reportPromise/>`
+
+- `source (String)` - see `goodtables-js` [documentation](https://github.com/frictionlessdata/goodtables-js#validate)
+- `options (Object)` - see `goodtables-js` [documentation](https://github.com/frictionlessdata/goodtables-js#validate)
+- `validate (async func)` - an async function which gets `source` and `options` and resolves to goodtables report
+- `reportPromise (Promise)` - a promise to be resolved as a goodtables report
 
 ## Contributing
 
