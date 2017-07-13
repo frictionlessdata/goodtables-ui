@@ -17,7 +17,7 @@ export class Form extends React.Component {
     this.state = {
       isSourceFile: false,
       isSchemaFile: false,
-      isLoading: false,
+      isLoading: !!reportPromise,
       source: source || '',
       options: options || {},
       report: null,
@@ -26,7 +26,6 @@ export class Form extends React.Component {
 
     // Load report
     if (this.props.reportPromise) {
-      this.setState({report: null, error: null, isLoading: true})
       this.props.reportPromise.then(report => {
         this.setState({report, isLoading: false})
       }).catch(error => {

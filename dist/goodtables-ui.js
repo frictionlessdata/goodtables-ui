@@ -2837,7 +2837,7 @@ var Form = exports.Form = function (_React$Component) {
     _this.state = {
       isSourceFile: false,
       isSchemaFile: false,
-      isLoading: false,
+      isLoading: !!reportPromise,
       source: source || '',
       options: options || {},
       report: null,
@@ -2846,7 +2846,6 @@ var Form = exports.Form = function (_React$Component) {
 
     // Load report
     if (_this.props.reportPromise) {
-      _this.setState({ report: null, error: null, isLoading: true });
       _this.props.reportPromise.then(function (report) {
         _this.setState({ report: report, isLoading: false });
       }).catch(function (error) {
