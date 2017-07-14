@@ -163,7 +163,11 @@ $ npm run test
 
 Here described only breaking and the most important changes. The full changelog could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
 
-### v0.3
+### v1.0
+
+First stable realese.
+
+### [v0.3](https://github.com/frictionlessdata/goodtables-ui/tree/v0.3.0)
 
 New functionality added:
 - `Form` component now supports source/schema uploading
