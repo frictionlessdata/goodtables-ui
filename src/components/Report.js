@@ -48,7 +48,8 @@ export function Report({report}) {
 // Internal
 
 function getProcessedWarnings(report) {
-  return report.warnings.map(warning => removeBaseUrl(warning))
+  // Before `goodtables@1.0` there was no warnings property
+  return (report.warnings || []).map(warning => removeBaseUrl(warning))
 }
 
 

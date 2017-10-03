@@ -1,6 +1,7 @@
 import React from 'react'
 import marked from 'marked'
 import classNames from 'classnames'
+import startCase from 'lodash/startCase'
 const spec = require('../spec.json')
 
 
@@ -42,7 +43,7 @@ export class ErrorGroup extends React.Component {
           </a>
         </div>
 
-        {showErrorDetails &&
+        {showErrorDetails && description &&
           <div className="panel-heading error-details">
             <p><div dangerouslySetInnerHTML={{__html: description}} /></p>
           </div>
@@ -124,7 +125,23 @@ function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
 
 
 function getErrorDetails(errorGroup) {
-  return spec.errors[errorGroup.code]
+
+  // Get code handling legacy codes
+  let code = errorGroup.code
+  if (code === 'non-castable-value') {
+    code = 'type-or-format-error'
+  }
+
+  // Get details handling custom errors
+  let details = spec.errors[code]
+  if (!details) details = {
+    name: startCase(code),
+    type: 'custom',
+    context: 'body',
+    description: null,
+  }
+
+  return details
 }
 
 
@@ -134,9 +151,12 @@ function getShowHeaders(errorDetails) {
 
 
 function getDescription(errorDetails) {
-  const description = errorDetails.description
-    .replace('{validator}', '`goodtables.yml`')
-  return marked(description)
+  let description = errorDetails.description
+  if (description) {
+    description = description.replace('{validator}', '`goodtables.yml`')
+    description = marked(description)
+  }
+  return description
 }
 
 
