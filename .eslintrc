@@ -81,6 +81,8 @@ rules:
     - off
   no-lonely-if:
     - off
+  curly:
+    - off
   react/prop-types:
     - off
   react/sort-comp:

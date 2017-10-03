@@ -124,7 +124,23 @@ function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
 
 
 function getErrorDetails(errorGroup) {
-  return spec.errors[errorGroup.code]
+
+  // Get code handling legacy codes
+  let code = errorGroup.code
+  if (code === 'non-castable-value') {
+    code = 'type-or-format-error'
+  }
+
+  // Get details handling custom errors
+  let details = spec.errors[code]
+  if (!details) details = {
+    name: 'Custom Error',
+    type: 'custom',
+    context: 'body',
+    description: 'Custom Error'
+  }
+
+  return details
 }
 
 
