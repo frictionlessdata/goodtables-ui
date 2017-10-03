@@ -161,23 +161,29 @@ $ npm run test
 
 ## Changelog
 
-Here described only breaking and the most important changes. The full changelog could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
+Here described only breaking and the most important changes. The full changelog and documentation for all released versions could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
+
+### v1.1
+
+Improved behaviour:
+- updated to Data Quality Spec v1
+- added support for custom checks
 
 ### v1.0
 
 First stable realese.
 
-### [v0.3](https://github.com/frictionlessdata/goodtables-ui/tree/v0.3.0)
+### v0.3
 
 New functionality added:
 - `Form` component now supports source/schema uploading
 
-### [v0.2](https://github.com/frictionlessdata/goodtables-ui/tree/v0.2.0)
+### v0.2
 
 New API added:
 - published `Form` component
 
-### [v0.1](https://github.com/frictionlessdata/goodtables-ui/tree/v0.1.7)
+### v0.1
 
 New API added:
 - published `Report` component
