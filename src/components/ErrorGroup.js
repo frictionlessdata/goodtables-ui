@@ -1,6 +1,7 @@
 import React from 'react'
 import marked from 'marked'
 import classNames from 'classnames'
+import startCase from 'lodash/startCase'
 const spec = require('../spec.json')
 
 
@@ -42,7 +43,7 @@ export class ErrorGroup extends React.Component {
           </a>
         </div>
 
-        {showErrorDetails &&
+        {showErrorDetails && description &&
           <div className="panel-heading error-details">
             <p><div dangerouslySetInnerHTML={{__html: description}} /></p>
           </div>
@@ -134,10 +135,10 @@ function getErrorDetails(errorGroup) {
   // Get details handling custom errors
   let details = spec.errors[code]
   if (!details) details = {
-    name: 'Custom Error',
+    name: startCase(code),
     type: 'custom',
     context: 'body',
-    description: 'Custom Error'
+    description: null,
   }
 
   return details
@@ -150,9 +151,12 @@ function getShowHeaders(errorDetails) {
 
 
 function getDescription(errorDetails) {
-  const description = errorDetails.description
-    .replace('{validator}', '`goodtables.yml`')
-  return marked(description)
+  let description = errorDetails.description
+  if (description) {
+    description = description.replace('{validator}', '`goodtables.yml`')
+    description = marked(description)
+  }
+  return description
 }
 
 
