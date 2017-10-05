@@ -178,6 +178,7 @@
 }
 
 .goodtables-ui-report .panel-title a {
+  color: #000;
   cursor: inherit;
   font-weight: 700;
 }
