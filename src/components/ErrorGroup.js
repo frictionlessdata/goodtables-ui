@@ -63,7 +63,7 @@ export class ErrorGroup extends React.Component {
         <div className="panel-body">
           <div className="table-container">
             <table className="table table-bordered table-condensed">
-              {showHeaders &&
+              {errorGroup.headers && showHeaders &&
                 <ErrorGroupTableHead headers={errorGroup.headers} />
               }
               <ErrorGroupTableBody

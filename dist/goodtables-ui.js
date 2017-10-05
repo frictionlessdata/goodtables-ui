@@ -3641,7 +3641,7 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
             _react2.default.createElement(
               'table',
               { className: 'table table-bordered table-condensed' },
-              showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
+              errorGroup.headers && showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
               _react2.default.createElement(ErrorGroupTableBody, {
                 errorGroup: errorGroup,
                 visibleRowsCount: visibleRowsCount,
