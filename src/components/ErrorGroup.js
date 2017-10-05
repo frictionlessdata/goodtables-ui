@@ -75,7 +75,7 @@ export class ErrorGroup extends React.Component {
           </div>
           {(visibleRowsCount < rowNumbers.length) &&
             <div className="show-more">
-              <a onClick={this.setState({visibleRowsCount: visibleRowsCount + 10})}>
+              <a onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}>
                 Show next 10 rows
               </a>
             </div>
