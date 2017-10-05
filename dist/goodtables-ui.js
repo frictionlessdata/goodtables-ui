@@ -3654,7 +3654,9 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
             { className: 'show-more' },
             _react2.default.createElement(
               'a',
-              { onClick: this.setState({ visibleRowsCount: visibleRowsCount + 10 }) },
+              { onClick: function onClick() {
+                  _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
+                } },
               'Show next 10 rows'
             )
           )
