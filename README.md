@@ -5,11 +5,11 @@
 
 [![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
 
-UI for `goodtables` as an universal browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
+UI for `goodtables` as an framework-agnostic browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
 
 ## Features
 
-- `render` - universal component render
+- `render` - framework-agnostic component render
 - `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) component
 - `Form` - goodtables validation form component
 
