@@ -1,7 +1,7 @@
 import React from 'react'
 import {removeBaseUrl} from '../helpers'
-import {InvalidTable} from './InvalidTable'
 import {MessageGroup} from './MessageGroup'
+import {Table} from './Table'
 
 
 // Module API
@@ -10,6 +10,7 @@ export function Report({report}) {
   const processedWarnings = getProcessedWarnings(report)
   const validTableFiles = getValidTableFiles(report)
   const invalidTables = getInvalidTables(report)
+  const validTables = getValidTables(report)
   return (
     <div className="goodtables-ui-report">
 
@@ -22,21 +23,21 @@ export function Report({report}) {
         />
       }
 
-      {!!validTableFiles.length &&
-        <MessageGroup
-          type="success"
-          title={`There are ${validTableFiles.length} valid table(s)`}
-          expandText="Success details"
-          messages={validTableFiles}
-        />
-      }
-
       {invalidTables.map((table, index) => (
-        <InvalidTable
+        <Table
           key={table.source}
           table={table}
           tableNumber={index + 1}
-          tablesCount={invalidTables.length}
+          tablesCount={report['table-count']}
+        />
+      ))}
+
+      {validTables.map((table, index) => (
+        <Table
+          key={table.source}
+          table={table}
+          tableNumber={invalidTables.length + index + 1}
+          tablesCount={report['table-count']}
         />
       ))}
 
@@ -61,4 +62,8 @@ function getValidTableFiles(report) {
 
 function getInvalidTables(report) {
   return report.tables.filter(table => !table.valid)
+}
+
+function getValidTables(report) {
+  return report.tables.filter(table => table.valid)
 }

@@ -66,6 +66,7 @@ export function splitFilePath(path) {
   return {
     name: parts.pop(),
     base: parts.join('/'),
+    sep: parts.length ? '/' : '',
   }
 }
 

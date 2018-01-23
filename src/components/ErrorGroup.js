@@ -31,7 +31,6 @@ export class ErrorGroup extends React.Component {
 
         {/* Heading */}
         <div>
-          <span class="count">{errorGroup.count} x</span>
           <a
             role="button"
             className={classNames({label: true, 'label-error': true, collapsed: !showErrorDetails})}
@@ -41,6 +40,7 @@ export class ErrorGroup extends React.Component {
           >
             {errorDetails.name}
           </a>
+          <span class="count">x {errorGroup.count}</span>
         </div>
 
         {/* Error details */}
