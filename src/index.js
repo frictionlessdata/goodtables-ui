@@ -1,4 +1,4 @@
-import './styles.css'
+import './styles.scss'
 import {render} from './render'
 import {Report} from './components/Report'
 import {Form} from './components/Form'

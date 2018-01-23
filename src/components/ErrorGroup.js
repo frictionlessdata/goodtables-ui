@@ -27,42 +27,47 @@ export class ErrorGroup extends React.Component {
     const description = getDescription(errorDetails)
     const rowNumbers = getRowNumbers(errorGroup)
     return (
-      <div className="result panel panel-danger">
+      <div className="result">
 
-        <div className="panel-heading">
-          <span className="text-uppercase label label-danger">Invalid</span>
-          <span className="text-uppercase label label-info">{errorDetails.type}</span>
-          <span className="count label">{errorGroup.count}</span>
-          <h5 className="panel-title">
-            <a onClick={() => this.setState({showErrorDetails: !showErrorDetails})}>
-              {errorDetails.name}
-            </a>
-          </h5>
-          <a className="error-details-link" onClick={() => this.setState({showErrorDetails: !showErrorDetails})}>
-            Error details
+        {/* Heading */}
+        <div>
+          <span className="count">{errorGroup.count} x</span>
+          <a
+            role="button"
+            className={classNames({label: true, 'label-error': true, collapsed: !showErrorDetails})}
+            data-toggle="collapse"
+            onClick={() => this.setState({showErrorDetails: !showErrorDetails})}
+            aria-expanded="false"
+          >
+            {errorDetails.name}
           </a>
         </div>
 
-        {showErrorDetails && description &&
-          <div className="panel-heading error-details">
-            <p><div dangerouslySetInnerHTML={{__html: description}} /></p>
+        {/* Error details */}
+        <div className={classNames(['collapse', {in: showErrorDetails}])}>
+          <div className="error-details">
+            {description &&
+              <div className="error-description">
+                <div dangerouslySetInnerHTML={{__html: description}} />
+              </div>
+            }
+            <div className="error-list">
+              <p className="error-list-heading">
+                The full list of error messages:
+              </p>
+              <ul>
+                {errorGroup.messages.map((message, index) =>
+                  <li key={index}>{message}</li>
+                )}
+              </ul>
+            </div>
           </div>
-        }
+        </div>
 
-        {showErrorDetails &&
-          <div className="panel-heading error-details">
-            <p>The full list of error messages:</p>
-            <ul>
-              {errorGroup.messages.map(message =>
-                <li>{message}</li>
-              )}
-            </ul>
-          </div>
-        }
-
-        <div className="panel-body">
-          <div className="table-container">
-            <table className="table table-bordered table-condensed">
+        {/* Table view */}
+        <div className="table-view">
+          <div className="inner">
+            <table className="table">
               {errorGroup.headers && showHeaders &&
                 <ErrorGroupTableHead headers={errorGroup.headers} />
               }
@@ -73,14 +78,18 @@ export class ErrorGroup extends React.Component {
               />
             </table>
           </div>
-          {(visibleRowsCount < rowNumbers.length) &&
-            <div className="show-more">
-              <a onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}>
-                Show next 10 rows
-              </a>
-            </div>
-          }
         </div>
+
+        {/* Show more */}
+        {(visibleRowsCount < rowNumbers.length) &&
+          <a
+            onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}
+            className="show-more"
+          >
+            Show more <span className="icon-keyboard_arrow_down" />
+          </a>
+        }
+
       </div>
     )
   }
@@ -91,14 +100,13 @@ export class ErrorGroup extends React.Component {
 
 function ErrorGroupTableHead({headers}) {
   return (
-    <thead>
-      <tr>
-        <th />
+    <tbody>
+      <tr className="before-fail">
         {headers.map(header =>
-          <th>{header}</th>
+          <td>{header}</td>
         )}
       </tr>
-    </thead>
+    </tbody>
   )
 }
 
@@ -108,17 +116,23 @@ function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
     <tbody>
       {rowNumbers.map((rowNumber, index) => (
         (index < visibleRowsCount) &&
-          <tr className="result-header-row">
+          <tr className={classNames({fail: errorGroup.code.includes('row')})}>
             {(rowNumber !== null) &&
               <td className="result-row-index">{rowNumber}</td>
             }
             {errorGroup.rows[rowNumber].values.map((value, innerIndex) =>
-              <td className={classNames({danger: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1)})}>
+              <td className={classNames({fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1)})}>
                 {value}
               </td>
             )}
           </tr>
       ))}
+      <tr className="after-fail">
+        <td className="result-row-index">{rowNumbers[rowNumbers.length - 1] + 1}</td>
+        {errorGroup.headers.map(() =>
+          <td />
+        )}
+      </tr>
     </tbody>
   )
 }

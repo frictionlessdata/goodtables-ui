@@ -1,42 +1,41 @@
 import React from 'react'
 import {removeBaseUrl} from '../helpers'
-import {InvalidTable} from './InvalidTable'
-import {MessageGroup} from './MessageGroup'
+import {Table} from './Table'
 
 
 // Module API
 
 export function Report({report}) {
   const processedWarnings = getProcessedWarnings(report)
-  const validTableFiles = getValidTableFiles(report)
-  const invalidTables = getInvalidTables(report)
+  const tables = getTables(report)
   return (
     <div className="goodtables-ui-report">
 
+      {/* Warnings */}
       {!!processedWarnings.length &&
-        <MessageGroup
-          type="warning"
-          title={`There are ${processedWarnings.length} warning(s)`}
-          expandText="Warning details"
-          messages={processedWarnings}
-        />
+        <div className="file warning">
+          <h4 className="file-heading">
+            <div className="inner">
+              <a className="file-name">
+                <strong>Warnings</strong>
+              </a>
+            </div>
+          </h4>
+          <ul className="passed-tests result">
+            {processedWarnings.map((warning, index) =>
+              <li key={index}><span className="label label-warning">{warning}</span></li>
+            )}
+          </ul>
+        </div>
       }
 
-      {!!validTableFiles.length &&
-        <MessageGroup
-          type="success"
-          title={`There are ${validTableFiles.length} valid table(s)`}
-          expandText="Success details"
-          messages={validTableFiles}
-        />
-      }
-
-      {invalidTables.map((table, index) => (
-        <InvalidTable
+      {/* Tables */}
+      {tables.map((table, index) => (
+        <Table
           key={table.source}
           table={table}
           tableNumber={index + 1}
-          tablesCount={invalidTables.length}
+          tablesCount={tables.length}
         />
       ))}
 
@@ -52,13 +51,9 @@ function getProcessedWarnings(report) {
   return (report.warnings || []).map(warning => removeBaseUrl(warning))
 }
 
-
-function getValidTableFiles(report) {
-  return report.tables
-    .filter(table => table.valid)
-    .map(table => removeBaseUrl(table.source))
-}
-
-function getInvalidTables(report) {
-  return report.tables.filter(table => !table.valid)
+function getTables(report) {
+  return [
+    ...report.tables.filter(table => !table.valid),
+    ...report.tables.filter(table => table.valid),
+  ]
 }

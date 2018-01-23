@@ -61,6 +61,16 @@ export function removeBaseUrl(text) {
 }
 
 
+export function splitFilePath(path) {
+  const parts = path.split('/')
+  return {
+    name: parts.pop(),
+    base: parts.join('/'),
+    sep: parts.length ? '/' : '',
+  }
+}
+
+
 export function merge(...args) {
   return Object.assign({}, ...args)
 }

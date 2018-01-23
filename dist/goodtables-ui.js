@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2493,6 +2493,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getTableErrorGroups = getTableErrorGroups;
 exports.removeBaseUrl = removeBaseUrl;
+exports.splitFilePath = splitFilePath;
 exports.merge = merge;
 // Module API
 
@@ -2576,6 +2577,15 @@ function getTableErrorGroups(table) {
 
 function removeBaseUrl(text) {
   return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '');
+}
+
+function splitFilePath(path) {
+  var parts = path.split('/');
+  return {
+    name: parts.pop(),
+    base: parts.join('/'),
+    sep: parts.length ? '/' : ''
+  };
 }
 
 function merge() {
@@ -2665,11 +2675,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _helpers = __webpack_require__(/*! ../helpers */ 1);
 
-var _InvalidTable = __webpack_require__(/*! ./InvalidTable */ 12);
-
-var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 5);
+var _Table = __webpack_require__(/*! ./Table */ 13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 // Module API
 
@@ -2677,29 +2687,52 @@ function Report(_ref) {
   var report = _ref.report;
 
   var processedWarnings = getProcessedWarnings(report);
-  var validTableFiles = getValidTableFiles(report);
-  var invalidTables = getInvalidTables(report);
+  var tables = getTables(report);
   return _react2.default.createElement(
     'div',
     { className: 'goodtables-ui-report' },
-    !!processedWarnings.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
-      type: 'warning',
-      title: 'There are ' + processedWarnings.length + ' warning(s)',
-      expandText: 'Warning details',
-      messages: processedWarnings
-    }),
-    !!validTableFiles.length && _react2.default.createElement(_MessageGroup.MessageGroup, {
-      type: 'success',
-      title: 'There are ' + validTableFiles.length + ' valid table(s)',
-      expandText: 'Success details',
-      messages: validTableFiles
-    }),
-    invalidTables.map(function (table, index) {
-      return _react2.default.createElement(_InvalidTable.InvalidTable, {
+    !!processedWarnings.length && _react2.default.createElement(
+      'div',
+      { className: 'file warning' },
+      _react2.default.createElement(
+        'h4',
+        { className: 'file-heading' },
+        _react2.default.createElement(
+          'div',
+          { className: 'inner' },
+          _react2.default.createElement(
+            'a',
+            { className: 'file-name' },
+            _react2.default.createElement(
+              'strong',
+              null,
+              'Warnings'
+            )
+          )
+        )
+      ),
+      _react2.default.createElement(
+        'ul',
+        { className: 'passed-tests result' },
+        processedWarnings.map(function (warning, index) {
+          return _react2.default.createElement(
+            'li',
+            { key: index },
+            _react2.default.createElement(
+              'span',
+              { className: 'label label-warning' },
+              warning
+            )
+          );
+        })
+      )
+    ),
+    tables.map(function (table, index) {
+      return _react2.default.createElement(_Table.Table, {
         key: table.source,
         table: table,
         tableNumber: index + 1,
-        tablesCount: invalidTables.length
+        tablesCount: tables.length
       });
     })
   );
@@ -2714,125 +2747,73 @@ function getProcessedWarnings(report) {
   });
 }
 
-function getValidTableFiles(report) {
-  return report.tables.filter(function (table) {
-    return table.valid;
-  }).map(function (table) {
-    return (0, _helpers.removeBaseUrl)(table.source);
-  });
-}
-
-function getInvalidTables(report) {
-  return report.tables.filter(function (table) {
+function getTables(report) {
+  return [].concat(_toConsumableArray(report.tables.filter(function (table) {
     return !table.valid;
-  });
+  })), _toConsumableArray(report.tables.filter(function (table) {
+    return table.valid;
+  })));
 }
 
 /***/ }),
 /* 5 */
 /* no static exports found */
 /* all exports used */
-/*!****************************************!*\
-  !*** ./src/components/MessageGroup.js ***!
-  \****************************************/
+/*!*******************************!*\
+  !*** ./~/classnames/index.js ***!
+  \*******************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
 
+(function () {
+	'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MessageGroup = undefined;
+	var hasOwn = {}.hasOwnProperty;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	function classNames () {
+		var classes = [];
 
-var _react = __webpack_require__(/*! react */ 0);
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
 
-var _react2 = _interopRequireDefault(_react);
+			var argType = typeof arg;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+		return classes.join(' ');
+	}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// Module API
-
-var MessageGroup = exports.MessageGroup = function (_React$Component) {
-  _inherits(MessageGroup, _React$Component);
-
-  // Public
-
-  function MessageGroup(_ref) {
-    var type = _ref.type,
-        title = _ref.title,
-        messages = _ref.messages,
-        expandText = _ref.expandText;
-
-    _classCallCheck(this, MessageGroup);
-
-    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages, expandText: expandText }));
-
-    _this.state = {
-      isExpanded: false
-    };
-    return _this;
-  }
-
-  _createClass(MessageGroup, [{
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var _props = this.props,
-          type = _props.type,
-          title = _props.title,
-          messages = _props.messages,
-          expandText = _props.expandText;
-      var isExpanded = this.state.isExpanded;
-
-      return _react2.default.createElement(
-        "div",
-        { className: "alert alert-" + type, role: "alert" },
-        _react2.default.createElement(
-          "span",
-          { className: "title", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
-          title
-        ),
-        _react2.default.createElement(
-          "a",
-          { className: "show-details", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
-          expandText
-        ),
-        isExpanded && _react2.default.createElement(
-          "div",
-          null,
-          _react2.default.createElement("hr", null),
-          _react2.default.createElement(
-            "ul",
-            null,
-            messages.map(function (message) {
-              return _react2.default.createElement(
-                "li",
-                null,
-                message
-              );
-            })
-          )
-        )
-      );
-    }
-  }]);
-
-  return MessageGroup;
-}(_react2.default.Component);
 
 /***/ }),
 /* 6 */
@@ -2928,7 +2909,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _Report = __webpack_require__(/*! ./Report */ 4);
 
-var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 5);
+var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 12);
 
 var _helpers = __webpack_require__(/*! ../helpers */ 1);
 
@@ -3476,9 +3457,9 @@ function render(component, props, element) {
 /* 10 */
 /* no static exports found */
 /* all exports used */
-/*!************************!*\
-  !*** ./src/styles.css ***!
-  \************************/
+/*!*************************!*\
+  !*** ./src/styles.scss ***!
+  \*************************/
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -3510,7 +3491,7 @@ var _marked = __webpack_require__(/*! marked */ 42);
 
 var _marked2 = _interopRequireDefault(_marked);
 
-var _classnames = __webpack_require__(/*! classnames */ 14);
+var _classnames = __webpack_require__(/*! classnames */ 5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -3565,82 +3546,72 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
       var rowNumbers = getRowNumbers(errorGroup);
       return _react2.default.createElement(
         'div',
-        { className: 'result panel panel-danger' },
+        { className: 'result' },
         _react2.default.createElement(
           'div',
-          { className: 'panel-heading' },
+          null,
           _react2.default.createElement(
             'span',
-            { className: 'text-uppercase label label-danger' },
-            'Invalid'
-          ),
-          _react2.default.createElement(
-            'span',
-            { className: 'text-uppercase label label-info' },
-            errorDetails.type
-          ),
-          _react2.default.createElement(
-            'span',
-            { className: 'count label' },
-            errorGroup.count
-          ),
-          _react2.default.createElement(
-            'h5',
-            { className: 'panel-title' },
-            _react2.default.createElement(
-              'a',
-              { onClick: function onClick() {
-                  return _this2.setState({ showErrorDetails: !showErrorDetails });
-                } },
-              errorDetails.name
-            )
+            { className: 'count' },
+            errorGroup.count,
+            ' x'
           ),
           _react2.default.createElement(
             'a',
-            { className: 'error-details-link', onClick: function onClick() {
+            {
+              role: 'button',
+              className: (0, _classnames2.default)({ label: true, 'label-error': true, collapsed: !showErrorDetails }),
+              'data-toggle': 'collapse',
+              onClick: function onClick() {
                 return _this2.setState({ showErrorDetails: !showErrorDetails });
-              } },
-            'Error details'
-          )
-        ),
-        showErrorDetails && description && _react2.default.createElement(
-          'div',
-          { className: 'panel-heading error-details' },
-          _react2.default.createElement(
-            'p',
-            null,
-            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: description } })
-          )
-        ),
-        showErrorDetails && _react2.default.createElement(
-          'div',
-          { className: 'panel-heading error-details' },
-          _react2.default.createElement(
-            'p',
-            null,
-            'The full list of error messages:'
-          ),
-          _react2.default.createElement(
-            'ul',
-            null,
-            errorGroup.messages.map(function (message) {
-              return _react2.default.createElement(
-                'li',
-                null,
-                message
-              );
-            })
+              },
+              'aria-expanded': 'false'
+            },
+            errorDetails.name
           )
         ),
         _react2.default.createElement(
           'div',
-          { className: 'panel-body' },
+          { className: (0, _classnames2.default)(['collapse', { in: showErrorDetails }]) },
           _react2.default.createElement(
             'div',
-            { className: 'table-container' },
+            { className: 'error-details' },
+            description && _react2.default.createElement(
+              'div',
+              { className: 'error-description' },
+              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: description } })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'error-list' },
+              _react2.default.createElement(
+                'p',
+                { className: 'error-list-heading' },
+                'The full list of error messages:'
+              ),
+              _react2.default.createElement(
+                'ul',
+                null,
+                errorGroup.messages.map(function (message, index) {
+                  return _react2.default.createElement(
+                    'li',
+                    { key: index },
+                    message
+                  );
+                })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'table-view' },
+          _react2.default.createElement(
+            'div',
+            { className: 'inner' },
             _react2.default.createElement(
               'table',
-              { className: 'table table-bordered table-condensed' },
+              { className: 'table' },
               errorGroup.headers && showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
               _react2.default.createElement(ErrorGroupTableBody, {
                 errorGroup: errorGroup,
@@ -3648,18 +3619,18 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
                 rowNumbers: rowNumbers
               })
             )
-          ),
-          visibleRowsCount < rowNumbers.length && _react2.default.createElement(
-            'div',
-            { className: 'show-more' },
-            _react2.default.createElement(
-              'a',
-              { onClick: function onClick() {
-                  _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
-                } },
-              'Show next 10 rows'
-            )
           )
+        ),
+        visibleRowsCount < rowNumbers.length && _react2.default.createElement(
+          'a',
+          {
+            onClick: function onClick() {
+              _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
+            },
+            className: 'show-more'
+          },
+          'Show more ',
+          _react2.default.createElement('span', { className: 'icon-keyboard_arrow_down' })
         )
       );
     }
@@ -3674,15 +3645,14 @@ function ErrorGroupTableHead(_ref2) {
   var headers = _ref2.headers;
 
   return _react2.default.createElement(
-    'thead',
+    'tbody',
     null,
     _react2.default.createElement(
       'tr',
-      null,
-      _react2.default.createElement('th', null),
+      { className: 'before-fail' },
       headers.map(function (header) {
         return _react2.default.createElement(
-          'th',
+          'td',
           null,
           header
         );
@@ -3702,7 +3672,7 @@ function ErrorGroupTableBody(_ref3) {
     rowNumbers.map(function (rowNumber, index) {
       return index < visibleRowsCount && _react2.default.createElement(
         'tr',
-        { className: 'result-header-row' },
+        { className: (0, _classnames2.default)({ fail: errorGroup.code.includes('row') }) },
         rowNumber !== null && _react2.default.createElement(
           'td',
           { className: 'result-row-index' },
@@ -3711,12 +3681,24 @@ function ErrorGroupTableBody(_ref3) {
         errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
           return _react2.default.createElement(
             'td',
-            { className: (0, _classnames2.default)({ danger: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1) }) },
+            { className: (0, _classnames2.default)({ fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1) }) },
             value
           );
         })
       );
-    })
+    }),
+    _react2.default.createElement(
+      'tr',
+      { className: 'after-fail' },
+      _react2.default.createElement(
+        'td',
+        { className: 'result-row-index' },
+        rowNumbers[rowNumbers.length - 1] + 1
+      ),
+      errorGroup.headers.map(function () {
+        return _react2.default.createElement('td', null);
+      })
+    )
   );
 }
 
@@ -3766,8 +3748,114 @@ function getRowNumbers(errorGroup) {
 /* no static exports found */
 /* all exports used */
 /*!****************************************!*\
-  !*** ./src/components/InvalidTable.js ***!
+  !*** ./src/components/MessageGroup.js ***!
   \****************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MessageGroup = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ 0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Module API
+
+var MessageGroup = exports.MessageGroup = function (_React$Component) {
+  _inherits(MessageGroup, _React$Component);
+
+  // Public
+
+  function MessageGroup(_ref) {
+    var type = _ref.type,
+        title = _ref.title,
+        messages = _ref.messages,
+        expandText = _ref.expandText;
+
+    _classCallCheck(this, MessageGroup);
+
+    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages, expandText: expandText }));
+
+    _this.state = {
+      isExpanded: false
+    };
+    return _this;
+  }
+
+  _createClass(MessageGroup, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _props = this.props,
+          type = _props.type,
+          title = _props.title,
+          messages = _props.messages,
+          expandText = _props.expandText;
+      var isExpanded = this.state.isExpanded;
+
+      return _react2.default.createElement(
+        "div",
+        { className: "alert alert-" + type, role: "alert" },
+        _react2.default.createElement(
+          "span",
+          { className: "title", onClick: function onClick() {
+              return _this2.setState({ isExpanded: !isExpanded });
+            } },
+          title
+        ),
+        _react2.default.createElement(
+          "a",
+          { className: "show-details", onClick: function onClick() {
+              return _this2.setState({ isExpanded: !isExpanded });
+            } },
+          expandText
+        ),
+        isExpanded && _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement("hr", null),
+          _react2.default.createElement(
+            "ul",
+            null,
+            messages.map(function (message) {
+              return _react2.default.createElement(
+                "li",
+                null,
+                message
+              );
+            })
+          )
+        )
+      );
+    }
+  }]);
+
+  return MessageGroup;
+}(_react2.default.Component);
+
+/***/ }),
+/* 13 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************!*\
+  !*** ./src/components/Table.js ***!
+  \*********************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3786,11 +3874,15 @@ function _objectValues(obj) {
   return values;
 }
 
-exports.InvalidTable = InvalidTable;
+exports.Table = Table;
 
 var _react = __webpack_require__(/*! react */ 0);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _classnames = __webpack_require__(/*! classnames */ 5);
+
+var _classnames2 = _interopRequireDefault(_classnames);
 
 var _ErrorGroup = __webpack_require__(/*! ./ErrorGroup */ 11);
 
@@ -3800,34 +3892,64 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Module API
 
-function InvalidTable(_ref) {
+function Table(_ref) {
   var table = _ref.table,
       tableNumber = _ref.tableNumber,
       tablesCount = _ref.tablesCount;
 
-  var errorGroups = (0, _helpers.getTableErrorGroups)(table);
   var tableFile = (0, _helpers.removeBaseUrl)(table.source);
+  var splitTableFile = (0, _helpers.splitFilePath)(tableFile);
+  var errorGroups = (0, _helpers.getTableErrorGroups)(table);
   return _react2.default.createElement(
     'div',
-    { className: 'report-table' },
+    { className: (0, _classnames2.default)({ file: true, valid: table.valid, invalid: !table.valid }) },
     _react2.default.createElement(
       'h4',
       { className: 'file-heading' },
       _react2.default.createElement(
-        'span',
-        null,
+        'div',
+        { className: 'inner' },
         _react2.default.createElement(
           'a',
           { className: 'file-name', href: table.source },
-          tableFile
+          splitTableFile.base,
+          splitTableFile.sep,
+          _react2.default.createElement(
+            'strong',
+            null,
+            splitTableFile.name
+          ),
+          !table.valid && _react2.default.createElement(
+            'span',
+            {
+              className: 'badge',
+              'data-toggle': 'tooltip',
+              'data-placement': 'right',
+              title: table['error-count'] + ' errors found for this table'
+            },
+            table['error-count']
+          )
         ),
         _react2.default.createElement(
           'span',
           { className: 'file-count' },
-          'Invalid ',
+          'Table ',
           tableNumber,
           ' of ',
           tablesCount
+        )
+      )
+    ),
+    table.valid && _react2.default.createElement(
+      'ul',
+      { className: 'passed-tests result' },
+      _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'span',
+          { className: 'label label-success' },
+          'Valid Table'
         )
       )
     ),
@@ -3838,7 +3960,7 @@ function InvalidTable(_ref) {
 }
 
 /***/ }),
-/* 13 */
+/* 14 */
 /* no static exports found */
 /* all exports used */
 /*!**********************!*\
@@ -3854,7 +3976,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Form = exports.Report = exports.render = undefined;
 
-__webpack_require__(/*! ./styles.css */ 10);
+__webpack_require__(/*! ./styles.scss */ 10);
 
 var _render = __webpack_require__(/*! ./render */ 9);
 
@@ -3868,66 +3990,6 @@ exports.default = { render: _render.render, Report: _Report.Report, Form: _Form.
 exports.render = _render.render;
 exports.Report = _Report.Report;
 exports.Form = _Form.Form;
-
-/***/ }),
-/* 14 */
-/* no static exports found */
-/* all exports used */
-/*!*******************************!*\
-  !*** ./~/classnames/index.js ***!
-  \*******************************/
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-  Copyright (c) 2016 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-	'use strict';
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg)) {
-				classes.push(classNames.apply(null, arg));
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = classNames;
-	} else if (true) {
-		// register as 'classnames', consistent with npm package name
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
 
 /***/ }),
 /* 15 */
@@ -6407,7 +6469,7 @@ module.exports = {
 			"context": "table",
 			"weight": 15,
 			"message": "Table Schema error: {error_message}",
-			"description": "Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema cheks in {validator}."
+			"description": "Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."
 		},
 		"non-matching-header": {
 			"name": "Non-Matching Header",

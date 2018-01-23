@@ -1,21 +1,21 @@
 import React from 'react'
 import {assert} from 'chai'
 import {shallow} from 'enzyme'
-import {InvalidTable} from '../../src/components/InvalidTable'
+import {Table} from '../../src/components/Table'
 const report = require('../../data/report.json')
 
 
 // Tests
 
-describe('InvalidTable', () => {
+describe('Table', () => {
   it('should render', () => {
     const result = shallow(
-      <InvalidTable
+      <Table
         table={report.tables[0]}
         tableNumber={1}
-        tablesCount={1}
+        tablesCount={2}
       />
     )
-    assert(result.contains('data/invalid.csv'))
+    assert(result.contains('invalid.csv'))
   })
 })
