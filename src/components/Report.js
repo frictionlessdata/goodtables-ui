@@ -12,7 +12,7 @@ export function Report({report}) {
     <div className="goodtables-ui-report">
 
       {/* Warnings */}
-      {processedWarnings.length &&
+      {!!processedWarnings.length &&
         <div className="file warning">
           <h4 className="file-heading">
             <div className="inner">

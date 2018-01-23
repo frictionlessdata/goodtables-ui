@@ -81,6 +81,8 @@
     margin-left: 0.4em;
     min-width: 1.6em;
     padding: 0.25em; }
+  .goodtables-ui-report .file.warning .file-heading .inner:before {
+    border-bottom-color: #f0ad4e; }
   .goodtables-ui-report .file.valid .file-heading .inner:before {
     border-bottom-color: #01CD81; }
   .goodtables-ui-report .file.valid .file-heading strong {
