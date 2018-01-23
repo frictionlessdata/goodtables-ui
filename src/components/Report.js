@@ -22,8 +22,8 @@ export function Report({report}) {
             </div>
           </h4>
           <ul className="passed-tests result">
-            {processedWarnings.map(warning =>
-              <li><span className="label label-warning">{warning}</span></li>
+            {processedWarnings.map((warning, index) =>
+              <li key={index}><span className="label label-warning">{warning}</span></li>
             )}
           </ul>
         </div>

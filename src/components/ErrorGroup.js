@@ -56,8 +56,8 @@ export class ErrorGroup extends React.Component {
                 The full list of error messages:
               </p>
               <ul>
-                {errorGroup.messages.map(message =>
-                  <li>{message}</li>
+                {errorGroup.messages.map((message, index) =>
+                  <li key={index}>{message}</li>
                 )}
               </ul>
             </div>
