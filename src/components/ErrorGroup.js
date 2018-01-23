@@ -27,38 +27,42 @@ export class ErrorGroup extends React.Component {
     const description = getDescription(errorDetails)
     const rowNumbers = getRowNumbers(errorGroup)
     return (
-      <div className="result panel panel-danger">
+      <div className="result">
 
-        <div className="panel-heading">
-          <span className="text-uppercase label label-danger">Invalid</span>
-          <span className="text-uppercase label label-info">{errorDetails.type}</span>
-          <span className="count label">{errorGroup.count}</span>
-          <h5 className="panel-title">
-            <a onClick={() => this.setState({showErrorDetails: !showErrorDetails})}>
-              {errorDetails.name}
-            </a>
-          </h5>
-          <a className="error-details-link" onClick={() => this.setState({showErrorDetails: !showErrorDetails})}>
-            Error details
+        {/* Heading */}
+        <div>
+          <span class="count">{errorGroup.count} x</span>
+          <a
+            role="button"
+            className={classNames({label: true, 'label-error': true, collapsed: !showErrorDetails})}
+            data-toggle="collapse"
+            onClick={() => this.setState({showErrorDetails: !showErrorDetails})}
+            aria-expanded="false"
+          >
+            {errorDetails.name}
           </a>
         </div>
 
-        {showErrorDetails && description &&
-          <div className="panel-heading error-details">
-            <p><div dangerouslySetInnerHTML={{__html: description}} /></p>
+        {/* Error details */}
+        <div className={classNames(['collapse', {in: showErrorDetails}])}>
+          <div className="error-details">
+            {description &&
+              <div className="error-description">
+                <div dangerouslySetInnerHTML={{__html: description}} />
+              </div>
+            }
+            <div className="error-list">
+              <p className="error-list-heading">
+                The full list of error messages:
+              </p>
+              <ul>
+                {errorGroup.messages.map(message =>
+                  <li>{message}</li>
+                )}
+              </ul>
+            </div>
           </div>
-        }
-
-        {showErrorDetails &&
-          <div className="panel-heading error-details">
-            <p>The full list of error messages:</p>
-            <ul>
-              {errorGroup.messages.map(message =>
-                <li>{message}</li>
-              )}
-            </ul>
-          </div>
-        }
+        </div>
 
         <div className="panel-body">
           <div className="table-container">
