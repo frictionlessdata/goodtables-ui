@@ -25,7 +25,7 @@ export function InvalidTable({table, tableNumber, tablesCount}) {
               {table['error-count']}
             </span>
           </a>
-          <span className="file-count">Invalid {tableNumber} of {tablesCount}</span>
+          <span className="file-count">Table {tableNumber} of {tablesCount}</span>
         </div>
       </h4>
 

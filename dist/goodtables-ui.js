@@ -2493,6 +2493,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getTableErrorGroups = getTableErrorGroups;
 exports.removeBaseUrl = removeBaseUrl;
+exports.splitFilePath = splitFilePath;
 exports.merge = merge;
 // Module API
 
@@ -2576,6 +2577,14 @@ function getTableErrorGroups(table) {
 
 function removeBaseUrl(text) {
   return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '');
+}
+
+function splitFilePath(path) {
+  var parts = path.split('/');
+  return {
+    name: parts.pop(),
+    base: parts.join('/')
+  };
 }
 
 function merge() {
@@ -3565,82 +3574,72 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
       var rowNumbers = getRowNumbers(errorGroup);
       return _react2.default.createElement(
         'div',
-        { className: 'result panel panel-danger' },
+        { className: 'result' },
         _react2.default.createElement(
           'div',
-          { className: 'panel-heading' },
+          null,
           _react2.default.createElement(
             'span',
-            { className: 'text-uppercase label label-danger' },
-            'Invalid'
-          ),
-          _react2.default.createElement(
-            'span',
-            { className: 'text-uppercase label label-info' },
-            errorDetails.type
-          ),
-          _react2.default.createElement(
-            'span',
-            { className: 'count label' },
-            errorGroup.count
-          ),
-          _react2.default.createElement(
-            'h5',
-            { className: 'panel-title' },
-            _react2.default.createElement(
-              'a',
-              { onClick: function onClick() {
-                  return _this2.setState({ showErrorDetails: !showErrorDetails });
-                } },
-              errorDetails.name
-            )
+            { 'class': 'count' },
+            errorGroup.count,
+            ' x'
           ),
           _react2.default.createElement(
             'a',
-            { className: 'error-details-link', onClick: function onClick() {
+            {
+              role: 'button',
+              className: (0, _classnames2.default)({ label: true, 'label-error': true, collapsed: !showErrorDetails }),
+              'data-toggle': 'collapse',
+              onClick: function onClick() {
                 return _this2.setState({ showErrorDetails: !showErrorDetails });
-              } },
-            'Error details'
-          )
-        ),
-        showErrorDetails && description && _react2.default.createElement(
-          'div',
-          { className: 'panel-heading error-details' },
-          _react2.default.createElement(
-            'p',
-            null,
-            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: description } })
-          )
-        ),
-        showErrorDetails && _react2.default.createElement(
-          'div',
-          { className: 'panel-heading error-details' },
-          _react2.default.createElement(
-            'p',
-            null,
-            'The full list of error messages:'
-          ),
-          _react2.default.createElement(
-            'ul',
-            null,
-            errorGroup.messages.map(function (message) {
-              return _react2.default.createElement(
-                'li',
-                null,
-                message
-              );
-            })
+              },
+              'aria-expanded': 'false'
+            },
+            errorDetails.name
           )
         ),
         _react2.default.createElement(
           'div',
-          { className: 'panel-body' },
+          { className: (0, _classnames2.default)(['collapse', { in: showErrorDetails }]) },
           _react2.default.createElement(
             'div',
-            { className: 'table-container' },
+            { className: 'error-details' },
+            description && _react2.default.createElement(
+              'div',
+              { className: 'error-description' },
+              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: description } })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'error-list' },
+              _react2.default.createElement(
+                'p',
+                { className: 'error-list-heading' },
+                'The full list of error messages:'
+              ),
+              _react2.default.createElement(
+                'ul',
+                null,
+                errorGroup.messages.map(function (message) {
+                  return _react2.default.createElement(
+                    'li',
+                    null,
+                    message
+                  );
+                })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'table-view' },
+          _react2.default.createElement(
+            'div',
+            { className: 'inner' },
             _react2.default.createElement(
               'table',
-              { className: 'table table-bordered table-condensed' },
+              { className: 'table' },
               errorGroup.headers && showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
               _react2.default.createElement(ErrorGroupTableBody, {
                 errorGroup: errorGroup,
@@ -3648,18 +3647,18 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
                 rowNumbers: rowNumbers
               })
             )
-          ),
-          visibleRowsCount < rowNumbers.length && _react2.default.createElement(
-            'div',
-            { className: 'show-more' },
-            _react2.default.createElement(
-              'a',
-              { onClick: function onClick() {
-                  _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
-                } },
-              'Show next 10 rows'
-            )
           )
+        ),
+        visibleRowsCount < rowNumbers.length && _react2.default.createElement(
+          'a',
+          {
+            onClick: function onClick() {
+              _this2.setState({ visibleRowsCount: visibleRowsCount + 10 });
+            },
+            className: 'show-more'
+          },
+          'Show more ',
+          _react2.default.createElement('span', { 'class': 'icon-keyboard_arrow_down' })
         )
       );
     }
@@ -3674,15 +3673,14 @@ function ErrorGroupTableHead(_ref2) {
   var headers = _ref2.headers;
 
   return _react2.default.createElement(
-    'thead',
+    'tbody',
     null,
     _react2.default.createElement(
       'tr',
-      null,
-      _react2.default.createElement('th', null),
+      { 'class': 'before-fail' },
       headers.map(function (header) {
         return _react2.default.createElement(
-          'th',
+          'td',
           null,
           header
         );
@@ -3702,7 +3700,7 @@ function ErrorGroupTableBody(_ref3) {
     rowNumbers.map(function (rowNumber, index) {
       return index < visibleRowsCount && _react2.default.createElement(
         'tr',
-        { className: 'result-header-row' },
+        { className: 'fail' },
         rowNumber !== null && _react2.default.createElement(
           'td',
           { className: 'result-row-index' },
@@ -3807,24 +3805,41 @@ function InvalidTable(_ref) {
 
   var errorGroups = (0, _helpers.getTableErrorGroups)(table);
   var tableFile = (0, _helpers.removeBaseUrl)(table.source);
+  var splitTableFile = (0, _helpers.splitFilePath)(tableFile);
   return _react2.default.createElement(
     'div',
-    { className: 'report-table' },
+    { className: 'invalid file' },
     _react2.default.createElement(
       'h4',
       { className: 'file-heading' },
       _react2.default.createElement(
-        'span',
-        null,
+        'div',
+        { className: 'inner' },
         _react2.default.createElement(
           'a',
           { className: 'file-name', href: table.source },
-          tableFile
+          splitTableFile.base,
+          '/',
+          _react2.default.createElement(
+            'strong',
+            null,
+            splitTableFile.name
+          ),
+          _react2.default.createElement(
+            'span',
+            {
+              className: 'badge',
+              'data-toggle': 'tooltip',
+              'data-placement': 'right',
+              title: table['error-count'] + ' errors found for this table'
+            },
+            table['error-count']
+          )
         ),
         _react2.default.createElement(
           'span',
           { className: 'file-count' },
-          'Invalid ',
+          'Table ',
           tableNumber,
           ' of ',
           tablesCount

@@ -1,3 +1,30 @@
+/* Form */
+.goodtables-ui-form {
+  margin: 1em;
+  padding: 1em; }
+
+.goodtables-ui-form .row-source {
+  padding-bottom: 1em;
+  border-bottom: solid 1px #eee;
+  margin-bottom: 1em; }
+
+.goodtables-ui-form .row-schema {
+  border-bottom: solid 1px #eee; }
+
+.goodtables-ui-form .row-message {
+  margin-top: 1em;
+  border-top: solid 1px #eee;
+  padding-top: 1em; }
+
+.goodtables-ui-form .row-report {
+  margin-top: 1em;
+  border-top: solid 1px #eee;
+  padding-top: 1em; }
+
+.goodtables-ui-form small {
+  color: #777; }
+
+/* Report */
 .goodtables-ui-report {
   background-color: #fff; }
   .goodtables-ui-report .file-heading {
@@ -198,7 +225,12 @@
         left: -1px;
         right: -1px;
         bottom: -1px;
-        height: 30px; }
+        height: 30px;
+        background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #fff 50%);
+        background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #fff 50%);
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 50%);
+        background-repeat: repeat-x;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00FFFFFF', endColorstr='#FFFFFFFF', GradientType=0); }
     .goodtables-ui-report .result:not(:last-child) {
       padding-bottom: 20px; }
       .goodtables-ui-report .result:not(:last-child):after {

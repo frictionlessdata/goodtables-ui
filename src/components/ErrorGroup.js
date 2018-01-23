@@ -64,9 +64,10 @@ export class ErrorGroup extends React.Component {
           </div>
         </div>
 
-        <div className="panel-body">
-          <div className="table-container">
-            <table className="table table-bordered table-condensed">
+        {/* Table view */}
+        <div className="table-view">
+          <div className="inner">
+            <table className="table">
               {errorGroup.headers && showHeaders &&
                 <ErrorGroupTableHead headers={errorGroup.headers} />
               }
@@ -77,14 +78,18 @@ export class ErrorGroup extends React.Component {
               />
             </table>
           </div>
-          {(visibleRowsCount < rowNumbers.length) &&
-            <div className="show-more">
-              <a onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}>
-                Show next 10 rows
-              </a>
-            </div>
-          }
         </div>
+
+        {/* Show more */}
+        {(visibleRowsCount < rowNumbers.length) &&
+          <a
+            onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}
+            className="show-more"
+          >
+            Show more <span class="icon-keyboard_arrow_down"></span>
+          </a>
+        }
+
       </div>
     )
   }
@@ -95,34 +100,39 @@ export class ErrorGroup extends React.Component {
 
 function ErrorGroupTableHead({headers}) {
   return (
-    <thead>
-      <tr>
-        <th />
+    <tbody>
+      <tr class="before-fail">
         {headers.map(header =>
-          <th>{header}</th>
+          <td>{header}</td>
         )}
       </tr>
-    </thead>
+    </tbody>
   )
 }
 
 
-function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
+function ErrorGroupTableBody({headers, errorGroup, visibleRowsCount, rowNumbers}) {
   return (
     <tbody>
       {rowNumbers.map((rowNumber, index) => (
         (index < visibleRowsCount) &&
-          <tr className="result-header-row">
+          <tr className={classNames({fail: errorGroup.code.includes('row')})}>
             {(rowNumber !== null) &&
               <td className="result-row-index">{rowNumber}</td>
             }
             {errorGroup.rows[rowNumber].values.map((value, innerIndex) =>
-              <td className={classNames({danger: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1)})}>
+              <td className={classNames({fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1)})}>
                 {value}
               </td>
             )}
           </tr>
       ))}
+      <tr class="after-fail">
+        <td className="result-row-index">{rowNumbers[rowNumbers.length - 1] + 1}</td>
+        {errorGroup.headers.map(header =>
+          <td></td>
+        )}
+      </tr>
     </tbody>
   )
 }
