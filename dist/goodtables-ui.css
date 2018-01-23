@@ -242,7 +242,7 @@
         right: -22.5px;
         bottom: 0;
         height: 10px;
-        background-image: url(/dist/zigzag.svg?253ba7244eb6ff9f0b4f4fce338d23c5);
+        background-image: url(./zigzag.svg?253ba7244eb6ff9f0b4f4fce338d23c5);
         background-position: center;
         background-repeat: repeat-x;
         background-size: 29px 10px; }
@@ -266,7 +266,7 @@
       right: 0;
       bottom: -1px;
       background-color: #fff;
-      mask: url(/dist/zigzagmask.svg?6dc68a76ab21f5ed74e403b02d01449b);
+      mask: url(./zigzagmask.svg?6dc68a76ab21f5ed74e403b02d01449b);
       mask-size: 29px 10px;
       mask-position: center;
       mask-repeat: repeat-x; }
