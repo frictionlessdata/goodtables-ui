@@ -102,6 +102,7 @@ function ErrorGroupTableHead({headers}) {
   return (
     <tbody>
       <tr className="before-fail">
+        <td>1</td>
         {headers.map(header =>
           <td>{header}</td>
         )}
@@ -117,9 +118,7 @@ function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
       {rowNumbers.map((rowNumber, index) => (
         (index < visibleRowsCount) &&
           <tr className={classNames({fail: errorGroup.code.includes('row')})}>
-            {(rowNumber !== null) &&
-              <td className="result-row-index">{rowNumber}</td>
-            }
+            <td className="result-row-index">{rowNumber || 1}</td>
             {errorGroup.rows[rowNumber].values.map((value, innerIndex) =>
               <td className={classNames({fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1)})}>
                 {value}
@@ -128,7 +127,9 @@ function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
           </tr>
       ))}
       <tr className="after-fail">
-        <td className="result-row-index">{rowNumbers[rowNumbers.length - 1] + 1}</td>
+        <td className="result-row-index">
+          {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
+        </td>
         {errorGroup.headers.map(() =>
           <td />
         )}

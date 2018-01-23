@@ -3650,6 +3650,11 @@ function ErrorGroupTableHead(_ref2) {
     _react2.default.createElement(
       'tr',
       { className: 'before-fail' },
+      _react2.default.createElement(
+        'td',
+        null,
+        '1'
+      ),
       headers.map(function (header) {
         return _react2.default.createElement(
           'td',
@@ -3673,10 +3678,10 @@ function ErrorGroupTableBody(_ref3) {
       return index < visibleRowsCount && _react2.default.createElement(
         'tr',
         { className: (0, _classnames2.default)({ fail: errorGroup.code.includes('row') }) },
-        rowNumber !== null && _react2.default.createElement(
+        _react2.default.createElement(
           'td',
           { className: 'result-row-index' },
-          rowNumber
+          rowNumber || 1
         ),
         errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
           return _react2.default.createElement(
@@ -3693,7 +3698,7 @@ function ErrorGroupTableBody(_ref3) {
       _react2.default.createElement(
         'td',
         { className: 'result-row-index' },
-        rowNumbers[rowNumbers.length - 1] + 1
+        rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2
       ),
       errorGroup.headers.map(function () {
         return _react2.default.createElement('td', null);
