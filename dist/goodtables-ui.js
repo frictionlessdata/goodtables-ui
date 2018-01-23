@@ -3476,9 +3476,9 @@ function render(component, props, element) {
 /* 10 */
 /* no static exports found */
 /* all exports used */
-/*!************************!*\
-  !*** ./src/styles.css ***!
-  \************************/
+/*!*************************!*\
+  !*** ./src/styles.scss ***!
+  \*************************/
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -3854,7 +3854,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Form = exports.Report = exports.render = undefined;
 
-__webpack_require__(/*! ./styles.css */ 10);
+__webpack_require__(/*! ./styles.scss */ 10);
 
 var _render = __webpack_require__(/*! ./render */ 9);
 

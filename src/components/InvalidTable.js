@@ -1,6 +1,6 @@
 import React from 'react'
 import {ErrorGroup} from './ErrorGroup'
-import {getTableErrorGroups, removeBaseUrl} from '../helpers'
+import {getTableErrorGroups, removeBaseUrl, splitFilePath} from '../helpers'
 
 
 // Module API
@@ -8,14 +8,25 @@ import {getTableErrorGroups, removeBaseUrl} from '../helpers'
 export function InvalidTable({table, tableNumber, tablesCount}) {
   const errorGroups = getTableErrorGroups(table)
   const tableFile = removeBaseUrl(table.source)
+  const splitTableFile = splitFilePath(tableFile)
   return (
-    <div className="report-table">
+    <div className="invalid file">
 
       <h4 className="file-heading">
-        <span>
-          <a className="file-name" href={table.source}>{tableFile}</a>
+        <div className="inner">
+          <a className="file-name" href={table.source}>
+            {splitTableFile.base}/<strong>{splitTableFile.name}</strong>
+            <span
+              className="badge"
+              data-toggle="tooltip"
+              data-placement="right"
+              title={`${table['error-count']} errors found for this table`}
+            >
+              {table['error-count']}
+            </span>
+          </a>
           <span className="file-count">Invalid {tableNumber} of {tablesCount}</span>
-        </span>
+        </div>
       </h4>
 
       {Object.values(errorGroups).map(errorGroup =>
