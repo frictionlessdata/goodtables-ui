@@ -8,9 +8,7 @@ import {Table} from './Table'
 
 export function Report({report}) {
   const processedWarnings = getProcessedWarnings(report)
-  const validTableFiles = getValidTableFiles(report)
-  const invalidTables = getInvalidTables(report)
-  const validTables = getValidTables(report)
+  const tables = getTables(report)
   return (
     <div className="goodtables-ui-report">
 
@@ -23,21 +21,12 @@ export function Report({report}) {
         />
       }
 
-      {invalidTables.map((table, index) => (
+      {tables.map((table, index) => (
         <Table
           key={table.source}
           table={table}
           tableNumber={index + 1}
-          tablesCount={report['table-count']}
-        />
-      ))}
-
-      {validTables.map((table, index) => (
-        <Table
-          key={table.source}
-          table={table}
-          tableNumber={invalidTables.length + index + 1}
-          tablesCount={report['table-count']}
+          tablesCount={tables.length}
         />
       ))}
 
@@ -53,17 +42,9 @@ function getProcessedWarnings(report) {
   return (report.warnings || []).map(warning => removeBaseUrl(warning))
 }
 
-
-function getValidTableFiles(report) {
-  return report.tables
-    .filter(table => table.valid)
-    .map(table => removeBaseUrl(table.source))
-}
-
-function getInvalidTables(report) {
-  return report.tables.filter(table => !table.valid)
-}
-
-function getValidTables(report) {
-  return report.tables.filter(table => table.valid)
+function getTables(report) {
+  return [
+    ...report.tables.filter(table => !table.valid),
+    ...report.tables.filter(table => table.valid),
+  ]
 }
