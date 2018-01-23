@@ -1,6 +1,5 @@
 import React from 'react'
 import {removeBaseUrl} from '../helpers'
-import {MessageGroup} from './MessageGroup'
 import {Table} from './Table'
 
 
@@ -12,15 +11,25 @@ export function Report({report}) {
   return (
     <div className="goodtables-ui-report">
 
-      {!!processedWarnings.length &&
-        <MessageGroup
-          type="warning"
-          title={`There are ${processedWarnings.length} warning(s)`}
-          expandText="Warning details"
-          messages={processedWarnings}
-        />
+      {/* Warnings */}
+      {processedWarnings.length &&
+        <div className="file warning">
+          <h4 className="file-heading">
+            <div className="inner">
+              <a className="file-name">
+                <strong>Warnings</strong>
+              </a>
+            </div>
+          </h4>
+          <ul className="passed-tests result">
+            {processedWarnings.map(warning =>
+              <li><span className="label label-warning">{warning}</span></li>
+            )}
+          </ul>
+        </div>
       }
 
+      {/* Tables */}
       {tables.map((table, index) => (
         <Table
           key={table.source}

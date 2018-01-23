@@ -49,6 +49,7 @@
   $border-radius-large:       3px !default;
   $brand-danger:          #F13C3F !default;
   $brand-success:         #01CD81 !default;
+  $brand-warning:         #f0ad4e !default;
   $state-danger-bg:                lighten($brand-danger, 36%) !default;
   $screen-sm:                  768px !default;
 
@@ -62,6 +63,7 @@
   $table-border-radius:         $border-radius-large;
   $table-text-colour:           $gray-darker;
   $table-border-colour:         $gray;
+  $warning-colour:              $brand-warning;
   $fail-colour:                 $brand-danger;
   $pass-colour:                 $brand-success;
   $fail-bg:                     $state-danger-bg;
@@ -157,6 +159,17 @@
       margin-left: 0.4em;
       min-width: 1.6em;
       padding: 0.25em;
+    }
+
+    &.warning {
+      .file-heading {
+        .inner:before {
+          border-bottom-color: $warning-colour;
+        }
+        // strong {
+          // color: $warning-colour;
+        // }
+      }
     }
 
     &.valid {
