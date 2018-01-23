@@ -31,7 +31,7 @@ export class ErrorGroup extends React.Component {
 
         {/* Heading */}
         <div>
-          <span class="count">{errorGroup.count} x </span>
+          <span className="count">{errorGroup.count} x</span>
           <a
             role="button"
             className={classNames({label: true, 'label-error': true, collapsed: !showErrorDetails})}
@@ -86,7 +86,7 @@ export class ErrorGroup extends React.Component {
             onClick={() => {this.setState({visibleRowsCount: visibleRowsCount + 10})}}
             className="show-more"
           >
-            Show more <span class="icon-keyboard_arrow_down"></span>
+            Show more <span className="icon-keyboard_arrow_down" />
           </a>
         }
 
@@ -101,7 +101,7 @@ export class ErrorGroup extends React.Component {
 function ErrorGroupTableHead({headers}) {
   return (
     <tbody>
-      <tr class="before-fail">
+      <tr className="before-fail">
         {headers.map(header =>
           <td>{header}</td>
         )}
@@ -111,7 +111,7 @@ function ErrorGroupTableHead({headers}) {
 }
 
 
-function ErrorGroupTableBody({headers, errorGroup, visibleRowsCount, rowNumbers}) {
+function ErrorGroupTableBody({errorGroup, visibleRowsCount, rowNumbers}) {
   return (
     <tbody>
       {rowNumbers.map((rowNumber, index) => (
@@ -127,10 +127,10 @@ function ErrorGroupTableBody({headers, errorGroup, visibleRowsCount, rowNumbers}
             )}
           </tr>
       ))}
-      <tr class="after-fail">
+      <tr className="after-fail">
         <td className="result-row-index">{rowNumbers[rowNumbers.length - 1] + 1}</td>
-        {errorGroup.headers.map(header =>
-          <td></td>
+        {errorGroup.headers.map(() =>
+          <td />
         )}
       </tr>
     </tbody>
