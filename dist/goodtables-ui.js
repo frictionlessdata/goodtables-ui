@@ -3609,16 +3609,12 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'inner' },
-            _react2.default.createElement(
-              'table',
-              { className: 'table' },
-              errorGroup.headers && showHeaders && _react2.default.createElement(ErrorGroupTableHead, { headers: errorGroup.headers }),
-              _react2.default.createElement(ErrorGroupTableBody, {
-                errorGroup: errorGroup,
-                visibleRowsCount: visibleRowsCount,
-                rowNumbers: rowNumbers
-              })
-            )
+            _react2.default.createElement(ErrorGroupTable, {
+              errorGroup: errorGroup,
+              visibleRowsCount: visibleRowsCount,
+              rowNumbers: rowNumbers,
+              showHeaders: showHeaders
+            })
           )
         ),
         visibleRowsCount < rowNumbers.length && _react2.default.createElement(
@@ -3641,68 +3637,64 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
 
 // Internal
 
-function ErrorGroupTableHead(_ref2) {
-  var headers = _ref2.headers;
+function ErrorGroupTable(_ref2) {
+  var errorGroup = _ref2.errorGroup,
+      visibleRowsCount = _ref2.visibleRowsCount,
+      rowNumbers = _ref2.rowNumbers,
+      showHeaders = _ref2.showHeaders;
 
   return _react2.default.createElement(
-    'tbody',
-    null,
+    'table',
+    { className: 'table' },
     _react2.default.createElement(
-      'tr',
-      { className: 'before-fail' },
-      _react2.default.createElement(
-        'td',
-        null,
-        '1'
-      ),
-      headers.map(function (header) {
-        return _react2.default.createElement(
+      'tbody',
+      null,
+      errorGroup.headers && showHeaders && _react2.default.createElement(
+        'tr',
+        { className: 'before-fail' },
+        _react2.default.createElement(
           'td',
           null,
-          header
+          '1'
+        ),
+        errorGroup.headers.map(function (header) {
+          return _react2.default.createElement(
+            'td',
+            null,
+            header
+          );
+        })
+      ),
+      rowNumbers.map(function (rowNumber, index) {
+        return index < visibleRowsCount && _react2.default.createElement(
+          'tr',
+          { className: (0, _classnames2.default)({ fail: errorGroup.code.includes('row') }) },
+          _react2.default.createElement(
+            'td',
+            { className: 'result-row-index' },
+            rowNumber || 1
+          ),
+          errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
+            return _react2.default.createElement(
+              'td',
+              { className: (0, _classnames2.default)({ fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1) }) },
+              value
+            );
+          })
         );
-      })
-    )
-  );
-}
-
-function ErrorGroupTableBody(_ref3) {
-  var errorGroup = _ref3.errorGroup,
-      visibleRowsCount = _ref3.visibleRowsCount,
-      rowNumbers = _ref3.rowNumbers;
-
-  return _react2.default.createElement(
-    'tbody',
-    null,
-    rowNumbers.map(function (rowNumber, index) {
-      return index < visibleRowsCount && _react2.default.createElement(
+      }),
+      _react2.default.createElement(
         'tr',
-        { className: (0, _classnames2.default)({ fail: errorGroup.code.includes('row') }) },
+        { className: 'after-fail' },
         _react2.default.createElement(
           'td',
           { className: 'result-row-index' },
-          rowNumber || 1
+          rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2
         ),
-        errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
-          return _react2.default.createElement(
-            'td',
-            { className: (0, _classnames2.default)({ fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1) }) },
-            value
-          );
+        errorGroup.headers.map(function () {
+          return _react2.default.createElement('td', null);
         })
-      );
-    }),
-    _react2.default.createElement(
-      'tr',
-      { className: 'after-fail' },
-      _react2.default.createElement(
-        'td',
-        { className: 'result-row-index' },
-        rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2
-      ),
-      errorGroup.headers.map(function () {
-        return _react2.default.createElement('td', null);
-      })
+      )
     )
   );
 }
