@@ -213,6 +213,11 @@
       font-size: 14px;
       margin-right: $label-margin;
 
+      &.label-warning {
+        text-align: left;
+        white-space: normal;
+      }
+
       &.label-error {
         background-color: $report-bg-colour;
         border: solid 1px $fail-colour;

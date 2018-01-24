@@ -104,6 +104,9 @@
     .goodtables-ui-report .result .label {
       font-size: 14px;
       margin-right: 10px; }
+      .goodtables-ui-report .result .label.label-warning {
+        text-align: left;
+        white-space: normal; }
       .goodtables-ui-report .result .label.label-error {
         background-color: #fff;
         border: solid 1px #F13C3F;
