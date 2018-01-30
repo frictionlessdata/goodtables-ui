@@ -300,6 +300,7 @@ export class Form extends React.Component {
   onSubmit() {
     const {validate} = this.props
     const {source, options} = this.state
+    if (source.endsWith('datapackage.json')) options.preset = 'datapackage'
     this.setState({report: null, error: null, isLoading: true})
     validate(source, merge(options)).then(report => {
       this.setState({report, isLoading: false})
