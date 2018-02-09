@@ -31,7 +31,7 @@
     "spec": "wget -O src/spec.json https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "NODE_ENV=testing nyc mocha",
-    "test:browser": "NODE_ENV=testing karma start"
+    "test:browser": "NODE_ENV=testing karma start karma.conf.js"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -60,7 +60,8 @@
     "compression-webpack-plugin": "^0.3.2",
     "coveralls": "^2.13.1",
     "css-loader": "^0.25.0",
-    "enzyme": "^2.7.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-15": "^1.0.5",
     "eslint": "^3.14.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-html": "^2.0.0",
@@ -72,6 +73,7 @@
     "http-server": "^0.9.0",
     "husky": "^0.13.1",
     "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sinon-chai": "^1.2.4",
@@ -85,6 +87,7 @@
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-lite": "^0.15.33",
+    "react-test-renderer": "^15.6.2",
     "sass-loader": "^6.0.6",
     "saucelabs": "^1.3.0",
     "selenium-server": "3.0.1",
