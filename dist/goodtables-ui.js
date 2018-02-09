@@ -3146,7 +3146,7 @@ var Form = exports.Form = function (_React$Component) {
                 _react2.default.createElement(
                   'button',
                   {
-                    className: 'btn btn-success',
+                    className: 'btn btn-primary',
                     onClick: function onClick(ev) {
                       ev.preventDefault();onSubmit();
                     }

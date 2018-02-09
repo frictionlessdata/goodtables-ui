@@ -76,7 +76,7 @@ export class Form extends React.Component {
 
               <div className="input-group-btn" style={{width: '1%'}}>
                 <button
-                  className="btn btn-success"
+                  className="btn btn-primary"
                   onClick={ev => {ev.preventDefault(); onSubmit()}}
                 >
                   Validate
