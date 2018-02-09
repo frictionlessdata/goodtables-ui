@@ -121,7 +121,7 @@ function ErrorGroupTable({errorGroup, visibleRowsCount, rowNumbers, showHeaders}
           <td className="result-row-index">
             {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
           </td>
-          {errorGroup.headers.map(() =>
+          {errorGroup.headers && errorGroup.headers.map(() =>
             <td />
           )}
         </tr>
