@@ -3454,9 +3454,8 @@ var Form = exports.Form = function (_React$Component) {
           'div',
           { className: 'row-message' },
           _react2.default.createElement(_MessageGroup.MessageGroup, {
-            type: 'warning',
-            title: 'There is fatal error in validation',
-            expandText: 'Error details',
+            type: 'danger',
+            title: 'Error',
             messages: [error.message]
           })
         ),
@@ -3897,63 +3896,43 @@ var MessageGroup = exports.MessageGroup = function (_React$Component) {
   function MessageGroup(_ref) {
     var type = _ref.type,
         title = _ref.title,
-        messages = _ref.messages,
-        expandText = _ref.expandText;
+        messages = _ref.messages;
 
     _classCallCheck(this, MessageGroup);
 
-    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages, expandText: expandText }));
+    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages }));
 
-    _this.state = {
-      isExpanded: false
-    };
+    _this.state = {};
     return _this;
   }
 
   _createClass(MessageGroup, [{
     key: "render",
     value: function render() {
-      var _this2 = this;
-
       var _props = this.props,
           type = _props.type,
           title = _props.title,
-          messages = _props.messages,
-          expandText = _props.expandText;
-      var isExpanded = this.state.isExpanded;
+          messages = _props.messages;
 
       return _react2.default.createElement(
         "div",
         { className: "alert alert-" + type, role: "alert" },
         _react2.default.createElement(
           "span",
-          { className: "title", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
+          { className: "title" },
           title
         ),
+        _react2.default.createElement("hr", null),
         _react2.default.createElement(
-          "a",
-          { className: "show-details", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
-          expandText
-        ),
-        isExpanded && _react2.default.createElement(
-          "div",
+          "ul",
           null,
-          _react2.default.createElement("hr", null),
-          _react2.default.createElement(
-            "ul",
-            null,
-            messages.map(function (message) {
-              return _react2.default.createElement(
-                "li",
-                null,
-                message
-              );
-            })
-          )
+          messages.map(function (message) {
+            return _react2.default.createElement(
+              "li",
+              null,
+              message
+            );
+          })
         )
       );
     }

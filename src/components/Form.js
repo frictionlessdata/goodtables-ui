@@ -248,9 +248,8 @@ export class Form extends React.Component {
         {error &&
           <div className="row-message">
             <MessageGroup
-              type="warning"
-              title={'There is fatal error in validation'}
-              expandText="Error details"
+              type="danger"
+              title={'Error'}
               messages={[error.message]}
             />
           </div>
