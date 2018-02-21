@@ -3461,13 +3461,25 @@ var Form = exports.Form = function (_React$Component) {
           source = _state3.source,
           options = _state3.options;
 
-      if (source.endsWith('datapackage.json')) options.preset = 'datapackage';
+      if (this._isDataPackage(source)) options.preset = 'datapackage';
       this.setState({ report: null, error: null, isLoading: true });
       validate(source, (0, _helpers.merge)(options)).then(function (report) {
         _this2.setState({ report: report, isLoading: false });
       }).catch(function (error) {
         _this2.setState({ error: error, isLoading: false });
       });
+    }
+  }, {
+    key: '_isDataPackage',
+    value: function _isDataPackage(source) {
+      var path = source;
+
+      // Source is a file
+      if (source.name !== undefined) {
+        path = source.name;
+      }
+
+      return path.endsWith('datapackage.json');
     }
   }]);
 

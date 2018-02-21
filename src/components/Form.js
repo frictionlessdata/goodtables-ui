@@ -261,7 +261,7 @@ export class Form extends React.Component {
   onSubmit() {
     const {validate} = this.props
     const {source, options} = this.state
-    if (source.endsWith('datapackage.json')) options.preset = 'datapackage'
+    if (this._isDataPackage(source)) options.preset = 'datapackage'
     this.setState({report: null, error: null, isLoading: true})
     validate(source, merge(options)).then(report => {
       this.setState({report, isLoading: false})
@@ -270,4 +270,14 @@ export class Form extends React.Component {
     })
   }
 
+  _isDataPackage(source) {
+    let path = source
+
+    // Source is a file
+    if (source.name !== undefined) {
+      path = source.name
+    }
+
+    return path.endsWith('datapackage.json')
+  }
 }
