@@ -3095,6 +3095,8 @@ var Form = exports.Form = function (_React$Component) {
       var onSourceChange = this.onSourceChange.bind(this);
       var onOptionsChange = this.onOptionsChange.bind(this);
       var onSubmit = this.onSubmit.bind(this);
+      var checkOptionsControls = [{ key: 'blank-row', label: 'Ignore blank rows' }, { key: 'duplicate-row', label: 'Ignore duplicate rows' }];
+
       return _react2.default.createElement(
         'form',
         { className: 'goodtables-ui-form panel panel-default' },
@@ -3347,98 +3349,35 @@ var Form = exports.Form = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'row' },
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
+            checkOptionsControls.map(function (item) {
+              return _react2.default.createElement(
                 'div',
-                { className: 'checkbox' },
+                { className: 'col-md-6', key: item.key },
                 _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'errorLimit' },
-                  _react2.default.createElement('input', {
-                    name: 'errorLimit',
-                    type: 'checkbox',
-                    checked: options.errorLimit === 1,
-                    onChange: function onChange(ev) {
-                      onOptionsChange('errorLimit', ev.target.checked ? 1 : null);
-                    }
-                  }),
-                  'Stop on first error'
-                )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether validation should stop on the first error, or attempt to collect all errors.'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
-                'div',
-                { className: 'checkbox' },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'ignoreBlankRows' },
-                  _react2.default.createElement('input', {
-                    name: 'ignoreBlankRows',
-                    type: 'checkbox',
-                    checked: (options.checks || {})['blank-row'] === false,
-                    onChange: function onChange(ev) {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {};
-                        options.checks['blank-row'] = false;
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['blank-row'];
+                  'div',
+                  { className: 'checkbox' },
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: item.key },
+                    _react2.default.createElement('input', {
+                      id: item.key,
+                      type: 'checkbox',
+                      checked: (options.checks || {})[item.key] === false,
+                      onChange: function onChange(ev) {
+                        options.checks = options.checks || {};
+
+                        if (ev.target.checked) {
+                          options.checks[item.key] = false;
+                        } else {
+                          delete options.checks[item.key];
                         }
                       }
-                    }
-                  }),
-                  'Ignore blank rows'
+                    }),
+                    item.label
+                  )
                 )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether blank rows should be considered as errors, or simply ignored.'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
-                'div',
-                { className: 'checkbox' },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'ignoreDuplicateRows' },
-                  _react2.default.createElement('input', {
-                    name: 'ignoreDuplicateRows',
-                    type: 'checkbox',
-                    checked: (options.checks || {})['duplicate-row'] === false,
-                    onChange: function onChange(ev) {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {};
-                        options.checks['duplicate-row'] = false;
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['duplicate-row'];
-                        }
-                      }
-                    }
-                  }),
-                  'Ignore duplicate rows'
-                )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether duplicate rows should be considered as errors, or simply ignored.'
-              )
-            )
+              );
+            })
           )
         ),
         isLoading && _react2.default.createElement(
