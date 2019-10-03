@@ -87,7 +87,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 /*!
- * react-lite.js v0.15.33
+ * react-lite.js v0.15.39
  * (c) 2017 Jade Gu
  * Released under the MIT License.
  */
@@ -311,6 +311,8 @@ function collectChild(child, children) {
 }
 
 function diffVchildren(patches, vnode, newVnode, node, parentContext) {
+    if (!node.vchildren) return; // react-lite hasn't seen this DOM node before
+
     var childNodes = node.childNodes;
     var vchildren = node.vchildren;
 
@@ -353,16 +355,8 @@ function diffVchildren(patches, vnode, newVnode, node, parentContext) {
             }
             var _newVnode = newVchildren[j];
             if (_vnode === _newVnode) {
-                var shouldIgnore = true;
-                if (parentContext) {
-                    if (_vnode.vtype === VCOMPONENT || _vnode.vtype === VSTATELESS) {
-                        if (_vnode.type.contextTypes) {
-                            shouldIgnore = false;
-                        }
-                    }
-                }
                 updates[j] = {
-                    shouldIgnore: shouldIgnore,
+                    shouldIgnore: shouldIgnoreUpdate(node),
                     vnode: _vnode,
                     newVnode: _newVnode,
                     node: childNodes[i],
@@ -724,6 +718,32 @@ function syncCache(cache, oldCache, node) {
     }
 }
 
+function shouldIgnoreUpdate(node) {
+    var vchildren = node.vchildren;
+    var children = node.children;
+
+    if (vchildren) {
+        for (var i = 0; i < vchildren.length; i++) {
+            var vchild = vchildren[i];
+            if (vchild.vtype === VCOMPONENT || vchild.vtype === VSTATELESS) {
+                if (vchild.type.contextTypes) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    if (children) {
+        for (var i = 0; i < children.length; i++) {
+            if (!shouldIgnoreUpdate(children[i])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 var updateQueue = {
 	updaters: [],
 	isPending: false,
@@ -975,7 +995,31 @@ var unbubbleEvents = {
     ondraggesture: 1,
     ondragover: 1,
     oncontextmenu: 1,
-    onerror: 1
+    onerror: 1,
+
+    // media event
+    onabort: 1,
+    oncanplay: 1,
+    oncanplaythrough: 1,
+    ondurationchange: 1,
+    onemptied: 1,
+    onended: 1,
+    onloadeddata: 1,
+    onloadedmetadata: 1,
+    onloadstart: 1,
+    onencrypted: 1,
+    onpause: 1,
+    onplay: 1,
+    onplaying: 1,
+    onprogress: 1,
+    onratechange: 1,
+    onseeking: 1,
+    onseeked: 1,
+    onstalled: 1,
+    onsuspend: 1,
+    ontimeupdate: 1,
+    onvolumechange: 1,
+    onwaiting: 1
 };
 
 function getEventName(key) {
@@ -1020,7 +1064,7 @@ function addEvent(elem, eventType, listener) {
 
     var nodeName = elem.nodeName;
 
-    if (eventType === 'onchange') {
+    if (eventType === 'onchange' && supportInputEvent(elem)) {
         addEvent(elem, 'oninput', listener);
     }
 }
@@ -1041,7 +1085,7 @@ function removeEvent(elem, eventType) {
 
     var nodeName = elem.nodeName;
 
-    if (eventType === 'onchange') {
+    if (eventType === 'onchange' && supportInputEvent(elem)) {
         delete eventStore['oninput'];
     }
 }
@@ -1113,6 +1157,11 @@ function createSyntheticEvent(nativeEvent) {
         }
     }
     return syntheticEvent;
+}
+
+function supportInputEvent(elem) {
+    var nodeName = elem.nodeName && elem.nodeName.toLowerCase();
+    return nodeName !== 'select' && !(nodeName === 'input' && elem.type === 'file');
 }
 
 function setStyle(elemStyle, styles) {
@@ -1398,6 +1447,7 @@ var HTMLDOMPropertyConfig = {
         prefix: 0,
         // property is also supported for OpenGraph in meta tags.
         property: 0,
+        playsInline: HAS_BOOLEAN_VALUE,
         resource: 0,
         'typeof': 0,
         vocab: 0,
@@ -1785,11 +1835,7 @@ function setPropValue(node, name, value) {
         if (value == null || propInfo.hasBooleanValue && !value || propInfo.hasNumericValue && isNaN(value) || propInfo.hasPositiveNumericValue && value < 1 || propInfo.hasOverloadedBooleanValue && value === false) {
             removePropValue(node, name);
         } else if (propInfo.mustUseProperty) {
-            var propName = propInfo.propertyName;
-            // dom.value has side effect
-            if (propName !== 'value' || '' + node[propName] !== '' + value) {
-                node[propName] = value;
-            }
+            node[propInfo.propertyName] = value;
         } else {
             var attributeName = propInfo.attributeName;
             var namespace = propInfo.attributeNamespace;
@@ -1828,16 +1874,59 @@ function removePropValue(node, name) {
             if (propInfo.hasBooleanValue) {
                 node[propName] = false;
             } else {
-                // dom.value accept string value has side effect
-                if (propName !== 'value' || '' + node[propName] !== '') {
-                    node[propName] = '';
-                }
+                node[propName] = '';
             }
         } else {
             node.removeAttribute(propInfo.attributeName);
         }
     } else if (isCustomAttribute(name)) {
         node.removeAttribute(name);
+    }
+}
+
+function updateSelectOptions(select, multiple, propValue) {
+    var selectedValue, i;
+    var options = select.options;
+
+    if (multiple) {
+        select.multiple = true;
+        if (!Array.isArray(propValue)) {
+            throw new Error('The value prop supplied to <select> must be an array if `multiple` is true');
+        }
+        selectedValue = {};
+        for (i = 0; i < propValue.length; i++) {
+            selectedValue['' + propValue[i]] = true;
+        }
+        for (i = 0; i < options.length; i++) {
+            var selected = selectedValue.hasOwnProperty(options[i].value);
+            if (options[i].selected !== selected) {
+                options[i].selected = selected;
+            }
+        }
+    } else {
+        select.multiple = false;
+        if (Array.isArray(propValue)) {
+            throw new Error('The value prop supplied to <select> must be a scalar value if `multiple` is false.');
+        }
+        // Do not set `select.value` as exact behavior isn't consistent across all
+        // browsers for all cases.
+        selectedValue = '' + propValue;
+        for (i = 0; i < options.length; i++) {
+            var option = options[i];
+            if (option.value === selectedValue) {
+                if (!option.selected) {
+                    option.selected = true;
+                }
+            } else {
+                if (option.selected) {
+                    option.selected = false;
+                }
+            }
+        }
+
+        if (options.selectedIndex < 0 && options.length) {
+            options[0].selected = true;
+        }
     }
 }
 
@@ -1951,18 +2040,28 @@ function patchProp(elem, key, value, oldValue, isCustomComponent) {
 }
 
 function setProps(elem, props, isCustomComponent) {
+    var isSelect = elem.nodeName === 'SELECT';
     for (var key in props) {
         if (key !== 'children') {
-            setProp(elem, key, props[key], isCustomComponent);
+            if (isSelect && (key === 'value' || key === 'defaultValue')) {
+                updateSelectOptions(elem, props.multiple, props[key]);
+            } else {
+                setProp(elem, key, props[key], isCustomComponent);
+            }
         }
     }
 }
 
 function patchProps(elem, props, newProps, isCustomComponent) {
+    var isSelect = elem.nodeName === 'SELECT';
     for (var key in props) {
         if (key !== 'children') {
             if (newProps.hasOwnProperty(key)) {
-                patchProp(elem, key, newProps[key], props[key], isCustomComponent);
+                if (isSelect && (key === 'value' || key === 'defaultValue')) {
+                    updateSelectOptions(elem, newProps.multiple, newProps[key]);
+                } else {
+                    patchProp(elem, key, newProps[key], props[key], isCustomComponent);
+                }
             } else {
                 removeProp(elem, key, props[key], isCustomComponent);
             }
@@ -1970,7 +2069,11 @@ function patchProps(elem, props, newProps, isCustomComponent) {
     }
     for (var key in newProps) {
         if (key !== 'children' && !props.hasOwnProperty(key)) {
-            setProp(elem, key, newProps[key], isCustomComponent);
+            if (isSelect && (key === 'value' || key === 'defaultValue')) {
+                updateSelectOptions(elem, newProps.multiple, newProps[key]);
+            } else {
+                setProp(elem, key, newProps[key], isCustomComponent);
+            }
         }
     }
 }
@@ -2234,9 +2337,22 @@ function forEach(children, iteratee, context) {
 	var index = 0;
 	if (isArr(children)) {
 		flatEach(children, function (child) {
+			// from traverseAllChildrenImpl in react
+			var type = typeof child;
+			if (type === 'undefined' || type === 'boolean') {
+				// All of the above are perceived as null.
+				child = null;
+			}
+
 			iteratee.call(context, child, index++);
 		});
 	} else {
+		// from traverseAllChildrenImpl in react
+		var type = typeof children;
+		if (type === 'undefined' || type === 'boolean') {
+			// All of the above are perceived as null.
+			children = null;
+		}
 		iteratee.call(context, children, index);
 	}
 }
@@ -2949,10 +3065,9 @@ var Form = exports.Form = function (_React$Component) {
       options: options || {},
       report: null,
       error: null
-    };
 
-    // Load report
-    if (_this.props.reportPromise) {
+      // Load report
+    };if (_this.props.reportPromise) {
       _this.props.reportPromise.then(function (report) {
         _this.setState({ report: report, isLoading: false });
       }).catch(function (error) {
@@ -2980,6 +3095,8 @@ var Form = exports.Form = function (_React$Component) {
       var onSourceChange = this.onSourceChange.bind(this);
       var onOptionsChange = this.onOptionsChange.bind(this);
       var onSubmit = this.onSubmit.bind(this);
+      var checkOptionsControls = [{ key: 'blank-row', label: 'Ignore blank rows' }, { key: 'duplicate-row', label: 'Ignore duplicate rows' }];
+
       return _react2.default.createElement(
         'form',
         { className: 'goodtables-ui-form panel panel-default' },
@@ -3031,7 +3148,7 @@ var Form = exports.Form = function (_React$Component) {
                 _react2.default.createElement(
                   'button',
                   {
-                    className: 'btn btn-success',
+                    className: 'btn btn-primary',
                     onClick: function onClick(ev) {
                       ev.preventDefault();onSubmit();
                     }
@@ -3232,98 +3349,35 @@ var Form = exports.Form = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'row' },
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
+            checkOptionsControls.map(function (item) {
+              return _react2.default.createElement(
                 'div',
-                { className: 'checkbox' },
+                { className: 'col-md-6', key: item.key },
                 _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'errorLimit' },
-                  _react2.default.createElement('input', {
-                    name: 'errorLimit',
-                    type: 'checkbox',
-                    checked: options.errorLimit === 1,
-                    onChange: function onChange(ev) {
-                      onOptionsChange('errorLimit', ev.target.checked ? 1 : null);
-                    }
-                  }),
-                  'Stop on first error'
-                )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether validation should stop on the first error, or attempt to collect all errors.'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
-                'div',
-                { className: 'checkbox' },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'ignoreBlankRows' },
-                  _react2.default.createElement('input', {
-                    name: 'ignoreBlankRows',
-                    type: 'checkbox',
-                    checked: (options.checks || {})['blank-row'] === false,
-                    onChange: function onChange(ev) {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {};
-                        options.checks['blank-row'] = false;
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['blank-row'];
+                  'div',
+                  { className: 'checkbox' },
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: item.key },
+                    _react2.default.createElement('input', {
+                      id: item.key,
+                      type: 'checkbox',
+                      checked: (options.checks || {})[item.key] === false,
+                      onChange: function onChange(ev) {
+                        options.checks = options.checks || {};
+
+                        if (ev.target.checked) {
+                          options.checks[item.key] = false;
+                        } else {
+                          delete options.checks[item.key];
                         }
                       }
-                    }
-                  }),
-                  'Ignore blank rows'
+                    }),
+                    item.label
+                  )
                 )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether blank rows should be considered as errors, or simply ignored.'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'col-md-4' },
-              _react2.default.createElement(
-                'div',
-                { className: 'checkbox' },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: 'ignoreDuplicateRows' },
-                  _react2.default.createElement('input', {
-                    name: 'ignoreDuplicateRows',
-                    type: 'checkbox',
-                    checked: (options.checks || {})['duplicate-row'] === false,
-                    onChange: function onChange(ev) {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {};
-                        options.checks['duplicate-row'] = false;
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['duplicate-row'];
-                        }
-                      }
-                    }
-                  }),
-                  'Ignore duplicate rows'
-                )
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Indicate whether duplicate rows should be considered as errors, or simply ignored.'
-              )
-            )
+              );
+            })
           )
         ),
         isLoading && _react2.default.createElement(
@@ -3339,9 +3393,8 @@ var Form = exports.Form = function (_React$Component) {
           'div',
           { className: 'row-message' },
           _react2.default.createElement(_MessageGroup.MessageGroup, {
-            type: 'warning',
-            title: 'There is fatal error in validation',
-            expandText: 'Error details',
+            type: 'danger',
+            title: 'Error',
             messages: [error.message]
           })
         ),
@@ -3408,12 +3461,25 @@ var Form = exports.Form = function (_React$Component) {
           source = _state3.source,
           options = _state3.options;
 
+      if (this._isDataPackage(source)) options.preset = 'datapackage';
       this.setState({ report: null, error: null, isLoading: true });
       validate(source, (0, _helpers.merge)(options)).then(function (report) {
         _this2.setState({ report: report, isLoading: false });
       }).catch(function (error) {
         _this2.setState({ error: error, isLoading: false });
       });
+    }
+  }, {
+    key: '_isDataPackage',
+    value: function _isDataPackage(source) {
+      var path = source;
+
+      // Source is a file
+      if (source.name !== undefined) {
+        path = source.name;
+      }
+
+      return path.endsWith('datapackage.json');
     }
   }]);
 
@@ -3691,7 +3757,7 @@ function ErrorGroupTable(_ref2) {
           { className: 'result-row-index' },
           rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2
         ),
-        errorGroup.headers.map(function () {
+        errorGroup.headers && errorGroup.headers.map(function () {
           return _react2.default.createElement('td', null);
         })
       )
@@ -3781,63 +3847,43 @@ var MessageGroup = exports.MessageGroup = function (_React$Component) {
   function MessageGroup(_ref) {
     var type = _ref.type,
         title = _ref.title,
-        messages = _ref.messages,
-        expandText = _ref.expandText;
+        messages = _ref.messages;
 
     _classCallCheck(this, MessageGroup);
 
-    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages, expandText: expandText }));
+    var _this = _possibleConstructorReturn(this, (MessageGroup.__proto__ || Object.getPrototypeOf(MessageGroup)).call(this, { type: type, title: title, messages: messages }));
 
-    _this.state = {
-      isExpanded: false
-    };
+    _this.state = {};
     return _this;
   }
 
   _createClass(MessageGroup, [{
     key: "render",
     value: function render() {
-      var _this2 = this;
-
       var _props = this.props,
           type = _props.type,
           title = _props.title,
-          messages = _props.messages,
-          expandText = _props.expandText;
-      var isExpanded = this.state.isExpanded;
+          messages = _props.messages;
 
       return _react2.default.createElement(
         "div",
         { className: "alert alert-" + type, role: "alert" },
         _react2.default.createElement(
           "span",
-          { className: "title", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
+          { className: "title" },
           title
         ),
+        _react2.default.createElement("hr", null),
         _react2.default.createElement(
-          "a",
-          { className: "show-details", onClick: function onClick() {
-              return _this2.setState({ isExpanded: !isExpanded });
-            } },
-          expandText
-        ),
-        isExpanded && _react2.default.createElement(
-          "div",
+          "ul",
           null,
-          _react2.default.createElement("hr", null),
-          _react2.default.createElement(
-            "ul",
-            null,
-            messages.map(function (message) {
-              return _react2.default.createElement(
-                "li",
-                null,
-                message
-              );
-            })
-          )
+          messages.map(function (message) {
+            return _react2.default.createElement(
+              "li",
+              null,
+              message
+            );
+          })
         )
       );
     }
@@ -4731,8 +4777,8 @@ var rsMiscLower = '(?:' + rsLower + '|' + rsMisc + ')',
     reOptMod = rsModifier + '?',
     rsOptVar = '[' + rsVarRange + ']?',
     rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-    rsOrdLower = '\\d*(?:(?:1st|2nd|3rd|(?![123])\\dth)\\b)',
-    rsOrdUpper = '\\d*(?:(?:1ST|2ND|3RD|(?![123])\\dTH)\\b)',
+    rsOrdLower = '\\d*(?:1st|2nd|3rd|(?![123])\\dth)(?=\\b|[A-Z_])',
+    rsOrdUpper = '\\d*(?:1ST|2ND|3RD|(?![123])\\dTH)(?=\\b|[a-z_])',
     rsSeq = rsOptVar + reOptMod + rsOptJoin,
     rsEmoji = '(?:' + [rsDingbat, rsRegional, rsSurrPair].join('|') + ')' + rsSeq;
 
@@ -5070,6 +5116,7 @@ module.exports = words;
  */
 
 ;(function() {
+'use strict';
 
 /**
  * Block-Level Grammar
@@ -5514,21 +5561,21 @@ Lexer.prototype.token = function(src, top, bq) {
 
 var inline = {
   escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
-  autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
+  autolink: /^<([^ <>]+(@|:\/)[^ <>]+)>/,
   url: noop,
-  tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
+  tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^<'">])*?>/,
   link: /^!?\[(inside)\]\(href\)/,
   reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
   nolink: /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,
   strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
   em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
-  code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
+  code: /^(`+)([\s\S]*?[^`])\1(?!`)/,
   br: /^ {2,}\n(?!\s*$)/,
   del: noop,
   text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/
 };
 
-inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
+inline._inside = /(?:\[[^\]]*\]|\\[\[\]]|[^\[\]]|\](?=[^\[]*\]))*/;
 inline._href = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
 
 inline.link = replace(inline.link)
@@ -5643,9 +5690,11 @@ InlineLexer.prototype.output = function(src) {
     if (cap = this.rules.autolink.exec(src)) {
       src = src.substring(cap[0].length);
       if (cap[2] === '@') {
-        text = cap[1].charAt(6) === ':'
+        text = escape(
+          cap[1].charAt(6) === ':'
           ? this.mangle(cap[1].substring(7))
-          : this.mangle(cap[1]);
+          : this.mangle(cap[1])
+        );
         href = this.mangle('mailto:') + text;
       } else {
         text = escape(cap[1]);
@@ -5726,7 +5775,7 @@ InlineLexer.prototype.output = function(src) {
     // code
     if (cap = this.rules.code.exec(src)) {
       src = src.substring(cap[0].length);
-      out += this.renderer.codespan(escape(cap[2], true));
+      out += this.renderer.codespan(escape(cap[2].trim(), true));
       continue;
     }
 
@@ -5938,11 +5987,14 @@ Renderer.prototype.link = function(href, title, text) {
         .replace(/[^\w:]/g, '')
         .toLowerCase();
     } catch (e) {
-      return '';
+      return text;
     }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
-      return '';
+    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+      return text;
     }
+  }
+  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
+    href = resolveUrl(this.options.baseUrl, href);
   }
   var out = '<a href="' + href + '"';
   if (title) {
@@ -5953,6 +6005,9 @@ Renderer.prototype.link = function(href, title, text) {
 };
 
 Renderer.prototype.image = function(href, title, text) {
+  if (this.options.baseUrl && !originIndependentUrl.test(href)) {
+    href = resolveUrl(this.options.baseUrl, href);
+  }
   var out = '<img src="' + href + '" alt="' + text + '"';
   if (title) {
     out += ' title="' + title + '"';
@@ -6159,8 +6214,8 @@ function escape(html, encode) {
 }
 
 function unescape(html) {
-	// explicitly match decimal, hex, and named HTML entities 
-  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g, function(_, n) {
+	// explicitly match decimal, hex, and named HTML entities
+  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function(_, n) {
     n = n.toLowerCase();
     if (n === 'colon') return ':';
     if (n.charAt(0) === '#') {
@@ -6183,6 +6238,30 @@ function replace(regex, opt) {
     return self;
   };
 }
+
+function resolveUrl(base, href) {
+  if (!baseUrls[' ' + base]) {
+    // we can ignore everything in base after the last slash of its path component,
+    // but we might need to add _that_
+    // https://tools.ietf.org/html/rfc3986#section-3
+    if (/^[^:]+:\/*[^/]*$/.test(base)) {
+      baseUrls[' ' + base] = base + '/';
+    } else {
+      baseUrls[' ' + base] = base.replace(/[^/]*$/, '');
+    }
+  }
+  base = baseUrls[' ' + base];
+
+  if (href.slice(0, 2) === '//') {
+    return base.replace(/:[\s\S]*/, ':') + href;
+  } else if (href.charAt(0) === '/') {
+    return base.replace(/(:\/*[^/]*)[\s\S]*/, '$1') + href;
+  } else {
+    return base + href;
+  }
+}
+var baseUrls = {};
+var originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
 function noop() {}
 noop.exec = noop;
@@ -6285,7 +6364,7 @@ function marked(src, opt, callback) {
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/chjj/marked.';
     if ((opt || marked.defaults).silent) {
-      return '<p>An error occured:</p><pre>'
+      return '<p>An error occurred:</p><pre>'
         + escape(e.message + '', true)
         + '</pre>';
     }
@@ -6318,7 +6397,8 @@ marked.defaults = {
   smartypants: false,
   headerPrefix: '',
   renderer: new Renderer,
-  xhtml: false
+  xhtml: false,
+  baseUrl: null
 };
 
 /**
@@ -6361,211 +6441,7 @@ if (true) {
   \***********************/
 /***/ (function(module, exports) {
 
-module.exports = {
-	"version": "1.0.0",
-	"errors": {
-		"io-error": {
-			"name": "IO Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source returned an IO Error of type {error_type}",
-			"description": "Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."
-		},
-		"http-error": {
-			"name": "HTTP Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source returned an HTTP error with a status code of {status_code}",
-			"description": "Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."
-		},
-		"source-error": {
-			"name": "Source Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source has not supported or has inconsistent contents; no tabular data can be extracted",
-			"description": "Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."
-		},
-		"scheme-error": {
-			"name": "Scheme Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source is in an unknown scheme; no tabular data can be extracted",
-			"description": "Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."
-		},
-		"format-error": {
-			"name": "Format Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source is in an unknown format; no tabular data can be extracted",
-			"description": "Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."
-		},
-		"encoding-error": {
-			"name": "Encoding Error",
-			"type": "source",
-			"context": "table",
-			"weight": 100,
-			"message": "The data source could not be successfully decoded with {encoding} encoding",
-			"description": "Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."
-		},
-		"blank-header": {
-			"name": "Blank Header",
-			"type": "structure",
-			"context": "head",
-			"weight": 3,
-			"message": "Header in column {column_number} is blank",
-			"description": "A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."
-		},
-		"duplicate-header": {
-			"name": "Duplicate Header",
-			"type": "structure",
-			"context": "head",
-			"weight": 3,
-			"message": "Header in column {column_number} is duplicated to header in column(s) {column_numbers}",
-			"description": "Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."
-		},
-		"blank-row": {
-			"name": "Blank Row",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} is completely blank",
-			"description": "This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."
-		},
-		"duplicate-row": {
-			"name": "Duplicate Row",
-			"type": "structure",
-			"context": "body",
-			"weight": 5,
-			"message": "Row {row_number} is duplicated to row(s) {row_numbers}",
-			"description": "The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."
-		},
-		"extra-value": {
-			"name": "Extra Value",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} has an extra value in column {column_number}",
-			"description": "This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."
-		},
-		"missing-value": {
-			"name": "Missing Value",
-			"type": "structure",
-			"context": "body",
-			"weight": 9,
-			"message": "Row {row_number} has a missing value in column {column_number}",
-			"description": "This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."
-		},
-		"schema-error": {
-			"name": "Table Schema Error",
-			"type": "schema",
-			"context": "table",
-			"weight": 15,
-			"message": "Table Schema error: {error_message}",
-			"description": "Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."
-		},
-		"non-matching-header": {
-			"name": "Non-Matching Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "Header in column {column_number} doesn't match field name {field_name} in the schema",
-			"description": "One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."
-		},
-		"extra-header": {
-			"name": "Extra Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "There is an extra header in column {column_number}",
-			"description": "The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."
-		},
-		"missing-header": {
-			"name": "Missing Header",
-			"type": "schema",
-			"context": "head",
-			"weight": 9,
-			"message": "There is a missing header in column {column_number}",
-			"description": "Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."
-		},
-		"type-or-format-error": {
-			"name": "Type or Format Error",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}",
-			"description": "The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."
-		},
-		"required-constraint": {
-			"name": "Required Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "Column {column_number} is a required field, but row {row_number} has no value",
-			"description": "This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."
-		},
-		"pattern-constraint": {
-			"name": "Pattern Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}",
-			"description": "This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."
-		},
-		"unique-constraint": {
-			"name": "Unique Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 9,
-			"message": "Rows {row_numbers} has unique constraint violation in column {column_number}",
-			"description": "This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."
-		},
-		"enumerable-constraint": {
-			"name": "Enumerable Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}",
-			"description": "This field value should be equal to one of the values in the enumeration constraint.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."
-		},
-		"minimum-constraint": {
-			"name": "Minimum Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}",
-			"description": "This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."
-		},
-		"maximum-constraint": {
-			"name": "Maximum Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}",
-			"description": "This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."
-		},
-		"minimum-length-constraint": {
-			"name": "Minimum Length Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}",
-			"description": "A lenght of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."
-		},
-		"maximum-length-constraint": {
-			"name": "Maximum Length Constraint",
-			"type": "schema",
-			"context": "body",
-			"weight": 7,
-			"message": "The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}",
-			"description": "A lenght of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."
-		}
-	}
-};
+module.exports = {"version":"1.0.0","errors":{"io-error":{"name":"IO Error","type":"source","context":"table","weight":100,"message":"The data source returned an IO Error of type {error_type}","description":"Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."},"http-error":{"name":"HTTP Error","type":"source","context":"table","weight":100,"message":"The data source returned an HTTP error with a status code of {status_code}","description":"Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."},"source-error":{"name":"Source Error","type":"source","context":"table","weight":100,"message":"The data source has not supported or has inconsistent contents; no tabular data can be extracted","description":"Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."},"scheme-error":{"name":"Scheme Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown scheme; no tabular data can be extracted","description":"Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."},"format-error":{"name":"Format Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown format; no tabular data can be extracted","description":"Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."},"encoding-error":{"name":"Encoding Error","type":"source","context":"table","weight":100,"message":"The data source could not be successfully decoded with {encoding} encoding","description":"Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."},"blank-header":{"name":"Blank Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is blank","description":"A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."},"duplicate-header":{"name":"Duplicate Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is duplicated to header in column(s) {column_numbers}","description":"Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."},"blank-row":{"name":"Blank Row","type":"structure","context":"body","weight":9,"message":"Row {row_number} is completely blank","description":"This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."},"duplicate-row":{"name":"Duplicate Row","type":"structure","context":"body","weight":5,"message":"Row {row_number} is duplicated to row(s) {row_numbers}","description":"The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."},"extra-value":{"name":"Extra Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has an extra value in column {column_number}","description":"This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."},"missing-value":{"name":"Missing Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has a missing value in column {column_number}","description":"This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."},"schema-error":{"name":"Table Schema Error","type":"schema","context":"table","weight":15,"message":"Table Schema error: {error_message}","description":"Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."},"non-matching-header":{"name":"Non-Matching Header","type":"schema","context":"head","weight":9,"message":"Header in column {column_number} doesn't match field name {field_name} in the schema","description":"One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."},"extra-header":{"name":"Extra Header","type":"schema","context":"head","weight":9,"message":"There is an extra header in column {column_number}","description":"The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."},"missing-header":{"name":"Missing Header","type":"schema","context":"head","weight":9,"message":"There is a missing header in column {column_number}","description":"Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."},"type-or-format-error":{"name":"Type or Format Error","type":"schema","context":"body","weight":9,"message":"The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}","description":"The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."},"required-constraint":{"name":"Required Constraint","type":"schema","context":"body","weight":9,"message":"Column {column_number} is a required field, but row {row_number} has no value","description":"This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."},"pattern-constraint":{"name":"Pattern Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}","description":"This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."},"unique-constraint":{"name":"Unique Constraint","type":"schema","context":"body","weight":9,"message":"Rows {row_numbers} has unique constraint violation in column {column_number}","description":"This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."},"enumerable-constraint":{"name":"Enumerable Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}","description":"This field value should be equal to one of the values in the enumeration constraint.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."},"minimum-constraint":{"name":"Minimum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}","description":"This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."},"maximum-constraint":{"name":"Maximum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}","description":"This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."},"minimum-length-constraint":{"name":"Minimum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}","description":"A length of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."},"maximum-length-constraint":{"name":"Maximum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}","description":"A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."}}}
 
 /***/ })
 /******/ ]);

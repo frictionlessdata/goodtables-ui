@@ -13,10 +13,9 @@ describe('MessageGroup', () => {
         type={'warning'}
         title={'title'}
         messages={['message']}
-        expandText={'expandText'}
       />
     )
     assert(result.contains('title'))
-    assert(result.contains('expandText'))
+    assert(result.contains('message'))
   })
 })

@@ -42,6 +42,11 @@ export class Form extends React.Component {
     const onSourceChange = this.onSourceChange.bind(this)
     const onOptionsChange = this.onOptionsChange.bind(this)
     const onSubmit = this.onSubmit.bind(this)
+    const checkOptionsControls = [
+      {key: 'blank-row', label: 'Ignore blank rows'},
+      {key: 'duplicate-row', label: 'Ignore duplicate rows'},
+    ]
+
     return (
       <form className="goodtables-ui-form panel panel-default">
 
@@ -76,7 +81,7 @@ export class Form extends React.Component {
 
               <div className="input-group-btn" style={{width: '1%'}}>
                 <button
-                  className="btn btn-success"
+                  className="btn btn-primary"
                   onClick={ev => {ev.preventDefault(); onSubmit()}}
                 >
                   Validate
@@ -168,72 +173,29 @@ export class Form extends React.Component {
 
         <div className="row-flags">
           <div className="row">
-            <div className="col-md-4">
-              <div className="checkbox">
-                <label htmlFor="errorLimit">
-                  <input
-                    name="errorLimit"
-                    type="checkbox"
-                    checked={options.errorLimit === 1}
-                    onChange={ev => {
-                      onOptionsChange('errorLimit', (ev.target.checked) ? 1 : null)
-                    }}
-                  />
-                  Stop on first error
-                </label>
-              </div>
-              <small>
-                Indicate whether validation should stop on the first error, or attempt to collect all errors.
-              </small>
-            </div>
+            {checkOptionsControls.map(item => (
+              <div className="col-md-6" key={item.key}>
+                <div className="checkbox">
+                  <label htmlFor={item.key}>
+                    <input
+                      id={item.key}
+                      type="checkbox"
+                      checked={(options.checks || {})[item.key] === false}
+                      onChange={ev => {
+                        options.checks = options.checks || {}
 
-            <div className="col-md-4">
-              <div className="checkbox">
-                <label htmlFor="ignoreBlankRows">
-                  <input
-                    name="ignoreBlankRows"
-                    type="checkbox"
-                    checked={(options.checks || {})['blank-row'] === false}
-                    onChange={ev => {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {}
-                        options.checks['blank-row'] = false
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['blank-row']
+                        if (ev.target.checked) {
+                          options.checks[item.key] = false
+                        } else {
+                          delete options.checks[item.key]
                         }
-                      }
-                    }}
-                  />
-                  Ignore blank rows
-                </label>
+                      }}
+                    />
+                    {item.label}
+                  </label>
+                </div>
               </div>
-              <small>Indicate whether blank rows should be considered as errors, or simply ignored.</small>
-            </div>
-
-            <div className="col-md-4">
-              <div className="checkbox">
-                <label htmlFor="ignoreDuplicateRows">
-                  <input
-                    name="ignoreDuplicateRows"
-                    type="checkbox"
-                    checked={(options.checks || {})['duplicate-row'] === false}
-                    onChange={ev => {
-                      if (ev.target.checked) {
-                        if (!(options.checks instanceof Object)) options.checks = {}
-                        options.checks['duplicate-row'] = false
-                      } else {
-                        if (options.checks instanceof Object) {
-                          delete options.checks['duplicate-row']
-                        }
-                      }
-                    }}
-                  />
-                  Ignore duplicate rows
-                </label>
-              </div>
-              <small>Indicate whether duplicate rows should be considered as errors, or simply ignored.</small>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -248,9 +210,8 @@ export class Form extends React.Component {
         {error &&
           <div className="row-message">
             <MessageGroup
-              type="warning"
-              title={'There is fatal error in validation'}
-              expandText="Error details"
+              type="danger"
+              title={'Error'}
               messages={[error.message]}
             />
           </div>
@@ -300,6 +261,7 @@ export class Form extends React.Component {
   onSubmit() {
     const {validate} = this.props
     const {source, options} = this.state
+    if (this._isDataPackage(source)) options.preset = 'datapackage'
     this.setState({report: null, error: null, isLoading: true})
     validate(source, merge(options)).then(report => {
       this.setState({report, isLoading: false})
@@ -308,4 +270,14 @@ export class Form extends React.Component {
     })
   }
 
+  _isDataPackage(source) {
+    let path = source
+
+    // Source is a file
+    if (source.name !== undefined) {
+      path = source.name
+    }
+
+    return path.endsWith('datapackage.json')
+  }
 }
