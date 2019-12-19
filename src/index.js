@@ -1,7 +1,7 @@
-import './styles.scss'
-import {render} from './render'
-import {Report} from './components/Report'
-import {Form} from './components/Form'
+require('./styles.scss')
+const { render } = require('./render')
+const { Report } = require('./components/Report')
+const { Form } = require('./components/Form')
 
 
 // Module API

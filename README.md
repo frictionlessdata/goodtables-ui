@@ -13,6 +13,25 @@ UI for `goodtables` as an framework-agnostic browser components ([DEMO](https://
 - `Report` -  [goodtables report]( https://github.com/frictionlessdata/goodtables-py#goodtables) component
 - `Form` - goodtables validation form component
 
+## Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+- [Documentation](#documentation)
+  - [React](#react)
+  - [Angular](#angular)
+  - [Vue](#vue)
+- [API Reference](#api-reference)
+  - [render(component, props, element)](#rendercomponent-props-element)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Getting Started
 
 You could use this components in plain JavaScript code or mixing with any modern framework (with native support for React). To render `report` you have use `goodtablesUI.render(goodtablesUI.Report, props, element)` function.
@@ -56,9 +75,9 @@ The package could be used as pluggable script from CDN:
 </script>
 ```
 
-### Examples
+## Documentation
 
-#### React
+### React
 
 > In this case your application should provide `react` and `react-dom`.
 
@@ -74,7 +93,7 @@ const element = document.getElementById('report')
 ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 ```
 
-#### Angular
+### Angular
 
 > This example is for Angular2+. Use similliar approach for Angular1.
 
@@ -97,7 +116,7 @@ class Report {
 }
 ```
 
-#### Vue
+### Vue
 
 > This example is for Vue2+. Use similar approach for Vue1.
 
@@ -116,38 +135,18 @@ const Report = {
 }
 ```
 
-## Documentation
+## API Reference
 
-The whole public API of this package is described here and follows semantic versioning rules. Everything outside of this readme are private API and could be changed without any notification on any new version.
+### render(component, props, element)
+Render component
 
-### Render
 
-To render one of the provided component `render` function should be used.
+| Param | Type | Description |
+| --- | --- | --- |
+| component | <code>Component</code> | one of provided by the library component e.g. `Report` |
+| props | <code>Object</code> | object containing props |
+| element | <code>Element</code> | DOM element to render into |
 
-#### `render(component, props, element)`
-
-- `component (Component)` - it could be one of provided by the library component e.g. `Report`
-- `props (Object)` - object containing props
-- `element (Element)` - DOM element to render into
-
-### Report
-
-This component represents a `goodtables` report object.
-
-#### `<Report report/>`
-
-- `report (Object)` - goodtables report
-
-### Form
-
-This component represents a validation form.
-
-#### `<Form source options validate reportPromise/>`
-
-- `source (String)` - see `goodtables-js` [documentation](https://github.com/frictionlessdata/goodtables-js#validate)
-- `options (Object)` - see `goodtables-js` [documentation](https://github.com/frictionlessdata/goodtables-js#validate)
-- `validate (async func)` - an async function which gets `source` and `options` and resolves to goodtables report
-- `reportPromise (Promise)` - a promise to be resolved as a goodtables report
 
 ## Contributing
 
@@ -163,27 +162,27 @@ $ npm run test
 
 Here described only breaking and the most important changes. The full changelog and documentation for all released versions could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
 
-### v1.1
+#### v1.1
 
 Improved behaviour:
 - updated to Data Quality Spec v1
 - added support for custom checks
 
-### v1.0
+#### v1.0
 
 First stable realese.
 
-### v0.3
+#### v0.3
 
 New functionality added:
 - `Form` component now supports source/schema uploading
 
-### v0.2
+#### v0.2
 
 New API added:
 - published `Form` component
 
-### v0.1
+#### v0.1
 
 New API added:
 - published `Report` component
