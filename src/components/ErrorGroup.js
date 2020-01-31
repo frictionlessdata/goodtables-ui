@@ -110,7 +110,7 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
             index < visibleRowsCount && (
               <tr className={classNames({ fail: errorGroup.code.includes('row') })}>
                 <td className="result-row-index">{rowNumber || 1}</td>
-                {errorGroup.rows[rowNumber || 1].values.map((value, innerIndex) => (
+                {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
                     className={classNames({
                       fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1),

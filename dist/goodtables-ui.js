@@ -2645,7 +2645,9 @@ function getTableErrorGroups(table) {
 
       // Create row
       if (!row) {
-        var values = error.row;
+        // This report has a body error with no `row` (is it valid?) so we use a default
+        // https://github.com/frictionlessdata/goodtables-ui/issues/25#issuecomment-573673325
+        var values = error.row || [];
         if (!error['row-number']) {
           values = table.headers;
         }
@@ -2672,7 +2674,8 @@ function getTableErrorGroups(table) {
       // Save group
       group.count += 1;
       group.messages.push(error.message);
-      group.rows[error['row-number'] || 1] = row;
+      // TODO: fix that it's hard-coded to `null` for the headers row
+      group.rows[error['row-number'] || null] = row;
       groups[error.code] = group;
     }
   } catch (err) {
@@ -3757,7 +3760,7 @@ function ErrorGroupTable(_ref2) {
             { className: 'result-row-index' },
             rowNumber || 1
           ),
-          errorGroup.rows[rowNumber || 1].values.map(function (value, innerIndex) {
+          errorGroup.rows[rowNumber].values.map(function (value, innerIndex) {
             return _react2.default.createElement(
               'td',
               {

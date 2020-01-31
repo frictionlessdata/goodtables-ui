@@ -22,7 +22,9 @@ export function getTableErrorGroups(table) {
 
     // Create row
     if (!row) {
-      let values = error.row
+      // This report has a body error with no `row` (is it valid?) so we use a default
+      // https://github.com/frictionlessdata/goodtables-ui/issues/25#issuecomment-573673325
+      let values = error.row || []
       if (!error['row-number']) {
         values = table.headers
       }
@@ -47,7 +49,8 @@ export function getTableErrorGroups(table) {
     // Save group
     group.count += 1
     group.messages.push(error.message)
-    group.rows[error['row-number'] || 1] = row
+    // TODO: fix that it's hard-coded to `null` for the headers row
+    group.rows[error['row-number'] || null] = row
     groups[error.code] = group
   }
   return groups
