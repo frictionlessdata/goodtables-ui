@@ -1,44 +1,97 @@
 {
-  "error-count": 2,
-  "preset": "table",
-  "table-count": 1,
-  "tables": [
-    {
-      "encoding": "utf-8",
-      "error-count": 2,
-      "errors": [
-        {
-          "code": "blank-header",
-          "column-number": 5,
-          "message": "Header in column 5 is blank",
-          "message-data": {}
-        },
-        {
-          "code": "duplicate-row",
-          "message": "Row 6 is duplicated to row(s) 2",
-          "message-data": {
-            "row_numbers": "2"
-          },
-          "row-number": 6
-        }
-      ],
-      "format": "csv",
-      "headers": [
-        "col1",
-        "col2",
-        "col3",
-        "col4",
-        ""
-      ],
-      "row-count": 8,
-      "schema": "table-schema",
-      "scheme": "s3",
-      "source": "test_errors.csv",
-      "time": 0.044,
-      "valid": false
-    }
-  ],
-  "time": 0.102,
   "valid": false,
-  "warnings": null
+  "time": 0.027,
+  "warnings": [
+    "Dataset inspection has reached 100 table(s) limit"
+    ],
+    "tables": [
+      {
+        "valid": false,
+        "time": 0.02,
+        "errors": [
+          {
+            "message": "Header in column 3 is blank",
+            "column-number": 3,
+            "code": "blank-header"
+          },
+          {
+            "message": "Header in column 4 is duplicated to header in column(s) 2",
+            "column-number": 4,
+            "code": "duplicate-header"
+          },
+          {
+            "message": "Row 2 has a missing value in column 3",
+            "column-number": 3,
+            "row": [
+              "1",
+              "english"
+            ],
+            "code": "missing-value",
+            "row-number": 2
+          },
+          {
+            "message": "Row 2 has a missing value in column 4",
+            "column-number": 4,
+            "row": [
+              "1",
+              "english"
+            ],
+            "code": "missing-value",
+            "row-number": 2
+          },
+          {
+            "message": "Row 3 is duplicated to row(s) 2",
+            "row": [
+              "1",
+              "english"
+            ],
+            "code": "duplicate-row",
+            "row-number": 3
+          },
+          {
+            "message": "Row 4 is completely blank",
+            "row": [],
+            "code": "blank-row",
+            "row-number": 4
+          },
+          {
+            "message": "Row 5 has an extra value in column 5",
+            "column-number": 5,
+            "row": [
+              "2",
+              "german",
+              "1",
+              "2",
+              "3"
+            ],
+            "code": "extra-value",
+            "row-number": 5
+          }
+        ],
+        "row-count": 5,
+        "headers": [
+          "id",
+          "name",
+          "",
+          "name"
+        ],
+        "error-count": 7,
+        "source": "data/invalid.csv"
+      },
+      {
+        "valid": true,
+        "time": 0.01,
+        "errors": [],
+        "row-count": 20,
+        "headers": [
+          "a",
+          "b",
+          "c"
+        ],
+        "error-count": 0,
+        "source": "https://raw.githubusercontent.com/frictionlessdata/ADB-User-Study/3ca0be9be25de1b3a7110ada06c84fa49b7cff96/_enrich_node1592.csv"
+      }
+    ],
+    "table-count": 2,
+    "error-count": 7
 }

@@ -8,7 +8,7 @@ const report1 = require('../../data/report1.json')
 
 // Tests
 
-describe.only('ErrorGroup (goodtables@2)', () => {
+describe('ErrorGroup (goodtables@2)', () => {
   it('should render', () => {
     const errorGroup = getTableErrorGroups(report2.tables[0])['blank-header']
     const result = shallow(<ErrorGroup errorGroup={errorGroup} />)

@@ -3,7 +3,6 @@
 export function getTableErrorGroups(table) {
   const groups = {}
   for (const error of table.errors) {
-
     // Get group
     let group = groups[error.code]
 
@@ -48,18 +47,15 @@ export function getTableErrorGroups(table) {
     // Save group
     group.count += 1
     group.messages.push(error.message)
-    group.rows[error['row-number']] = row
+    group.rows[error['row-number'] || 1] = row
     groups[error.code] = group
-
   }
   return groups
 }
 
-
 export function removeBaseUrl(text) {
   return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '')
 }
-
 
 export function splitFilePath(path) {
   const parts = path.split('/')
@@ -69,7 +65,6 @@ export function splitFilePath(path) {
     sep: parts.length ? '/' : '',
   }
 }
-
 
 export function merge(...args) {
   return Object.assign({}, ...args)
