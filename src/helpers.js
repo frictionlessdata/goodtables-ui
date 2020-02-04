@@ -26,7 +26,7 @@ export function getTableErrorGroups(table) {
       // https://github.com/frictionlessdata/goodtables-ui/issues/25#issuecomment-573673325
       let values = error.row || []
       if (!error['row-number']) {
-        values = table.headers
+        values = table.headers || []
       }
       row = {
         values,
