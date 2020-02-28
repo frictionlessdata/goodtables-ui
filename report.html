@@ -17,7 +17,7 @@
         const element = document.getElementById('app')
         const spec = goodtablesUI.spec
         spec.errors['blank-header'].description = 'New description'
-        goodtablesUI.render(goodtablesUI.Report, {report: res.data}, element)
+        goodtablesUI.render(goodtablesUI.Report, {report: res.data, spec}, element)
       })
     </script>
   </body>
