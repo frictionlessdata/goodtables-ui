@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
+const spec = require('./spec.json')
 
 // Module API
 
@@ -12,5 +12,5 @@ import ReactDOM from 'react-dom'
  * @param {Element} element - DOM element to render into
  */
 export function render(component, props, element) {
-  ReactDOM.render(React.createElement(component, props, null), element)
+  ReactDOM.render(React.createElement(component, { spec, ...props }, null), element)
 }

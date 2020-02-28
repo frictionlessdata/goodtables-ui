@@ -2,15 +2,14 @@ import React from 'react'
 import marked from 'marked'
 import classNames from 'classnames'
 import startCase from 'lodash/startCase'
-const spec = require('../spec.json')
 
 // Module API
 
 export class ErrorGroup extends React.Component {
   // Public
 
-  constructor({ errorGroup }) {
-    super({ errorGroup })
+  constructor({ errorGroup, spec }) {
+    super({ errorGroup, spec })
     this.state = {
       showErrorDetails: false,
       visibleRowsCount: 10,
@@ -18,9 +17,9 @@ export class ErrorGroup extends React.Component {
   }
 
   render() {
-    const { errorGroup } = this.props
+    const { errorGroup, spec } = this.props
     const { showErrorDetails, visibleRowsCount } = this.state
-    const errorDetails = getErrorDetails(errorGroup)
+    const errorDetails = getErrorDetails(errorGroup, spec)
     const showHeaders = getShowHeaders(errorDetails)
     const description = getDescription(errorDetails)
     const rowNumbers = getRowNumbers(errorGroup)
@@ -133,7 +132,7 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
   )
 }
 
-function getErrorDetails(errorGroup) {
+function getErrorDetails(errorGroup, spec) {
   // Get code handling legacy codes
   let code = errorGroup.code
   if (code === 'non-castable-value') {
