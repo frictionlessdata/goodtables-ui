@@ -1,25 +1,24 @@
 import React from 'react'
 import classNames from 'classnames'
-import {ErrorGroup} from './ErrorGroup'
-import {getTableErrorGroups, removeBaseUrl, splitFilePath} from '../helpers'
-
+import { ErrorGroup } from './ErrorGroup'
+import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
 
 // Module API
 
-export function Table({table, tableNumber, tablesCount}) {
+export function Table({ table, tableNumber, tablesCount, spec }) {
   const tableFile = removeBaseUrl(table.source)
   const splitTableFile = splitFilePath(tableFile)
   const errorGroups = getTableErrorGroups(table)
   return (
-    <div className={classNames({file: true, valid: table.valid, invalid: !table.valid})}>
-
-
+    <div className={classNames({ file: true, valid: table.valid, invalid: !table.valid })}>
       {/* Heading */}
       <h4 className="file-heading">
         <div className="inner">
           <a className="file-name" href={table.source}>
-            {splitTableFile.base}{splitTableFile.sep}<strong>{splitTableFile.name}</strong>
-            {!table.valid &&
+            {splitTableFile.base}
+            {splitTableFile.sep}
+            <strong>{splitTableFile.name}</strong>
+            {!table.valid && (
               <span
                 className="badge"
                 data-toggle="tooltip"
@@ -28,24 +27,27 @@ export function Table({table, tableNumber, tablesCount}) {
               >
                 {table['error-count']}
               </span>
-            }
+            )}
           </a>
-          <span className="file-count">Table {tableNumber} of {tablesCount}</span>
+          <span className="file-count">
+            Table {tableNumber} of {tablesCount}
+          </span>
         </div>
       </h4>
 
       {/* Valid message */}
-      {table.valid &&
+      {table.valid && (
         <ul className="passed-tests result">
-          <li><span className="label label-success">Valid Table</span></li>
+          <li>
+            <span className="label label-success">Valid Table</span>
+          </li>
         </ul>
-      }
-
-      {/* Error groups */}
-      {Object.values(errorGroups).map(errorGroup =>
-        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} />
       )}
 
+      {/* Error groups */}
+      {Object.values(errorGroups).map(errorGroup => (
+        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec} />
+      ))}
     </div>
   )
 }

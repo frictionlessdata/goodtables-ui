@@ -1,18 +1,16 @@
 import React from 'react'
-import {removeBaseUrl} from '../helpers'
-import {Table} from './Table'
-
+import { removeBaseUrl } from '../helpers'
+import { Table } from './Table'
 
 // Module API
 
-export function Report({report}) {
+export function Report({ report, spec }) {
   const processedWarnings = getProcessedWarnings(report)
   const tables = getTables(report)
   return (
     <div className="goodtables-ui-report">
-
       {/* Warnings */}
-      {!!processedWarnings.length &&
+      {!!processedWarnings.length && (
         <div className="file warning">
           <h4 className="file-heading">
             <div className="inner">
@@ -22,12 +20,14 @@ export function Report({report}) {
             </div>
           </h4>
           <ul className="passed-tests result">
-            {processedWarnings.map((warning, index) =>
-              <li key={index}><span className="label label-warning">{warning}</span></li>
-            )}
+            {processedWarnings.map((warning, index) => (
+              <li key={index}>
+                <span className="label label-warning">{warning}</span>
+              </li>
+            ))}
           </ul>
         </div>
-      }
+      )}
 
       {/* Tables */}
       {tables.map((table, index) => (
@@ -36,13 +36,12 @@ export function Report({report}) {
           table={table}
           tableNumber={index + 1}
           tablesCount={tables.length}
+          spec={spec}
         />
       ))}
-
     </div>
   )
 }
-
 
 // Internal
 

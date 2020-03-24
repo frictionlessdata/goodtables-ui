@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2726,7 +2726,7 @@ function merge() {
   \*****************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(/*! ./_root */ 31);
+var root = __webpack_require__(/*! ./_root */ 32);
 
 /** Built-in value references. */
 var Symbol = root.Symbol;
@@ -2743,7 +2743,7 @@ module.exports = Symbol;
   \******************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseToString = __webpack_require__(/*! ./_baseToString */ 22);
+var baseToString = __webpack_require__(/*! ./_baseToString */ 23);
 
 /**
  * Converts `value` to a string. An empty string is returned for `null`
@@ -2796,7 +2796,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _helpers = __webpack_require__(/*! ../helpers */ 1);
 
-var _Table = __webpack_require__(/*! ./Table */ 13);
+var _Table = __webpack_require__(/*! ./Table */ 14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2805,7 +2805,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 // Module API
 
 function Report(_ref) {
-  var report = _ref.report;
+  var report = _ref.report,
+      spec = _ref.spec;
 
   var processedWarnings = getProcessedWarnings(report);
   var tables = getTables(report);
@@ -2853,7 +2854,8 @@ function Report(_ref) {
         key: table.source,
         table: table,
         tableNumber: index + 1,
-        tablesCount: tables.length
+        tablesCount: tables.length,
+        spec: spec
       });
     })
   );
@@ -2878,6 +2880,17 @@ function getTables(report) {
 
 /***/ }),
 /* 5 */
+/* no static exports found */
+/* all exports used */
+/*!***********************!*\
+  !*** ./src/spec.json ***!
+  \***********************/
+/***/ (function(module, exports) {
+
+module.exports = {"version":"1.0.0","errors":{"io-error":{"name":"IO Error","type":"source","context":"table","weight":100,"message":"The data source returned an IO Error of type {error_type}","description":"Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."},"http-error":{"name":"HTTP Error","type":"source","context":"table","weight":100,"message":"The data source returned an HTTP error with a status code of {status_code}","description":"Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."},"source-error":{"name":"Source Error","type":"source","context":"table","weight":100,"message":"The data source has not supported or has inconsistent contents; no tabular data can be extracted","description":"Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."},"scheme-error":{"name":"Scheme Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown scheme; no tabular data can be extracted","description":"Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."},"format-error":{"name":"Format Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown format; no tabular data can be extracted","description":"Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."},"encoding-error":{"name":"Encoding Error","type":"source","context":"table","weight":100,"message":"The data source could not be successfully decoded with {encoding} encoding","description":"Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."},"blank-header":{"name":"Blank Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is blank","description":"A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."},"duplicate-header":{"name":"Duplicate Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is duplicated to header in column(s) {column_numbers}","description":"Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."},"blank-row":{"name":"Blank Row","type":"structure","context":"body","weight":9,"message":"Row {row_number} is completely blank","description":"This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."},"duplicate-row":{"name":"Duplicate Row","type":"structure","context":"body","weight":5,"message":"Row {row_number} is duplicated to row(s) {row_numbers}","description":"The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."},"extra-value":{"name":"Extra Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has an extra value in column {column_number}","description":"This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."},"missing-value":{"name":"Missing Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has a missing value in column {column_number}","description":"This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."},"schema-error":{"name":"Table Schema Error","type":"schema","context":"table","weight":15,"message":"Table Schema error: {error_message}","description":"Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."},"non-matching-header":{"name":"Non-Matching Header","type":"schema","context":"head","weight":9,"message":"Header in column {column_number} doesn't match field name {field_name} in the schema","description":"One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."},"extra-header":{"name":"Extra Header","type":"schema","context":"head","weight":9,"message":"There is an extra header in column {column_number}","description":"The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."},"missing-header":{"name":"Missing Header","type":"schema","context":"head","weight":9,"message":"There is a missing header in column {column_number}","description":"Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."},"type-or-format-error":{"name":"Type or Format Error","type":"schema","context":"body","weight":9,"message":"The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}","description":"The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."},"required-constraint":{"name":"Required Constraint","type":"schema","context":"body","weight":9,"message":"Column {column_number} is a required field, but row {row_number} has no value","description":"This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."},"pattern-constraint":{"name":"Pattern Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}","description":"This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."},"unique-constraint":{"name":"Unique Constraint","type":"schema","context":"body","weight":9,"message":"Rows {row_numbers} has unique constraint violation in column {column_number}","description":"This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."},"enumerable-constraint":{"name":"Enumerable Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}","description":"This field value should be equal to one of the values in the enumeration constraint.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."},"minimum-constraint":{"name":"Minimum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}","description":"This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."},"maximum-constraint":{"name":"Maximum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}","description":"This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."},"minimum-length-constraint":{"name":"Minimum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}","description":"A length of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."},"maximum-length-constraint":{"name":"Maximum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}","description":"A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."}}}
+
+/***/ }),
+/* 6 */
 /* no static exports found */
 /* all exports used */
 /*!*******************************!*\
@@ -2941,7 +2954,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /* no static exports found */
 /* all exports used */
 /*!*********************************!*\
@@ -2978,7 +2991,7 @@ module.exports = hasUnicode;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /* no static exports found */
 /* all exports used */
 /*!***********************************!*\
@@ -3010,7 +3023,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -3034,7 +3047,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _Report = __webpack_require__(/*! ./Report */ 4);
 
-var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 12);
+var _MessageGroup = __webpack_require__(/*! ./MessageGroup */ 13);
 
 var _helpers = __webpack_require__(/*! ../helpers */ 1);
 
@@ -3496,7 +3509,7 @@ var Form = exports.Form = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 9 */
+/* 10 */
 /* no static exports found */
 /* all exports used */
 /*!***********************!*\
@@ -3510,6 +3523,9 @@ var Form = exports.Form = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.render = render;
 
 var _react = __webpack_require__(/*! react */ 0);
@@ -3522,6 +3538,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var spec = __webpack_require__(/*! ./spec.json */ 5);
+
 // Module API
 
 /**
@@ -3532,11 +3550,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {Element} element - DOM element to render into
  */
 function render(component, props, element) {
-  _reactDom2.default.render(_react2.default.createElement(component, props, null), element);
+  _reactDom2.default.render(_react2.default.createElement(component, _extends({ spec: spec }, props), null), element);
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /* no static exports found */
 /* all exports used */
 /*!*************************!*\
@@ -3547,7 +3565,7 @@ function render(component, props, element) {
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 11 */
+/* 12 */
 /* no static exports found */
 /* all exports used */
 /*!**************************************!*\
@@ -3569,15 +3587,15 @@ var _react = __webpack_require__(/*! react */ 0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _marked = __webpack_require__(/*! marked */ 42);
+var _marked = __webpack_require__(/*! marked */ 43);
 
 var _marked2 = _interopRequireDefault(_marked);
 
-var _classnames = __webpack_require__(/*! classnames */ 5);
+var _classnames = __webpack_require__(/*! classnames */ 6);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _startCase = __webpack_require__(/*! lodash/startCase */ 39);
+var _startCase = __webpack_require__(/*! lodash/startCase */ 40);
 
 var _startCase2 = _interopRequireDefault(_startCase);
 
@@ -3589,8 +3607,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var spec = __webpack_require__(/*! ../spec.json */ 43);
-
 // Module API
 
 var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
@@ -3599,11 +3615,12 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
   // Public
 
   function ErrorGroup(_ref) {
-    var errorGroup = _ref.errorGroup;
+    var errorGroup = _ref.errorGroup,
+        spec = _ref.spec;
 
     _classCallCheck(this, ErrorGroup);
 
-    var _this = _possibleConstructorReturn(this, (ErrorGroup.__proto__ || Object.getPrototypeOf(ErrorGroup)).call(this, { errorGroup: errorGroup }));
+    var _this = _possibleConstructorReturn(this, (ErrorGroup.__proto__ || Object.getPrototypeOf(ErrorGroup)).call(this, { errorGroup: errorGroup, spec: spec }));
 
     _this.state = {
       showErrorDetails: false,
@@ -3617,12 +3634,14 @@ var ErrorGroup = exports.ErrorGroup = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      var errorGroup = this.props.errorGroup;
+      var _props = this.props,
+          errorGroup = _props.errorGroup,
+          spec = _props.spec;
       var _state = this.state,
           showErrorDetails = _state.showErrorDetails,
           visibleRowsCount = _state.visibleRowsCount;
 
-      var errorDetails = getErrorDetails(errorGroup);
+      var errorDetails = getErrorDetails(errorGroup, spec);
       var showHeaders = getShowHeaders(errorDetails);
       var description = getDescription(errorDetails);
       var rowNumbers = getRowNumbers(errorGroup);
@@ -3789,7 +3808,7 @@ function ErrorGroupTable(_ref2) {
   );
 }
 
-function getErrorDetails(errorGroup) {
+function getErrorDetails(errorGroup, spec) {
   // Get code handling legacy codes
   var code = errorGroup.code;
   if (code === 'non-castable-value') {
@@ -3830,7 +3849,7 @@ function getRowNumbers(errorGroup) {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /* no static exports found */
 /* all exports used */
 /*!****************************************!*\
@@ -3916,7 +3935,7 @@ var MessageGroup = exports.MessageGroup = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 13 */
+/* 14 */
 /* no static exports found */
 /* all exports used */
 /*!*********************************!*\
@@ -3946,11 +3965,11 @@ var _react = __webpack_require__(/*! react */ 0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(/*! classnames */ 5);
+var _classnames = __webpack_require__(/*! classnames */ 6);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _ErrorGroup = __webpack_require__(/*! ./ErrorGroup */ 11);
+var _ErrorGroup = __webpack_require__(/*! ./ErrorGroup */ 12);
 
 var _helpers = __webpack_require__(/*! ../helpers */ 1);
 
@@ -3961,7 +3980,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function Table(_ref) {
   var table = _ref.table,
       tableNumber = _ref.tableNumber,
-      tablesCount = _ref.tablesCount;
+      tablesCount = _ref.tablesCount,
+      spec = _ref.spec;
 
   var tableFile = (0, _helpers.removeBaseUrl)(table.source);
   var splitTableFile = (0, _helpers.splitFilePath)(tableFile);
@@ -4020,13 +4040,13 @@ function Table(_ref) {
       )
     ),
     _objectValues(errorGroups).map(function (errorGroup) {
-      return _react2.default.createElement(_ErrorGroup.ErrorGroup, { key: errorGroup.code, errorGroup: errorGroup });
+      return _react2.default.createElement(_ErrorGroup.ErrorGroup, { key: errorGroup.code, errorGroup: errorGroup, spec: spec });
     })
   );
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /* no static exports found */
 /* all exports used */
 /*!**********************!*\
@@ -4040,26 +4060,29 @@ function Table(_ref) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-__webpack_require__(/*! ./styles.scss */ 10);
+__webpack_require__(/*! ./styles.scss */ 11);
 
-var _require = __webpack_require__(/*! ./render */ 9),
+var _require = __webpack_require__(/*! ./render */ 10),
     render = _require.render;
 
 var _require2 = __webpack_require__(/*! ./components/Report */ 4),
     Report = _require2.Report;
 
-var _require3 = __webpack_require__(/*! ./components/Form */ 8),
+var _require3 = __webpack_require__(/*! ./components/Form */ 9),
     Form = _require3.Form;
+
+var spec = __webpack_require__(/*! ./spec.json */ 5);
 
 // Module API
 
-exports.default = { render: render, Report: Report, Form: Form };
+exports.default = { render: render, Report: Report, Form: Form, spec: spec };
 exports.render = render;
 exports.Report = Report;
 exports.Form = Form;
+exports.spec = spec;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /* no static exports found */
 /* all exports used */
 /*!*******************************!*\
@@ -4091,7 +4114,7 @@ module.exports = arrayMap;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /* no static exports found */
 /* all exports used */
 /*!**********************************!*\
@@ -4128,7 +4151,7 @@ module.exports = arrayReduce;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /* no static exports found */
 /* all exports used */
 /*!***********************************!*\
@@ -4151,7 +4174,7 @@ module.exports = asciiToArray;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /* no static exports found */
 /* all exports used */
 /*!*********************************!*\
@@ -4177,7 +4200,7 @@ module.exports = asciiWords;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /* no static exports found */
 /* all exports used */
 /*!*********************************!*\
@@ -4186,8 +4209,8 @@ module.exports = asciiWords;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(/*! ./_Symbol */ 2),
-    getRawTag = __webpack_require__(/*! ./_getRawTag */ 28),
-    objectToString = __webpack_require__(/*! ./_objectToString */ 30);
+    getRawTag = __webpack_require__(/*! ./_getRawTag */ 29),
+    objectToString = __webpack_require__(/*! ./_objectToString */ 31);
 
 /** `Object#toString` result references. */
 var nullTag = '[object Null]',
@@ -4216,7 +4239,7 @@ module.exports = baseGetTag;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /* no static exports found */
 /* all exports used */
 /*!*************************************!*\
@@ -4241,7 +4264,7 @@ module.exports = basePropertyOf;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -4283,7 +4306,7 @@ module.exports = baseSlice;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /* no static exports found */
 /* all exports used */
 /*!***********************************!*\
@@ -4292,9 +4315,9 @@ module.exports = baseSlice;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(/*! ./_Symbol */ 2),
-    arrayMap = __webpack_require__(/*! ./_arrayMap */ 15),
-    isArray = __webpack_require__(/*! ./isArray */ 36),
-    isSymbol = __webpack_require__(/*! ./isSymbol */ 38);
+    arrayMap = __webpack_require__(/*! ./_arrayMap */ 16),
+    isArray = __webpack_require__(/*! ./isArray */ 37),
+    isSymbol = __webpack_require__(/*! ./isSymbol */ 39);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -4331,7 +4354,7 @@ module.exports = baseToString;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -4339,7 +4362,7 @@ module.exports = baseToString;
   \********************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSlice = __webpack_require__(/*! ./_baseSlice */ 21);
+var baseSlice = __webpack_require__(/*! ./_baseSlice */ 22);
 
 /**
  * Casts `array` to a slice if it's needed.
@@ -4360,7 +4383,7 @@ module.exports = castSlice;
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /* no static exports found */
 /* all exports used */
 /*!**************************************!*\
@@ -4368,9 +4391,9 @@ module.exports = castSlice;
   \**************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var castSlice = __webpack_require__(/*! ./_castSlice */ 23),
-    hasUnicode = __webpack_require__(/*! ./_hasUnicode */ 6),
-    stringToArray = __webpack_require__(/*! ./_stringToArray */ 32),
+var castSlice = __webpack_require__(/*! ./_castSlice */ 24),
+    hasUnicode = __webpack_require__(/*! ./_hasUnicode */ 7),
+    stringToArray = __webpack_require__(/*! ./_stringToArray */ 33),
     toString = __webpack_require__(/*! ./toString */ 3);
 
 /**
@@ -4404,7 +4427,7 @@ module.exports = createCaseFirst;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /* no static exports found */
 /* all exports used */
 /*!***************************************!*\
@@ -4412,9 +4435,9 @@ module.exports = createCaseFirst;
   \***************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayReduce = __webpack_require__(/*! ./_arrayReduce */ 16),
-    deburr = __webpack_require__(/*! ./deburr */ 35),
-    words = __webpack_require__(/*! ./words */ 41);
+var arrayReduce = __webpack_require__(/*! ./_arrayReduce */ 17),
+    deburr = __webpack_require__(/*! ./deburr */ 36),
+    words = __webpack_require__(/*! ./words */ 42);
 
 /** Used to compose unicode capture groups. */
 var rsApos = "['\u2019]";
@@ -4439,7 +4462,7 @@ module.exports = createCompounder;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /* no static exports found */
 /* all exports used */
 /*!***********************************!*\
@@ -4447,7 +4470,7 @@ module.exports = createCompounder;
   \***********************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var basePropertyOf = __webpack_require__(/*! ./_basePropertyOf */ 20);
+var basePropertyOf = __webpack_require__(/*! ./_basePropertyOf */ 21);
 
 /** Used to map Latin Unicode letters to basic Latin letters. */
 var deburredLetters = {
@@ -4521,7 +4544,7 @@ module.exports = deburrLetter;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /* no static exports found */
 /* all exports used */
 /*!*********************************!*\
@@ -4534,10 +4557,10 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 module.exports = freeGlobal;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 7)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/global.js */ 8)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -4594,7 +4617,7 @@ module.exports = getRawTag;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /* no static exports found */
 /* all exports used */
 /*!*************************************!*\
@@ -4620,7 +4643,7 @@ module.exports = hasUnicodeWord;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /* no static exports found */
 /* all exports used */
 /*!*************************************!*\
@@ -4653,7 +4676,7 @@ module.exports = objectToString;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /* no static exports found */
 /* all exports used */
 /*!***************************!*\
@@ -4661,7 +4684,7 @@ module.exports = objectToString;
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 27);
+var freeGlobal = __webpack_require__(/*! ./_freeGlobal */ 28);
 
 /** Detect free variable `self`. */
 var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -4673,7 +4696,7 @@ module.exports = root;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /* no static exports found */
 /* all exports used */
 /*!************************************!*\
@@ -4681,9 +4704,9 @@ module.exports = root;
   \************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var asciiToArray = __webpack_require__(/*! ./_asciiToArray */ 17),
-    hasUnicode = __webpack_require__(/*! ./_hasUnicode */ 6),
-    unicodeToArray = __webpack_require__(/*! ./_unicodeToArray */ 33);
+var asciiToArray = __webpack_require__(/*! ./_asciiToArray */ 18),
+    hasUnicode = __webpack_require__(/*! ./_hasUnicode */ 7),
+    unicodeToArray = __webpack_require__(/*! ./_unicodeToArray */ 34);
 
 /**
  * Converts `string` to an array.
@@ -4702,7 +4725,7 @@ module.exports = stringToArray;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /* no static exports found */
 /* all exports used */
 /*!*************************************!*\
@@ -4753,7 +4776,7 @@ module.exports = unicodeToArray;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /* no static exports found */
 /* all exports used */
 /*!***********************************!*\
@@ -4833,7 +4856,7 @@ module.exports = unicodeWords;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /* no static exports found */
 /* all exports used */
 /*!****************************!*\
@@ -4841,7 +4864,7 @@ module.exports = unicodeWords;
   \****************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var deburrLetter = __webpack_require__(/*! ./_deburrLetter */ 26),
+var deburrLetter = __webpack_require__(/*! ./_deburrLetter */ 27),
     toString = __webpack_require__(/*! ./toString */ 3);
 
 /** Used to match Latin Unicode letters (excluding mathematical operators). */
@@ -4889,7 +4912,7 @@ module.exports = deburr;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /* no static exports found */
 /* all exports used */
 /*!*****************************!*\
@@ -4926,7 +4949,7 @@ module.exports = isArray;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /* no static exports found */
 /* all exports used */
 /*!**********************************!*\
@@ -4966,7 +4989,7 @@ module.exports = isObjectLike;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /* no static exports found */
 /* all exports used */
 /*!******************************!*\
@@ -4974,8 +4997,8 @@ module.exports = isObjectLike;
   \******************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 19),
-    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 37);
+var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 20),
+    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 38);
 
 /** `Object#toString` result references. */
 var symbolTag = '[object Symbol]';
@@ -5006,7 +5029,7 @@ module.exports = isSymbol;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /* no static exports found */
 /* all exports used */
 /*!*******************************!*\
@@ -5014,8 +5037,8 @@ module.exports = isSymbol;
   \*******************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var createCompounder = __webpack_require__(/*! ./_createCompounder */ 25),
-    upperFirst = __webpack_require__(/*! ./upperFirst */ 40);
+var createCompounder = __webpack_require__(/*! ./_createCompounder */ 26),
+    upperFirst = __webpack_require__(/*! ./upperFirst */ 41);
 
 /**
  * Converts `string` to
@@ -5046,7 +5069,7 @@ module.exports = startCase;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -5054,7 +5077,7 @@ module.exports = startCase;
   \********************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var createCaseFirst = __webpack_require__(/*! ./_createCaseFirst */ 24);
+var createCaseFirst = __webpack_require__(/*! ./_createCaseFirst */ 25);
 
 /**
  * Converts the first character of `string` to upper case.
@@ -5079,7 +5102,7 @@ module.exports = upperFirst;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /* no static exports found */
 /* all exports used */
 /*!***************************!*\
@@ -5087,10 +5110,10 @@ module.exports = upperFirst;
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var asciiWords = __webpack_require__(/*! ./_asciiWords */ 18),
-    hasUnicodeWord = __webpack_require__(/*! ./_hasUnicodeWord */ 29),
+var asciiWords = __webpack_require__(/*! ./_asciiWords */ 19),
+    hasUnicodeWord = __webpack_require__(/*! ./_hasUnicodeWord */ 30),
     toString = __webpack_require__(/*! ./toString */ 3),
-    unicodeWords = __webpack_require__(/*! ./_unicodeWords */ 34);
+    unicodeWords = __webpack_require__(/*! ./_unicodeWords */ 35);
 
 /**
  * Splits `string` into an array of its words.
@@ -5125,7 +5148,7 @@ module.exports = words;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /* no static exports found */
 /* all exports used */
 /*!********************************!*\
@@ -6522,18 +6545,7 @@ if (true) {
 }
 })(this || (typeof window !== 'undefined' ? window : global));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 7)))
-
-/***/ }),
-/* 43 */
-/* no static exports found */
-/* all exports used */
-/*!***********************!*\
-  !*** ./src/spec.json ***!
-  \***********************/
-/***/ (function(module, exports) {
-
-module.exports = {"version":"1.0.0","errors":{"io-error":{"name":"IO Error","type":"source","context":"table","weight":100,"message":"The data source returned an IO Error of type {error_type}","description":"Data reading error because of IO error.\n\n How it could be resolved:\n - Fix path if it's not correct."},"http-error":{"name":"HTTP Error","type":"source","context":"table","weight":100,"message":"The data source returned an HTTP error with a status code of {status_code}","description":"Data reading error because of HTTP error.\n\n How it could be resolved:\n - Fix url link if it's not correct."},"source-error":{"name":"Source Error","type":"source","context":"table","weight":100,"message":"The data source has not supported or has inconsistent contents; no tabular data can be extracted","description":"Data reading error because of not supported or inconsistent contents.\n\n How it could be resolved:\n - Fix data contents (e.g. change JSON data to array or arrays/objects).\n - Set correct source settings in {validator}."},"scheme-error":{"name":"Scheme Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown scheme; no tabular data can be extracted","description":"Data reading error because of incorrect scheme.\n\n How it could be resolved:\n - Fix data scheme (e.g. change scheme from `ftp` to `http`).\n - Set correct scheme in {validator}."},"format-error":{"name":"Format Error","type":"source","context":"table","weight":100,"message":"The data source is in an unknown format; no tabular data can be extracted","description":"Data reading error because of incorrect format.\n\n How it could be resolved:\n - Fix data format (e.g. change file extension from `txt` to `csv`).\n - Set correct format in {validator}."},"encoding-error":{"name":"Encoding Error","type":"source","context":"table","weight":100,"message":"The data source could not be successfully decoded with {encoding} encoding","description":"Data reading error because of an encoding problem.\n\n How it could be resolved:\n - Fix data source if it's broken.\n - Set correct encoding in {validator}."},"blank-header":{"name":"Blank Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is blank","description":"A column in the header row is missing a value. Column names should be provided.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data source.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `blank-header` check in {validator}."},"duplicate-header":{"name":"Duplicate Header","type":"structure","context":"head","weight":3,"message":"Header in column {column_number} is duplicated to header in column(s) {column_numbers}","description":"Two columns in the header row have the same value. Column names should be unique.\n\n How it could be resolved:\n - Add the missing column name to the first row of the data.\n - If the first row starts with, or ends with a comma, remove it.\n - If this error should be ignored disable `duplicate-header` check in {validator}."},"blank-row":{"name":"Blank Row","type":"structure","context":"body","weight":9,"message":"Row {row_number} is completely blank","description":"This row is empty. A row should contain at least one value.\n\n How it could be resolved:\n - Delete the row.\n - If this error should be ignored disable `blank-row` check in {validator}."},"duplicate-row":{"name":"Duplicate Row","type":"structure","context":"body","weight":5,"message":"Row {row_number} is duplicated to row(s) {row_numbers}","description":"The exact same data has been seen in another row.\n\n How it could be resolved:\n - If some of the data is incorrect, correct it.\n - If the whole row is an incorrect duplicate, remove it.\n - If this error should be ignored disable `duplicate-row` check in {validator}."},"extra-value":{"name":"Extra Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has an extra value in column {column_number}","description":"This row has more values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data has an extra comma between the values in this row.\n - If this error should be ignored disable `extra-value` check in {validator}."},"missing-value":{"name":"Missing Value","type":"structure","context":"body","weight":9,"message":"Row {row_number} has a missing value in column {column_number}","description":"This row has less values compared to the header row (the first row in the data source). A key concept is that all the rows in tabular data must have the same number of columns.\n\n How it could be resolved:\n - Check data is not missing a comma between the values in this row.\n - If this error should be ignored disable `missing-value` check in {validator}."},"schema-error":{"name":"Table Schema Error","type":"schema","context":"table","weight":15,"message":"Table Schema error: {error_message}","description":"Provided schema is not valid.\n\n How it could be resolved:\n - Update schema descriptor to be a valid descriptor\n - If this error should be ignored disable schema checks in {validator}."},"non-matching-header":{"name":"Non-Matching Header","type":"schema","context":"head","weight":9,"message":"Header in column {column_number} doesn't match field name {field_name} in the schema","description":"One of the data source headers doesn't match the field name defined in the schema.\n\n How it could be resolved:\n - Rename header in the data source or field in the schema\n - If this error should be ignored disable `non-matching-header` check in {validator}."},"extra-header":{"name":"Extra Header","type":"schema","context":"head","weight":9,"message":"There is an extra header in column {column_number}","description":"The first row of the data source contains header that doesn't exist in the schema.\n\n How it could be resolved:\n - Remove the extra column from the data source or add the missing field to the schema\n - If this error should be ignored disable `extra-header` check in {validator}."},"missing-header":{"name":"Missing Header","type":"schema","context":"head","weight":9,"message":"There is a missing header in column {column_number}","description":"Based on the schema there should be a header that is missing in the first row of the data source.\n\n How it could be resolved:\n - Add the missing column to the data source or remove the extra field from the schema\n - If this error should be ignored disable `missing-header` check in {validator}."},"type-or-format-error":{"name":"Type or Format Error","type":"schema","context":"body","weight":9,"message":"The value {value} in row {row_number} and column {column_number} is not type {field_type} and format {field_format}","description":"The value does not match the schema type and format for this field.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If this value is correct, adjust the type and/or format.\n - To ignore the error, disable the `type-or-format-error` check in {validator}. In this case all schema checks for row values will be ignored."},"required-constraint":{"name":"Required Constraint","type":"schema","context":"body","weight":9,"message":"Column {column_number} is a required field, but row {row_number} has no value","description":"This field is a required field, but it contains no value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove the `required` constraint from the schema.\n - If this error should be ignored disable `required-constraint` check in {validator}."},"pattern-constraint":{"name":"Pattern Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the pattern constraint of {constraint}","description":"This field value should conform to constraint pattern.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `pattern` constraint in the schema.\n - If this error should be ignored disable `pattern-constraint` check in {validator}."},"unique-constraint":{"name":"Unique Constraint","type":"schema","context":"body","weight":9,"message":"Rows {row_numbers} has unique constraint violation in column {column_number}","description":"This field is a unique field but it contains a value that has been used in another row.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then the values in this column are not unique. Remove the `unique` constraint from the schema.\n - If this error should be ignored disable `unique-constraint` check in {validator}."},"enumerable-constraint":{"name":"Enumerable Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the given enumeration: {constraint}","description":"This field value should be equal to one of the values in the enumeration constraint.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `enum` constraint in the schema.\n - If this error should be ignored disable `enumerable-constraint` check in {validator}."},"minimum-constraint":{"name":"Minimum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum constraint of {constraint}","description":"This field value should be greater or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimum` constraint in the schema.\n - If this error should be ignored disable `minimum-constraint` check in {validator}."},"maximum-constraint":{"name":"Maximum Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum constraint of {constraint}","description":"This field value should be less or equal than constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximum` constraint in the schema.\n - If this error should be ignored disable `maximum-constraint` check in {validator}."},"minimum-length-constraint":{"name":"Minimum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the minimum length constraint of {constraint}","description":"A length of this field value should be greater or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `minimumLength` constraint in the schema.\n - If this error should be ignored disable `minimum-length-constraint` check in {validator}."},"maximum-length-constraint":{"name":"Maximum Length Constraint","type":"schema","context":"body","weight":7,"message":"The value {value} in row {row_number} and column {column_number} does not conform to the maximum length constraint of {constraint}","description":"A length of this field value should be less or equal than schema constraint value.\n\n How it could be resolved:\n - If this value is not correct, update the value.\n - If value is correct, then remove or refine the `maximumLength` constraint in the schema.\n - If this error should be ignored disable `maximum-length-constraint` check in {validator}."}}}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../webpack/buildin/global.js */ 8)))
 
 /***/ })
 /******/ ]);

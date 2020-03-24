@@ -15,7 +15,9 @@
     <script>
       axios.get('data/report2.json').then(res => {
         const element = document.getElementById('app')
-        goodtablesUI.render(goodtablesUI.Report, {report: res.data}, element)
+        const spec = goodtablesUI.spec
+        spec.errors['blank-header'].description = 'New description'
+        goodtablesUI.render(goodtablesUI.Report, {report: res.data, spec}, element)
       })
     </script>
   </body>
