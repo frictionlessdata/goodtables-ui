@@ -162,6 +162,14 @@ $ npm run test
 
 Here described only breaking and the most important changes. The full changelog and documentation for all released versions could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
 
+#### v1.3
+
+- added support for custom specs
+
+#### v1.2
+
+- general improvements
+
 #### v1.1
 
 Improved behaviour:
