@@ -18,7 +18,7 @@ export function getTableErrorGroups(table) {
     }
 
     // Get row
-    let row = group.rows[error['row-number']]
+    let row = group.rows[error['row-number'] || null]
 
     // Create row
     if (!row) {
