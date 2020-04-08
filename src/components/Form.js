@@ -1,17 +1,15 @@
 import React from 'react'
-import {Report} from './Report'
-import {MessageGroup} from './MessageGroup'
-import {merge} from '../helpers'
-
+import { Report } from './Report'
+import { MessageGroup } from './MessageGroup'
+import { merge } from '../helpers'
 
 // Module API
 
 export class Form extends React.Component {
-
   // Public
 
-  constructor({source, options, validate, reportPromise}) {
-    super({source, options, validate, reportPromise})
+  constructor({ source, options, validate, reportPromise }) {
+    super({ source, options, validate, reportPromise })
 
     // Set state
     this.state = {
@@ -26,63 +24,67 @@ export class Form extends React.Component {
 
     // Load report
     if (this.props.reportPromise) {
-      this.props.reportPromise.then(report => {
-        this.setState({report, isLoading: false})
-      }).catch(error => {
-        this.setState({error, isLoading: false})
-      })
+      this.props.reportPromise
+        .then((report) => {
+          this.setState({ report, isLoading: false })
+        })
+        .catch((error) => {
+          this.setState({ error, isLoading: false })
+        })
     }
   }
 
   render() {
-    const {isSourceFile, isSchemaFile, isLoading} = this.state
-    const {source, options, report, error} = this.state
+    const { isSourceFile, isSchemaFile, isLoading } = this.state
+    const { source, options, report, error } = this.state
     const onSourceTypeChange = this.onSourceTypeChange.bind(this)
     const onSchemaTypeChange = this.onSchemaTypeChange.bind(this)
     const onSourceChange = this.onSourceChange.bind(this)
     const onOptionsChange = this.onOptionsChange.bind(this)
     const onSubmit = this.onSubmit.bind(this)
     const checkOptionsControls = [
-      {key: 'blank-row', label: 'Ignore blank rows'},
-      {key: 'duplicate-row', label: 'Ignore duplicate rows'},
+      { key: 'blank-row', label: 'Ignore blank rows' },
+      { key: 'duplicate-row', label: 'Ignore duplicate rows' },
     ]
 
     return (
       <form className="goodtables-ui-form panel panel-default">
-
         <div className="row-source">
           <div className="form-inline">
-            <label htmlFor="source">Source</label>&nbsp;
-            [<a href="#" onClick={() => onSourceTypeChange()}>
-              {(isSourceFile) ? 'Provide Link' : 'Upload File'}
-            </a>]
-
-            <div className="input-group" style={{width: '100%'}}>
-              {!isSourceFile &&
+            <label htmlFor="source">Source</label>&nbsp; [
+            <a href="#" onClick={() => onSourceTypeChange()}>
+              {isSourceFile ? 'Provide Link' : 'Upload File'}
+            </a>
+            ]
+            <div className="input-group" style={{ width: '100%' }}>
+              {!isSourceFile && (
                 <input
                   name="source"
                   className="form-control"
                   type="text"
                   value={source}
                   placeholder="http://data.source/url"
-                  onChange={ev => onSourceChange(ev.target.value)}
+                  onChange={(ev) => onSourceChange(ev.target.value)}
                 />
-              }
+              )}
 
-              {isSourceFile &&
+              {isSourceFile && (
                 <input
                   name="source"
                   className="form-control"
                   type="file"
                   placeholder="http://data.source/url"
-                  onChange={ev => onSourceChange(ev.target.files[0])}
+                  onChange={(ev) => onSourceChange(ev.target.files[0])}
                 />
-              }
+              )}
 
-              <div className="input-group-btn" style={{width: '1%'}}>
+              <div className="input-group-btn" style={{ width: '1%' }}>
                 <button
                   className="btn btn-primary"
-                  onClick={ev => {ev.preventDefault(); onSubmit()}}
+                  onClick={(ev) => {
+                    ev.preventDefault()
+                    onSubmit()
+                  }}
                 >
                   Validate
                 </button>
@@ -97,36 +99,40 @@ export class Form extends React.Component {
         <div className="row-schema">
           <div className="row">
             <div className="form-group col-md-8">
-              <label htmlFor="schema">Schema</label>&nbsp;
-              [<a href="#" onClick={() => onSchemaTypeChange()}>
-                {(isSchemaFile) ? 'Provide Link' : 'Upload File'}
-              </a>]
-
-              {!isSchemaFile &&
+              <label htmlFor="schema">Schema</label>&nbsp; [
+              <a href="#" onClick={() => onSchemaTypeChange()}>
+                {isSchemaFile ? 'Provide Link' : 'Upload File'}
+              </a>
+              ]
+              {!isSchemaFile && (
                 <input
                   type="text"
                   className="form-control"
                   name="schema"
                   value={options.schema}
                   placeholder="http://table.schema/url"
-                  onChange={ev => onOptionsChange('schema', ev.target.value)}
+                  onChange={(ev) => onOptionsChange('schema', ev.target.value)}
                 />
-              }
-
-              {isSchemaFile &&
+              )}
+              {isSchemaFile && (
                 <input
                   type="file"
                   className="form-control"
                   name="schema"
                   placeholder="http://table.schema/url"
-                  onChange={ev => onOptionsChange('schema', ev.target.files[0])}
+                  onChange={(ev) => onOptionsChange('schema', ev.target.files[0])}
                 />
-              }
+              )}
               <small>
-                <strong>[OPTIONAL]</strong> Select to validate this data against a Table Schema
-                (<a href="http://specs.frictionlessdata.io/table-schema/" target="_blank" rel="noopener noreferrer">
+                <strong>[OPTIONAL]</strong> Select to validate this data against a Table Schema (
+                <a
+                  href="http://specs.frictionlessdata.io/table-schema/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   What is it?
-                </a>).
+                </a>
+                ).
               </small>
             </div>
 
@@ -137,7 +143,7 @@ export class Form extends React.Component {
                   name="format"
                   value={options.format}
                   className="form-control"
-                  onChange={ev => onOptionsChange('format', ev.target.value)}
+                  onChange={(ev) => onOptionsChange('format', ev.target.value)}
                 >
                   <option value="">Auto</option>
                   <option value="csv">CSV</option>
@@ -159,7 +165,7 @@ export class Form extends React.Component {
                   name="encoding"
                   value={options.encoding}
                   className="form-control"
-                  onChange={ev => onOptionsChange('encoding', ev.target.value)}
+                  onChange={(ev) => onOptionsChange('encoding', ev.target.value)}
                 >
                   <option value="">Auto</option>
                   <option value="utf-8">UTF-8</option>
@@ -173,7 +179,7 @@ export class Form extends React.Component {
 
         <div className="row-flags">
           <div className="row">
-            {checkOptionsControls.map(item => (
+            {checkOptionsControls.map((item) => (
               <div className="col-md-6" key={item.key}>
                 <div className="checkbox">
                   <label htmlFor={item.key}>
@@ -181,7 +187,7 @@ export class Form extends React.Component {
                       id={item.key}
                       type="checkbox"
                       checked={(options.checks || {})[item.key] === false}
-                      onChange={ev => {
+                      onChange={(ev) => {
                         options.checks = options.checks || {}
 
                         if (ev.target.checked) {
@@ -199,39 +205,32 @@ export class Form extends React.Component {
           </div>
         </div>
 
-        {isLoading &&
+        {isLoading && (
           <div className="row-message">
-            <div className="alert alert-info">
-              Loading...
-            </div>
+            <div className="alert alert-info">Loading...</div>
           </div>
-        }
+        )}
 
-        {error &&
+        {error && (
           <div className="row-message">
-            <MessageGroup
-              type="danger"
-              title={'Error'}
-              messages={[error.message]}
-            />
+            <MessageGroup type="danger" title={'Error'} messages={[error.message]} />
           </div>
-        }
+        )}
 
-        {report && location.search &&
+        {report && window.location.search && (
           <div className="row-message">
             <div className="alert alert-info">
               <strong>Permalink:</strong>&nbsp;
-              <a href={location.href}>{location.href}</a>
+              <a href={window.location.href}>{window.location.href}</a>
             </div>
           </div>
-        }
+        )}
 
-        {report &&
+        {report && (
           <div className="row-report">
             <Report report={report} />
           </div>
-        }
-
+        )}
       </form>
     )
   }
@@ -239,35 +238,37 @@ export class Form extends React.Component {
   // Private
 
   onSourceTypeChange() {
-    this.setState({isSourceFile: !this.state.isSourceFile})
+    this.setState({ isSourceFile: !this.state.isSourceFile })
     this.onSourceChange('')
   }
 
   onSchemaTypeChange() {
-    this.setState({isSchemaFile: !this.state.isSchemaFile})
+    this.setState({ isSchemaFile: !this.state.isSchemaFile })
     this.onOptionsChange('schema', '')
   }
 
   onSourceChange(value) {
-    this.setState({source: value})
+    this.setState({ source: value })
   }
 
   onOptionsChange(key, value) {
-    const options = merge(this.state.options, {[key]: value})
+    const options = merge(this.state.options, { [key]: value })
     if (!value) delete options[key]
-    this.setState({options})
+    this.setState({ options })
   }
 
   onSubmit() {
-    const {validate} = this.props
-    const {source, options} = this.state
+    const { validate } = this.props
+    const { source, options } = this.state
     if (this._isDataPackage(source)) options.preset = 'datapackage'
-    this.setState({report: null, error: null, isLoading: true})
-    validate(source, merge(options)).then(report => {
-      this.setState({report, isLoading: false})
-    }).catch(error => {
-      this.setState({error, isLoading: false})
-    })
+    this.setState({ report: null, error: null, isLoading: true })
+    validate(source, merge(options))
+      .then((report) => {
+        this.setState({ report, isLoading: false })
+      })
+      .catch((error) => {
+        this.setState({ error, isLoading: false })
+      })
   }
 
   _isDataPackage(source) {

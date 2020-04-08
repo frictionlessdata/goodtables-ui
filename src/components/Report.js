@@ -47,12 +47,12 @@ export function Report({ report, spec }) {
 
 function getProcessedWarnings(report) {
   // Before `goodtables@1.0` there was no warnings property
-  return (report.warnings || []).map(warning => removeBaseUrl(warning))
+  return (report.warnings || []).map((warning) => removeBaseUrl(warning))
 }
 
 function getTables(report) {
   return [
-    ...report.tables.filter(table => !table.valid),
-    ...report.tables.filter(table => table.valid),
+    ...report.tables.filter((table) => !table.valid),
+    ...report.tables.filter((table) => table.valid),
   ]
 }

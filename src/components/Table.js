@@ -45,7 +45,7 @@ export function Table({ table, tableNumber, tablesCount, spec }) {
       )}
 
       {/* Error groups */}
-      {Object.values(errorGroups).map(errorGroup => (
+      {Object.values(errorGroups).map((errorGroup) => (
         <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec} />
       ))}
     </div>

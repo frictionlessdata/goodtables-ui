@@ -99,8 +99,8 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
         {errorGroup.headers && showHeaders && (
           <tr className="before-fail">
             <td>1</td>
-            {errorGroup.headers.map(header => (
-              <td>{header}</td>
+            {errorGroup.headers.map((header) => (
+              <td key={header}>{header}</td>
             ))}
           </tr>
         )}
@@ -111,6 +111,7 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
                 <td className="result-row-index">{rowNumber || 1}</td>
                 {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
+                    key={value}
                     className={classNames({
                       fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1),
                     })}
@@ -119,13 +120,13 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
                   </td>
                 ))}
               </tr>
-            ),
+            )
         )}
         <tr className="after-fail">
           <td className="result-row-index">
             {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
           </td>
-          {errorGroup.headers && errorGroup.headers.map(() => <td />)}
+          {errorGroup.headers && errorGroup.headers.map((header) => <td key={header} />)}
         </tr>
       </tbody>
     </table>
@@ -141,13 +142,14 @@ function getErrorDetails(errorGroup, spec) {
 
   // Get details handling custom errors
   let details = spec.errors[code]
-  if (!details)
+  if (!details) {
     details = {
       name: startCase(code),
       type: 'custom',
       context: 'body',
       description: null,
     }
+  }
 
   return details
 }
@@ -167,6 +169,6 @@ function getDescription(errorDetails) {
 
 function getRowNumbers(errorGroup) {
   return Object.keys(errorGroup.rows)
-    .map(item => parseInt(item, 10) || null)
+    .map((item) => parseInt(item, 10) || null)
     .sort((a, b) => a - b)
 }
