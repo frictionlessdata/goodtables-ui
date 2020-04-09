@@ -7,10 +7,8 @@ Enzyme.configure({ adapter: new Adapter() })
 
 // Tests
 
-describe('MessageGroup', () => {
-  it('should render', () => {
-    const result = shallow(<MessageGroup type={'warning'} title={'title'} messages={['message']} />)
-    expect(result).toContain('title')
-    expect(result).toContain('message')
-  })
+it('should render', () => {
+  const result = shallow(<MessageGroup type={'warning'} title={'title'} messages={['message']} />)
+  expect(result).toContain('title')
+  expect(result).toContain('message')
 })
