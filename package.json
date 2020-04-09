@@ -34,7 +34,10 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
-    "marked": "^0.8.2"
+    "marked": "^0.8.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.12.20"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -67,11 +70,7 @@
     "node-sass": "^4.13.1",
     "npm-check-updates": "^4.1.2",
     "prettier": "^2.0.4",
-    "react": "^16.13.1",
     "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.12.20",
-    "react-lite": "^0.15.40",
     "react-test-renderer": "^16.13.1",
     "referencer": "^0.2.5",
     "sass-loader": "^8.0.2",
