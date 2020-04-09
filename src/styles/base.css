@@ -368,7 +368,7 @@
      right: -22.5px;
      bottom: 0;
      height: 10px;
-     background-image: url(./zigzag.svg?97fe88155ac5705d6e3603a0f7b3ab09);
+     background-image: url(../images/zigzag.svg);
      background-position: center;
      background-repeat: repeat-x;
      background-size: 29px 10px;
@@ -400,7 +400,7 @@
      right: 0;
      bottom: -1px;
      background-color: #fff;
-     mask: url(./zigzagmask.svg?1598a40cb6a224947b6f1966b4be7b5c);
+     mask: url(../images/zigzagmask.svg);
      mask-size: 29px 10px;
      mask-position: center;
      mask-repeat: repeat-x;
@@ -414,6 +414,3 @@
      display: inline-block;
      margin-bottom: 10px;
 }
-
-
-/*# sourceMappingURL=goodtables-ui.min.css.map*/

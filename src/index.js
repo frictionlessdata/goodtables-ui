@@ -1,4 +1,4 @@
-require('./styles.scss')
+require('./styles/base.css')
 const { render } = require('./render')
 const { Report } = require('./components/Report')
 const { Form } = require('./components/Form')
