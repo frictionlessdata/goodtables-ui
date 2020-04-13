@@ -14,7 +14,7 @@ Enzyme.configure({ adapter: new Adapter() })
 it('should render', () => {
   const errorGroup = getTableErrorGroups(report1.tables[0])['blank-header']
   const result = shallow(<ErrorGroup errorGroup={errorGroup} spec={spec} />)
-  expect(result).toContain('Blank Header')
+  expect(result.contains('Blank Header')).toBeTruthy()
 })
 
 it('works without headers', () => {
@@ -27,7 +27,7 @@ it('works without headers', () => {
 it('should render (version 2)', () => {
   const errorGroup = getTableErrorGroups(report2.tables[0])['blank-header']
   const result = shallow(<ErrorGroup errorGroup={errorGroup} spec={spec} />)
-  expect(result).toContain('Blank Header')
+  expect(result.contains('Blank Header')).toBeTruthy()
 })
 
 it('works without headers (version 2)', () => {
