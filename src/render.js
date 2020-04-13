@@ -2,10 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 const spec = require('./spec.json')
 
-// Module API
-
 /**
- * Render component
+ * Render a component
  *
  * @param {Component} component - one of provided by the library component e.g. `Report`
  * @param {Object} props - object containing props

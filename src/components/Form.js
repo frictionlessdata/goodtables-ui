@@ -3,8 +3,6 @@ import { Report } from './Report'
 import { MessageGroup } from './MessageGroup'
 import { merge } from '../helpers'
 
-// Module API
-
 export class Form extends React.Component {
   // Public
 
@@ -37,15 +35,44 @@ export class Form extends React.Component {
   render() {
     const { isSourceFile, isSchemaFile, isLoading } = this.state
     const { source, options, report, error } = this.state
-    const onSourceTypeChange = this.onSourceTypeChange.bind(this)
-    const onSchemaTypeChange = this.onSchemaTypeChange.bind(this)
-    const onSourceChange = this.onSourceChange.bind(this)
-    const onOptionsChange = this.onOptionsChange.bind(this)
-    const onSubmit = this.onSubmit.bind(this)
     const checkOptionsControls = [
       { key: 'blank-row', label: 'Ignore blank rows' },
       { key: 'duplicate-row', label: 'Ignore duplicate rows' },
     ]
+
+    const onSourceTypeChange = () => {
+      this.setState({ isSourceFile: !this.state.isSourceFile })
+      onSourceChange('')
+    }
+
+    const onSchemaTypeChange = () => {
+      this.setState({ isSchemaFile: !this.state.isSchemaFile })
+      onOptionsChange('schema', '')
+    }
+
+    const onSourceChange = (value) => {
+      this.setState({ source: value })
+    }
+
+    const onOptionsChange = (key, value) => {
+      const options = merge(this.state.options, { [key]: value })
+      if (!value) delete options[key]
+      this.setState({ options })
+    }
+
+    const onSubmit = () => {
+      const { validate } = this.props
+      const { source, options } = this.state
+      if (isDataPackage(source)) options.preset = 'datapackage'
+      this.setState({ report: null, error: null, isLoading: true })
+      validate(source, merge(options))
+        .then((report) => {
+          this.setState({ report, isLoading: false })
+        })
+        .catch((error) => {
+          this.setState({ error, isLoading: false })
+        })
+    }
 
     return (
       <form className="goodtables-ui-form panel panel-default">
@@ -228,57 +255,23 @@ export class Form extends React.Component {
 
         {report && (
           <div className="row-report">
-            <Report report={report} />
+            <Report report={report} spec={this.props.spec} />
           </div>
         )}
       </form>
     )
   }
+}
 
-  // Private
+// Helpers
 
-  onSourceTypeChange() {
-    this.setState({ isSourceFile: !this.state.isSourceFile })
-    this.onSourceChange('')
+function isDataPackage(source) {
+  let path = source
+
+  // Source is a file
+  if (source.name !== undefined) {
+    path = source.name
   }
 
-  onSchemaTypeChange() {
-    this.setState({ isSchemaFile: !this.state.isSchemaFile })
-    this.onOptionsChange('schema', '')
-  }
-
-  onSourceChange(value) {
-    this.setState({ source: value })
-  }
-
-  onOptionsChange(key, value) {
-    const options = merge(this.state.options, { [key]: value })
-    if (!value) delete options[key]
-    this.setState({ options })
-  }
-
-  onSubmit() {
-    const { validate } = this.props
-    const { source, options } = this.state
-    if (this._isDataPackage(source)) options.preset = 'datapackage'
-    this.setState({ report: null, error: null, isLoading: true })
-    validate(source, merge(options))
-      .then((report) => {
-        this.setState({ report, isLoading: false })
-      })
-      .catch((error) => {
-        this.setState({ error, isLoading: false })
-      })
-  }
-
-  _isDataPackage(source) {
-    let path = source
-
-    // Source is a file
-    if (source.name !== undefined) {
-      path = source.name
-    }
-
-    return path.endsWith('datapackage.json')
-  }
+  return path.endsWith('datapackage.json')
 }

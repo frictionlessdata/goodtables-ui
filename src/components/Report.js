@@ -2,8 +2,6 @@ import React from 'react'
 import { removeBaseUrl } from '../helpers'
 import { Table } from './Table'
 
-// Module API
-
 export function Report({ report, spec }) {
   const processedWarnings = getProcessedWarnings(report)
   const tables = getTables(report)
@@ -43,7 +41,7 @@ export function Report({ report, spec }) {
   )
 }
 
-// Internal
+// Helpers
 
 function getProcessedWarnings(report) {
   // Before `goodtables@1.0` there was no warnings property

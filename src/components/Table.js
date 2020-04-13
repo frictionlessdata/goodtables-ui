@@ -3,8 +3,6 @@ import classNames from 'classnames'
 import { ErrorGroup } from './ErrorGroup'
 import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
 
-// Module API
-
 export function Table({ table, tableNumber, tablesCount, spec }) {
   const tableFile = removeBaseUrl(table.source)
   const splitTableFile = splitFilePath(tableFile)

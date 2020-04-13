@@ -1,4 +1,4 @@
-// Module API
+// General
 
 export function getTableErrorGroups(table) {
   const groups = {}
