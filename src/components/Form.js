@@ -8,7 +8,9 @@ export function Form(props) {
   const [isSchemaFile, setIsSchemaFile] = useState(false)
   const [isLoading, setIsLoading] = useState(!!props.reportPromise)
   const [reportPromise, setReportPromise] = useState(props.reportPromise)
+  // TODO: setting default values like doesn't seem to work
   const [source, setSource] = useState(props.source || '')
+  // TODO: setting default values like doesn't seem to work
   const [options, setOptions] = useState(props.options || {})
   const [report, setReport] = useState(null)
   const [error, setError] = useState(null)
