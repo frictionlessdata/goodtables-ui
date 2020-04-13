@@ -17,8 +17,8 @@ export class MessageGroup extends React.Component {
         <span className="title">{title}</span>
         <hr />
         <ul>
-          {messages.map((message) => (
-            <li key={message}>{message}</li>
+          {messages.map((message, index) => (
+            <li key={index}>{message}</li>
           ))}
         </ul>
       </div>
