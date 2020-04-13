@@ -8,8 +8,8 @@ import startCase from 'lodash/startCase'
 export class ErrorGroup extends React.Component {
   // Public
 
-  constructor({ errorGroup, spec }) {
-    super({ errorGroup, spec })
+  constructor(props) {
+    super(props)
     this.state = {
       showErrorDetails: false,
       visibleRowsCount: 10,

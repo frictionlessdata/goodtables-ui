@@ -8,16 +8,16 @@ import { merge } from '../helpers'
 export class Form extends React.Component {
   // Public
 
-  constructor({ source, options, validate, reportPromise }) {
-    super({ source, options, validate, reportPromise })
+  constructor(props) {
+    super(props)
 
     // Set state
     this.state = {
       isSourceFile: false,
       isSchemaFile: false,
-      isLoading: !!reportPromise,
-      source: source || '',
-      options: options || {},
+      isLoading: !!props.reportPromise,
+      source: props.source || '',
+      options: props.options || {},
       report: null,
       error: null,
     }

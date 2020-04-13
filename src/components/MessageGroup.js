@@ -5,8 +5,8 @@ import React from 'react'
 export class MessageGroup extends React.Component {
   // Public
 
-  constructor({ type, title, messages }) {
-    super({ type, title, messages })
+  constructor(props) {
+    super(props)
     this.state = {}
   }
 
