@@ -1,11 +1,12 @@
-const axios = require('axios')
+const fetch = require('node-fetch')
 const spec = require('../spec.json')
 
 // Tests
 
 it('should be up-to-date', async () => {
-  const res = await axios.get(
+  const url =
     'https://raw.githubusercontent.com/frictionlessdata/data-quality-spec/master/spec.json'
-  )
-  expect(spec).toEqual(res.data)
+  const res = await fetch.get(url)
+  const data = await res.json()
+  expect(spec).toEqual(data)
 })
