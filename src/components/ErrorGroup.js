@@ -1,96 +1,75 @@
-import React from 'react'
 import marked from 'marked'
 import classNames from 'classnames'
+import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
 
-// Module API
-
-export class ErrorGroup extends React.Component {
-  // Public
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      showErrorDetails: false,
-      visibleRowsCount: 10,
-    }
-  }
-
-  render() {
-    const { errorGroup, spec } = this.props
-    const { showErrorDetails, visibleRowsCount } = this.state
-    const errorDetails = getErrorDetails(errorGroup, spec)
-    const showHeaders = getShowHeaders(errorDetails)
-    const description = getDescription(errorDetails)
-    const rowNumbers = getRowNumbers(errorGroup)
-    return (
-      <div className="result">
-        {/* Heading */}
-        <div>
-          <span className="count">{errorGroup.count} x</span>
-          <a
-            role="button"
-            className={classNames({
-              label: true,
-              'label-error': true,
-              collapsed: !showErrorDetails,
-            })}
-            data-toggle="collapse"
-            onClick={() => this.setState({ showErrorDetails: !showErrorDetails })}
-            aria-expanded="false"
-          >
-            {errorDetails.name}
-          </a>
-        </div>
-
-        {/* Error details */}
-        <div className={classNames(['collapse', { in: showErrorDetails }])}>
-          <div className="error-details">
-            {description && (
-              <div className="error-description">
-                <div dangerouslySetInnerHTML={{ __html: description }} />
-              </div>
-            )}
-            <div className="error-list">
-              <p className="error-list-heading">The full list of error messages:</p>
-              <ul>
-                {errorGroup.messages.map((message, index) => (
-                  <li key={index}>{message}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Table view */}
-        <div className="table-view">
-          <div className="inner">
-            <ErrorGroupTable
-              errorGroup={errorGroup}
-              visibleRowsCount={visibleRowsCount}
-              rowNumbers={rowNumbers}
-              showHeaders={showHeaders}
-            />
-          </div>
-        </div>
-
-        {/* Show more */}
-        {visibleRowsCount < rowNumbers.length && (
-          <a
-            onClick={() => {
-              this.setState({ visibleRowsCount: visibleRowsCount + 10 })
-            }}
-            className="show-more"
-          >
-            Show more <span className="icon-keyboard_arrow_down" />
-          </a>
-        )}
+export function ErrorGroup({ errorGroup, spec }) {
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false)
+  const [visibleRowsCount, setVisibleRowsCount] = useState(10)
+  const errorDetails = getErrorDetails(errorGroup, spec)
+  const showHeaders = getShowHeaders(errorDetails)
+  const description = getDescription(errorDetails)
+  const rowNumbers = getRowNumbers(errorGroup)
+  return (
+    <div className="result">
+      {/* Heading */}
+      <div>
+        <span className="count">{errorGroup.count} x</span>
+        <a
+          role="button"
+          className={classNames({
+            label: true,
+            'label-error': true,
+            collapsed: !isDetailsVisible,
+          })}
+          data-toggle="collapse"
+          onClick={() => setIsDetailsVisible(!isDetailsVisible)}
+          aria-expanded="false"
+        >
+          {errorDetails.name}
+        </a>
       </div>
-    )
-  }
-}
 
-// Internal
+      {/* Error details */}
+      <div className={classNames(['collapse', { in: isDetailsVisible }])}>
+        <div className="error-details">
+          {description && (
+            <div className="error-description">
+              <div dangerouslySetInnerHTML={{ __html: description }} />
+            </div>
+          )}
+          <div className="error-list">
+            <p className="error-list-heading">The full list of error messages:</p>
+            <ul>
+              {errorGroup.messages.map((message, index) => (
+                <li key={index}>{message}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Table view */}
+      <div className="table-view">
+        <div className="inner">
+          <ErrorGroupTable
+            errorGroup={errorGroup}
+            visibleRowsCount={visibleRowsCount}
+            rowNumbers={rowNumbers}
+            showHeaders={showHeaders}
+          />
+        </div>
+      </div>
+
+      {/* Show more */}
+      {visibleRowsCount < rowNumbers.length && (
+        <a className="show-more" onClick={() => setVisibleRowsCount(visibleRowsCount + 10)}>
+          Show more <span className="icon-keyboard_arrow_down" />
+        </a>
+      )}
+    </div>
+  )
+}
 
 function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders }) {
   return (
@@ -132,6 +111,8 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
     </table>
   )
 }
+
+// Helpers
 
 function getErrorDetails(errorGroup, spec) {
   // Get code handling legacy codes
