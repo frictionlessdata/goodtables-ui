@@ -2,17 +2,18 @@ import marked from 'marked'
 import classNames from 'classnames'
 import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
+import defaultSpec from '../spec.json'
 
 export interface IErrorGroupProps {
   errorGroup: any
-  spec: any
+  spec?: any
 }
 
 export function ErrorGroup(props: IErrorGroupProps) {
   const { errorGroup, spec } = props
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
   const [visibleRowsCount, setVisibleRowsCount] = useState(10)
-  const errorDetails = getErrorDetails(errorGroup, spec)
+  const errorDetails = getErrorDetails(errorGroup, spec || defaultSpec)
   const showHeaders = getShowHeaders(errorDetails)
   const description = getDescription(errorDetails)
   const rowNumbers = getRowNumbers(errorGroup)
@@ -162,7 +163,10 @@ function getDescription(errorDetails: any) {
 }
 
 function getRowNumbers(errorGroup: any) {
-  return Object.keys(errorGroup.rows)
-    .map((item) => parseInt(item, 10) || 0)
-    .sort((a, b) => a - b)
+  return (
+    Object.keys(errorGroup.rows)
+      .map((item) => parseInt(item, 10) || null)
+      // @ts-ignore
+      .sort((a, b) => a - b)
+  )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
+import defaultSpec from '../spec.json'
 import { ErrorGroup } from './ErrorGroup'
 import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
 
@@ -7,7 +8,7 @@ export interface ITableProps {
   table: any
   tableNumber: number
   tablesCount: number
-  spec: any
+  spec?: any
 }
 
 export function Table(props: ITableProps) {
@@ -52,7 +53,7 @@ export function Table(props: ITableProps) {
 
       {/* Error groups */}
       {Object.values(errorGroups).map((errorGroup: any) => (
-        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec} />
+        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec || defaultSpec} />
       ))}
     </div>
   )

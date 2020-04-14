@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import spec from './spec.json'
 
 /**
  * Render a component
@@ -10,5 +9,5 @@ import spec from './spec.json'
  * @param {Element} element - DOM element to render into
  */
 export function render(component: any, props: any, element: any) {
-  ReactDOM.render(React.createElement(component, { spec, ...props }, null), element)
+  ReactDOM.render(React.createElement(component, props, null), element)
 }

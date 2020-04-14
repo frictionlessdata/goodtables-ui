@@ -1,10 +1,11 @@
 import React from 'react'
+import defaultSpec from '../spec.json'
 import { removeBaseUrl } from '../helpers'
 import { Table } from './Table'
 
 export interface IReportProps {
   report: any
-  spec: any
+  spec?: any
 }
 
 export function Report(props: IReportProps) {
@@ -40,7 +41,7 @@ export function Report(props: IReportProps) {
           table={table}
           tableNumber={index + 1}
           tablesCount={tables.length}
-          spec={spec}
+          spec={spec || defaultSpec}
         />
       ))}
     </div>
