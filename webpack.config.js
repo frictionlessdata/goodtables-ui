@@ -16,16 +16,25 @@ const webpackConfig = {
     library: 'goodtablesUI',
     libraryTarget: 'umd',
   },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [ExtractCssPlugin.loader, 'css-loader'],
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: false,
+          onlyCompileBundledFiles: true,
+          compilerOptions: {
+            declaration: false,
+          },
+        },
       },
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
+        test: /\.css$/,
+        use: [ExtractCssPlugin.loader, 'css-loader'],
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
