@@ -3,7 +3,15 @@ import classNames from 'classnames'
 import { ErrorGroup } from './ErrorGroup'
 import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
 
-export function Table({ table, tableNumber, tablesCount, spec }) {
+export interface ITableProps {
+  table: any
+  tableNumber: number
+  tablesCount: number
+  spec: any
+}
+
+export function Table(props: ITableProps) {
+  const { table, tableNumber, tablesCount, spec } = props
   const tableFile = removeBaseUrl(table.source)
   const splitTableFile = splitFilePath(tableFile)
   const errorGroups = getTableErrorGroups(table)
@@ -43,7 +51,7 @@ export function Table({ table, tableNumber, tablesCount, spec }) {
       )}
 
       {/* Error groups */}
-      {Object.values(errorGroups).map((errorGroup) => (
+      {Object.values(errorGroups).map((errorGroup: any) => (
         <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec} />
       ))}
     </div>

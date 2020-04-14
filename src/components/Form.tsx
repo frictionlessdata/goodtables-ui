@@ -3,7 +3,15 @@ import { MessageGroup } from './MessageGroup'
 import { merge } from '../helpers'
 import { Report } from './Report'
 
-export function Form(props) {
+export interface IFormProps {
+  reportPromise: any
+  source: string
+  options: any
+  validate: any
+  spec: any
+}
+
+export function Form(props: IFormProps) {
   const [isSourceFile, setIsSourceFile] = useState(false)
   const [isSchemaFile, setIsSchemaFile] = useState(false)
   const [isLoading, setIsLoading] = useState(!!props.reportPromise)
@@ -27,11 +35,11 @@ export function Form(props) {
     onOptionsChange('schema', '')
   }
 
-  const onSourceChange = (value) => {
+  const onSourceChange = (value: any) => {
     setSource(value)
   }
 
-  const onOptionsChange = (key, value) => {
+  const onOptionsChange = (key: any, value: any) => {
     const newOptions = merge(options, { [key]: value })
     if (!value) delete newOptions[key]
     setOptions(newOptions)
@@ -44,11 +52,11 @@ export function Form(props) {
     setIsLoading(true)
     props
       .validate(source, merge(options))
-      .then((report) => {
+      .then((report: any) => {
         setReport(report)
         setIsLoading(false)
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setError(error)
         setIsLoading(false)
       })
@@ -58,12 +66,12 @@ export function Form(props) {
 
   if (reportPromise) {
     reportPromise
-      .then((report) => {
+      .then((report: any) => {
         setReport(report)
         setIsLoading(false)
         setReportPromise(null)
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setError(error)
         setIsLoading(false)
         setReportPromise(null)
@@ -106,7 +114,7 @@ export function Form(props) {
                 className="form-control"
                 type="file"
                 placeholder="http://data.source/url"
-                onChange={(ev) => onSourceChange(ev.target.files[0])}
+                onChange={(ev) => onSourceChange(ev.target.files![0])}
               />
             )}
 
@@ -152,7 +160,7 @@ export function Form(props) {
                 className="form-control"
                 name="schema"
                 placeholder="http://table.schema/url"
-                onChange={(ev) => onOptionsChange('schema', ev.target.files[0])}
+                onChange={(ev) => onOptionsChange('schema', ev.target.files![0])}
               />
             )}
             <small>
@@ -245,6 +253,7 @@ export function Form(props) {
 
       {error && (
         <div className="row-message">
+          // @ts-ignore
           <MessageGroup type="danger" title={'Error'} messages={[error.message]} />
         </div>
       )}
@@ -269,7 +278,7 @@ export function Form(props) {
 
 // Helpers
 
-function isDataPackage(source) {
+function isDataPackage(source: any) {
   let path = source
 
   // Source is a file

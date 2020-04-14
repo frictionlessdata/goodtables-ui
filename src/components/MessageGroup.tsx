@@ -1,6 +1,13 @@
 import React from 'react'
 
-export function MessageGroup({ type, title, messages }) {
+export interface IMessageGroupProps {
+  type: string
+  title: string
+  messages: string[]
+}
+
+export function MessageGroup(props: IMessageGroupProps) {
+  const { type, title, messages } = props
   return (
     <div className={`alert alert-${type}`} role="alert">
       <span className="title">{title}</span>

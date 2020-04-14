@@ -2,7 +2,13 @@ import React from 'react'
 import { removeBaseUrl } from '../helpers'
 import { Table } from './Table'
 
-export function Report({ report, spec }) {
+export interface IReportProps {
+  report: any
+  spec: any
+}
+
+export function Report(props: IReportProps) {
+  const { report, spec } = props
   const processedWarnings = getProcessedWarnings(report)
   const tables = getTables(report)
   return (
@@ -18,7 +24,7 @@ export function Report({ report, spec }) {
             </div>
           </h4>
           <ul className="passed-tests result">
-            {processedWarnings.map((warning, index) => (
+            {processedWarnings.map((warning: any, index: any) => (
               <li key={index}>
                 <span className="label label-warning">{warning}</span>
               </li>
@@ -43,14 +49,14 @@ export function Report({ report, spec }) {
 
 // Helpers
 
-function getProcessedWarnings(report) {
+function getProcessedWarnings(report: any) {
   // Before `goodtables@1.0` there was no warnings property
-  return (report.warnings || []).map((warning) => removeBaseUrl(warning))
+  return (report.warnings || []).map((warning: any) => removeBaseUrl(warning))
 }
 
-function getTables(report) {
+function getTables(report: any) {
   return [
-    ...report.tables.filter((table) => !table.valid),
-    ...report.tables.filter((table) => table.valid),
+    ...report.tables.filter((table: any) => !table.valid),
+    ...report.tables.filter((table: any) => table.valid),
   ]
 }

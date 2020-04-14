@@ -1,5 +1,5 @@
-const fetch = require('node-fetch')
-const spec = require('../spec.json')
+import fetch from 'node-fetch'
+import spec from '../spec.json'
 
 // Tests
 

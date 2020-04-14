@@ -1,10 +1,9 @@
-const React = require('react')
-const Enzyme = require('enzyme')
-const { shallow } = require('enzyme')
-const { Table } = require('../Table')
-const Adapter = require('enzyme-adapter-react-16')
-const report2 = require('../../../data/report2.json')
-const report1 = require('../../../data/report1.json')
+import React from 'react'
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+import { Table } from '../Table'
+import report2 from '../../../data/report2.json'
+import report1 from '../../../data/report1.json'
 Enzyme.configure({ adapter: new Adapter() })
 
 // Tests

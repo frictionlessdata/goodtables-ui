@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-const spec = require('./spec.json')
+import spec from './spec.json'
 
 /**
  * Render a component
@@ -9,6 +9,6 @@ const spec = require('./spec.json')
  * @param {Object} props - object containing props
  * @param {Element} element - DOM element to render into
  */
-export function render(component, props, element) {
+export function render(component: any, props: any, element: any) {
   ReactDOM.render(React.createElement(component, { spec, ...props }, null), element)
 }

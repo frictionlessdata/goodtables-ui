@@ -1,8 +1,7 @@
-const React = require('react')
-const Enzyme = require('enzyme')
-const { shallow } = require('enzyme')
-const Adapter = require('enzyme-adapter-react-16')
-const { MessageGroup } = require('../MessageGroup')
+import React from 'react'
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+import { MessageGroup } from '../MessageGroup'
 Enzyme.configure({ adapter: new Adapter() })
 
 // Tests

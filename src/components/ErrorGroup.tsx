@@ -3,7 +3,13 @@ import classNames from 'classnames'
 import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
 
-export function ErrorGroup({ errorGroup, spec }) {
+export interface IErrorGroupProps {
+  errorGroup: any
+  spec: any
+}
+
+export function ErrorGroup(props: IErrorGroupProps) {
+  const { errorGroup, spec } = props
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
   const [visibleRowsCount, setVisibleRowsCount] = useState(10)
   const errorDetails = getErrorDetails(errorGroup, spec)
@@ -41,7 +47,7 @@ export function ErrorGroup({ errorGroup, spec }) {
           <div className="error-list">
             <p className="error-list-heading">The full list of error messages:</p>
             <ul>
-              {errorGroup.messages.map((message, index) => (
+              {errorGroup.messages.map((message: any, index: any) => (
                 <li key={index}>{message}</li>
               ))}
             </ul>
@@ -71,24 +77,30 @@ export function ErrorGroup({ errorGroup, spec }) {
   )
 }
 
-function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders }) {
+function ErrorGroupTable(props: {
+  errorGroup: any
+  visibleRowsCount: number
+  rowNumbers: any
+  showHeaders: boolean
+}) {
+  const { errorGroup, visibleRowsCount, rowNumbers, showHeaders } = props
   return (
     <table className="table">
       <tbody>
         {errorGroup.headers && showHeaders && (
           <tr className="before-fail">
             <td>1</td>
-            {errorGroup.headers.map((header, index) => (
+            {errorGroup.headers.map((header: any, index: any) => (
               <td key={index}>{header}</td>
             ))}
           </tr>
         )}
         {rowNumbers.map(
-          (rowNumber, index) =>
+          (rowNumber: any, index: any) =>
             index < visibleRowsCount && (
               <tr key={index} className={classNames({ fail: errorGroup.code.includes('row') })}>
                 <td className="result-row-index">{rowNumber || 1}</td>
-                {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
+                {errorGroup.rows[rowNumber].values.map((value: any, innerIndex: any) => (
                   <td
                     key={innerIndex}
                     className={classNames({
@@ -105,7 +117,8 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
           <td className="result-row-index">
             {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
           </td>
-          {errorGroup.headers && errorGroup.headers.map((header, index) => <td key={index} />)}
+          {errorGroup.headers &&
+            errorGroup.headers.map((_header: any, index: any) => <td key={index} />)}
         </tr>
       </tbody>
     </table>
@@ -114,7 +127,7 @@ function ErrorGroupTable({ errorGroup, visibleRowsCount, rowNumbers, showHeaders
 
 // Helpers
 
-function getErrorDetails(errorGroup, spec) {
+function getErrorDetails(errorGroup: any, spec: any) {
   // Get code handling legacy codes
   let code = errorGroup.code
   if (code === 'non-castable-value') {
@@ -135,11 +148,11 @@ function getErrorDetails(errorGroup, spec) {
   return details
 }
 
-function getShowHeaders(errorDetails) {
+function getShowHeaders(errorDetails: any) {
   return errorDetails.context === 'body'
 }
 
-function getDescription(errorDetails) {
+function getDescription(errorDetails: any) {
   let description = errorDetails.description
   if (description) {
     description = description.replace('{validator}', '`goodtables.yml`')
@@ -148,8 +161,8 @@ function getDescription(errorDetails) {
   return description
 }
 
-function getRowNumbers(errorGroup) {
+function getRowNumbers(errorGroup: any) {
   return Object.keys(errorGroup.rows)
-    .map((item) => parseInt(item, 10) || null)
+    .map((item) => parseInt(item, 10) || 0)
     .sort((a, b) => a - b)
 }

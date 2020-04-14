@@ -1,8 +1,0 @@
-require('./styles/base.css')
-const { render } = require('./render')
-const { Report } = require('./components/Report')
-const { Form } = require('./components/Form')
-const spec = require('./spec.json')
-
-export default { render, Report, Form, spec }
-export { render, Report, Form, spec }

@@ -1,7 +1,7 @@
 // General
 
-export function getTableErrorGroups(table) {
-  const groups = {}
+export function getTableErrorGroups(table: any) {
+  const groups: any = {}
   for (const error of table.errors) {
     // Get group
     let group = groups[error.code]
@@ -43,7 +43,7 @@ export function getTableErrorGroups(table) {
     if (error['column-number']) {
       row.badcols.add(error['column-number'])
     } else if (row.values) {
-      row.badcols = new Set(row.values.map((value, index) => index + 1))
+      row.badcols = new Set(row.values.map((_value: any, index: any) => index + 1))
     }
 
     // Save group
@@ -56,11 +56,11 @@ export function getTableErrorGroups(table) {
   return groups
 }
 
-export function removeBaseUrl(text) {
+export function removeBaseUrl(text: string) {
   return text.replace(/https:\/\/raw\.githubusercontent\.com\/\S*?\/\S*?\/\S*?\//g, '')
 }
 
-export function splitFilePath(path) {
+export function splitFilePath(path: string) {
   const parts = path.split('/')
   return {
     name: parts.pop(),
@@ -69,6 +69,6 @@ export function splitFilePath(path) {
   }
 }
 
-export function merge(...args) {
+export function merge(...args: any[]) {
   return Object.assign({}, ...args)
 }
