@@ -3,12 +3,13 @@ import classNames from 'classnames'
 import defaultSpec from '../spec.json'
 import { ErrorGroup } from './ErrorGroup'
 import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
+import { ISpec } from '../common'
 
 export interface ITableProps {
   table: any
   tableNumber: number
   tablesCount: number
-  spec?: any
+  spec?: ISpec
 }
 
 export function Table(props: ITableProps) {

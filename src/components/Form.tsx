@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { MessageGroup } from './MessageGroup'
 import { merge } from '../helpers'
 import { Report } from './Report'
+import { ISpec } from '../common'
 
 export interface IFormProps {
   reportPromise: any
   source: string
   options: any
   validate: any
-  spec: any
+  spec?: ISpec
 }
 
 export function Form(props: IFormProps) {

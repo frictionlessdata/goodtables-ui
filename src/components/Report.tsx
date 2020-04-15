@@ -1,11 +1,12 @@
 import React from 'react'
 import defaultSpec from '../spec.json'
 import { removeBaseUrl } from '../helpers'
+import { ISpec } from '../common'
 import { Table } from './Table'
 
 export interface IReportProps {
   report: any
-  spec?: any
+  spec?: ISpec
 }
 
 export function Report(props: IReportProps) {
