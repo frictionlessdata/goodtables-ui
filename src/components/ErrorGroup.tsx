@@ -15,7 +15,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
   const [visibleRowsCount, setVisibleRowsCount] = useState(10)
   const specError = getSpecError(errorGroup, spec || defaultSpec)
-  const showHeaders = getShowHeaders(specError)
+  const isHeadersVisible = getIsHeadersVisible(specError)
   const description = getDescription(specError)
   const rowNumbers = getRowNumbers(errorGroup)
   return (
@@ -64,7 +64,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
             errorGroup={errorGroup}
             visibleRowsCount={visibleRowsCount}
             rowNumbers={rowNumbers}
-            showHeaders={showHeaders}
+            isHeadersVisible={isHeadersVisible}
           />
         </div>
       </div>
@@ -83,13 +83,13 @@ function ErrorGroupTable(props: {
   errorGroup: IErrorGroup
   visibleRowsCount: number
   rowNumbers: number[]
-  showHeaders: boolean
+  isHeadersVisible: boolean
 }) {
-  const { errorGroup, visibleRowsCount, rowNumbers, showHeaders } = props
+  const { errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible } = props
   return (
     <table className="table">
       <tbody>
-        {errorGroup.headers && showHeaders && (
+        {errorGroup.headers && isHeadersVisible && (
           <tr className="before-fail">
             <td>1</td>
             {errorGroup.headers.map((header, index) => (
@@ -151,7 +151,7 @@ function getSpecError(errorGroup: IErrorGroup, spec: ISpec) {
   return details
 }
 
-function getShowHeaders(specError: ISpecError) {
+function getIsHeadersVisible(specError: ISpecError) {
   return specError.context === 'body'
 }
 
