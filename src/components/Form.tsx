@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { MessageGroup } from './MessageGroup'
 import { IReport, ISpec } from '../common'
-import { merge } from '../helpers'
 import { Report } from './Report'
 
 export interface IFormProps {
@@ -41,7 +40,7 @@ export function Form(props: IFormProps) {
   }
 
   const onOptionsChange = (key: any, value: any) => {
-    const newOptions = merge(options, { [key]: value })
+    const newOptions = { ...options, [key]: value }
     if (!value) delete newOptions[key]
     setOptions(newOptions)
   }
@@ -52,7 +51,7 @@ export function Form(props: IFormProps) {
     setError(null)
     setIsLoading(true)
     props
-      .validate(source, merge(options))
+      .validate(source, { ...options })
       .then((report: any) => {
         setReport(report)
         setIsLoading(false)

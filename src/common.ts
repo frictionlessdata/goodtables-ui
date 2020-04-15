@@ -2,9 +2,7 @@
 
 export interface ISpec {
   version: string
-  errors: {
-    [code: string]: ISpecError
-  }
+  errors: { [code: string]: ISpecError }
 }
 
 export interface ISpecError {
@@ -48,4 +46,19 @@ export interface IReportTableError {
   'row-number'?: number
   'column-number'?: number
   row?: any[]
+}
+
+// ErrorGroup
+
+export interface IErrorGroup {
+  code: string
+  count: number
+  headers: string[]
+  messages: string[]
+  rows: { [rowNumber: number]: IErrorGroupRow }
+}
+
+export interface IErrorGroupRow {
+  values: any[]
+  badcols: Set<number>
 }

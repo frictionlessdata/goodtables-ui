@@ -1,7 +1,9 @@
+import { IReportTable, IErrorGroup } from './common'
+
 // General
 
-export function getTableErrorGroups(table: any) {
-  const groups: any = {}
+export function getTableErrorGroups(table: IReportTable) {
+  const groups: { [code: string]: IErrorGroup } = {}
   for (const error of table.errors) {
     // Get group
     let group = groups[error.code]
@@ -18,12 +20,10 @@ export function getTableErrorGroups(table: any) {
     }
 
     // Get row
-    let row = group.rows[error['row-number'] || null]
+    let row = group.rows[error['row-number'] || 0]
 
     // Create row
     if (!row) {
-      // This report has a body error with no `row` (is it valid?) so we use a default
-      // https://github.com/frictionlessdata/goodtables-ui/issues/25#issuecomment-573673325
       let values = error.row || []
       if (!error['row-number']) {
         values = table.headers || []
@@ -36,21 +36,20 @@ export function getTableErrorGroups(table: any) {
 
     // Ensure missing value
     if (error.code === 'missing-value') {
-      row.values[error['column-number'] - 1] = ''
+      row.values[error['column-number']! - 1] = ''
     }
 
     // Add row badcols
     if (error['column-number']) {
       row.badcols.add(error['column-number'])
     } else if (row.values) {
-      row.badcols = new Set(row.values.map((_value: any, index: any) => index + 1))
+      row.badcols = new Set(row.values.map((_value, index) => index + 1))
     }
 
     // Save group
     group.count += 1
     group.messages.push(error.message)
-    // TODO: fix that it's hard-coded to `null` for the headers row
-    group.rows[error['row-number'] || null] = row
+    group.rows[error['row-number'] || 0] = row
     groups[error.code] = group
   }
   return groups
@@ -67,8 +66,4 @@ export function splitFilePath(path: string) {
     base: parts.join('/'),
     sep: parts.length ? '/' : '',
   }
-}
-
-export function merge(...args: any[]) {
-  return Object.assign({}, ...args)
 }
