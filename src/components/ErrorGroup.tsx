@@ -3,10 +3,11 @@ import classNames from 'classnames'
 import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
 import defaultSpec from '../spec.json'
+import { ISpec } from '../common'
 
 export interface IErrorGroupProps {
   errorGroup: any
-  spec?: any
+  spec?: ISpec
 }
 
 export function ErrorGroup(props: IErrorGroupProps) {
