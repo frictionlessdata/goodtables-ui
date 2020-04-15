@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { ISource, IReport, ISpec } from '../common'
+import { ISource, IOptions, IReport, ISpec } from '../common'
 import { MessageGroup } from './MessageGroup'
 import { Report } from './Report'
 
 export interface IFormProps {
   reportPromise: any
   source: ISource
-  options: any
+  options: IOptions
   validate: any
   spec?: ISpec
 }
@@ -39,7 +39,7 @@ export function Form(props: IFormProps) {
     setSource(source)
   }
 
-  const onOptionsChange = (key: any, value: any) => {
+  const onOptionsChange = (key: string, value: any) => {
     const newOptions = { ...options, [key]: value }
     if (!value) delete newOptions[key]
     setOptions(newOptions)
