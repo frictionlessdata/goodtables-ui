@@ -13,7 +13,7 @@
     <script src="//unpkg.com/axios@0.15.3/dist/axios.js"></script>
     <script src="./dist/goodtables-ui.js"></script>
     <script>
-      axios.get('data/report2.json').then(res => {
+      axios.get('data/report.json').then(res => {
         const element = document.getElementById('app')
         const spec = goodtablesUI.spec
         spec.errors['blank-header'].description = 'New description'
