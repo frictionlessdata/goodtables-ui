@@ -3,10 +3,10 @@ import classNames from 'classnames'
 import defaultSpec from '../spec.json'
 import { ErrorGroup } from './ErrorGroup'
 import { getTableErrorGroups, removeBaseUrl, splitFilePath } from '../helpers'
-import { ISpec } from '../common'
+import { ISpec, IReportTable } from '../common'
 
 export interface ITableProps {
-  table: any
+  table: IReportTable
   tableNumber: number
   tablesCount: number
   spec?: ISpec
@@ -53,7 +53,7 @@ export function Table(props: ITableProps) {
       )}
 
       {/* Error groups */}
-      {Object.values(errorGroups).map((errorGroup: any) => (
+      {Object.values(errorGroups).map((errorGroup) => (
         <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec || defaultSpec} />
       ))}
     </div>
