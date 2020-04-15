@@ -1,13 +1,51 @@
+// Spec
+
 export interface ISpec {
   version: string
   errors: {
-    [code: string]: {
-      name: string
-      type: string
-      context: string
-      weight: number
-      message: string
-      description: string
-    }
+    [code: string]: ISpecError
   }
+}
+
+export interface ISpecError {
+  name: string
+  type: string
+  context: string
+  weight: number
+  message: string
+  description: string
+}
+
+// Report
+
+export interface IReport {
+  time: number
+  valid: boolean
+  preset: string
+  warnings: string[]
+  tables: IReportTable[]
+  'error-count': number
+  'table-count': number
+}
+
+export interface IReportTable {
+  time: number
+  valid: boolean
+  source: string
+  scheme?: string
+  format?: string
+  encoding?: string
+  schema?: string
+  headers: string[]
+  errors: IReportTableError[]
+  'error-count': number
+  'row-count': number
+}
+
+export interface IReportTableError {
+  code: string
+  message: string
+  'row-number'?: number
+  'column-number'?: number
+  row?: any[]
 }
