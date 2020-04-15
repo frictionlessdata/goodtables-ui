@@ -1,13 +1,12 @@
 import React from 'react'
-import Enzyme, { shallow } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
 import { MessageGroup } from '../MessageGroup'
-Enzyme.configure({ adapter: new Adapter() })
 
 // Tests
 
 it('should render', () => {
-  const result = shallow(<MessageGroup type={'warning'} title={'title'} messages={['message']} />)
-  expect(result.contains('title')).toBeTruthy()
-  expect(result.contains('message')).toBeTruthy()
+  render(<MessageGroup type={'warning'} title={'title'} messages={['message']} />)
+  expect(screen.getByText('title')).toBeVisible()
+  expect(screen.getByText('message')).toBeVisible()
 })

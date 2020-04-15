@@ -1,14 +1,13 @@
 import React from 'react'
-import Enzyme, { shallow } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
-import { Report } from '../Report'
-import { Table } from '../Table'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
 import report from '../../../data/report.json'
-Enzyme.configure({ adapter: new Adapter() })
+import { Report } from '../Report'
 
 // Tests
 
 it('should render', () => {
-  const result = shallow(<Report report={report} />)
-  expect(result.contains(<Table table={report.tables[0]} tableNumber={1} tablesCount={2} />))
+  render(<Report report={report} />)
+  expect(screen.getByText('Table 1 of 2')).toBeVisible()
+  expect(screen.getByText('Table 2 of 2')).toBeVisible()
 })

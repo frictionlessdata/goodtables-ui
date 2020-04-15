@@ -1,8 +1,8 @@
 const jestConfig = {
   roots: ['src'],
   preset: 'ts-jest',
-  displayName: process.env.JEST_ENV || 'node',
-  testEnvironment: process.env.JEST_ENV || 'node',
+  displayName: 'jsdom',
+  testEnvironment: 'jsdom',
   collectCoverage: false,
   coverageReporters: ['text-summary', 'html', 'lcov'],
   coverageThreshold: {

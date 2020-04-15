@@ -1,13 +1,12 @@
 import React from 'react'
-import Enzyme, { shallow } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
-import { Table } from '../Table'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
 import report from '../../../data/report.json'
-Enzyme.configure({ adapter: new Adapter() })
+import { Table } from '../Table'
 
 // Tests
 
 it('should render', () => {
-  const result = shallow(<Table table={report.tables[0]} tableNumber={1} tablesCount={2} />)
-  expect(result.contains('invalid.csv'))
+  render(<Table table={report.tables[0]} tableNumber={1} tablesCount={2} />)
+  expect(screen.getByText('invalid.csv')).toBeVisible()
 })
