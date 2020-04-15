@@ -33,6 +33,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
           data-toggle="collapse"
           onClick={() => setIsDetailsVisible(!isDetailsVisible)}
           aria-expanded="false"
+          style={specError.labelStyles || {}}
         >
           {specError.name}
         </a>
@@ -61,6 +62,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
       <div className="table-view">
         <div className="inner">
           <ErrorGroupTable
+            specError={specError}
             errorGroup={errorGroup}
             visibleRowsCount={visibleRowsCount}
             rowNumbers={rowNumbers}
@@ -80,12 +82,13 @@ export function ErrorGroup(props: IErrorGroupProps) {
 }
 
 function ErrorGroupTable(props: {
+  specError: ISpecError
   errorGroup: IErrorGroup
   visibleRowsCount: number
   rowNumbers: number[]
   isHeadersVisible: boolean
 }) {
-  const { errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible } = props
+  const { specError, errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible } = props
   return (
     <table className="table">
       <tbody>
@@ -101,10 +104,13 @@ function ErrorGroupTable(props: {
           (rowNumber, index) =>
             index < visibleRowsCount && (
               <tr key={index} className={classNames({ fail: errorGroup.code.includes('row') })}>
-                <td className="result-row-index">{rowNumber || 1}</td>
+                <td style={specError.tableStyles || {}} className="result-row-index">
+                  {rowNumber || 1}
+                </td>
                 {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
                     key={innerIndex}
+                    style={specError.tableStyles || {}}
                     className={classNames({
                       fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1),
                     })}

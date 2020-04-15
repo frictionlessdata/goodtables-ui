@@ -17,6 +17,8 @@
         const element = document.getElementById('app')
         const spec = goodtablesUI.spec
         spec.errors['blank-header'].description = 'New description'
+        spec.errors['duplicate-row'].labelStyles = {backgroundColor: 'blue'}
+        spec.errors['duplicate-row'].tableStyles = {backgroundColor: '#e3e4f4'}
         goodtablesUI.render(goodtablesUI.Report, {report: res.data, spec}, element)
       })
     </script>
