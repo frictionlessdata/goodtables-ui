@@ -1,11 +1,11 @@
 import React from 'react'
 import defaultSpec from '../spec.json'
 import { removeBaseUrl } from '../helpers'
-import { ISpec } from '../common'
+import { IReport, ISpec } from '../common'
 import { Table } from './Table'
 
 export interface IReportProps {
-  report: any
+  report: IReport
   spec?: ISpec
 }
 
@@ -26,7 +26,7 @@ export function Report(props: IReportProps) {
             </div>
           </h4>
           <ul className="passed-tests result">
-            {processedWarnings.map((warning: any, index: any) => (
+            {processedWarnings.map((warning, index) => (
               <li key={index}>
                 <span className="label label-warning">{warning}</span>
               </li>
@@ -51,14 +51,14 @@ export function Report(props: IReportProps) {
 
 // Helpers
 
-function getProcessedWarnings(report: any) {
+function getProcessedWarnings(report: IReport) {
   // Before `goodtables@1.0` there was no warnings property
-  return (report.warnings || []).map((warning: any) => removeBaseUrl(warning))
+  return (report.warnings || []).map((warning) => removeBaseUrl(warning))
 }
 
-function getTables(report: any) {
+function getTables(report: IReport) {
   return [
-    ...report.tables.filter((table: any) => !table.valid),
-    ...report.tables.filter((table: any) => table.valid),
+    ...report.tables.filter((table) => !table.valid),
+    ...report.tables.filter((table) => table.valid),
   ]
 }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { MessageGroup } from './MessageGroup'
+import { IReport, ISpec } from '../common'
 import { merge } from '../helpers'
 import { Report } from './Report'
-import { ISpec } from '../common'
 
 export interface IFormProps {
   reportPromise: any
@@ -21,7 +21,7 @@ export function Form(props: IFormProps) {
   const [source, setSource] = useState(props.source || '')
   // TODO: setting default values like doesn't seem to work
   const [options, setOptions] = useState(props.options || {})
-  const [report, setReport] = useState(null)
+  const [report, setReport] = useState(null as IReport | null)
   const [error, setError] = useState(null)
 
   // Event handlers

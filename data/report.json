@@ -1,5 +1,6 @@
 {
   "valid": false,
+  "preset": "table",
   "time": 0.027,
   "warnings": [
     "Dataset inspection has reached 100 table(s) limit"
