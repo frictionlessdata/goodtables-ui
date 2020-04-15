@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { ISource, IOptions, IReport, ISpec } from '../common'
+import { ISource, IOptions, IValidate, IReport, ISpec } from '../common'
 import { MessageGroup } from './MessageGroup'
 import { Report } from './Report'
 
 export interface IFormProps {
-  reportPromise: any
   source: ISource
   options: IOptions
-  validate: any
+  validate: IValidate
+  reportPromise?: Promise<IReport>
   spec?: ISpec
 }
 
@@ -15,7 +15,7 @@ export function Form(props: IFormProps) {
   const [isSourceFile, setIsSourceFile] = useState(false)
   const [isSchemaFile, setIsSchemaFile] = useState(false)
   const [isLoading, setIsLoading] = useState(!!props.reportPromise)
-  const [reportPromise, setReportPromise] = useState(props.reportPromise)
+  const [reportPromise, setReportPromise] = useState(props.reportPromise || null)
   // TODO: setting default values like doesn't seem to work
   const [source, setSource] = useState(props.source || '')
   // TODO: setting default values like doesn't seem to work
@@ -52,11 +52,11 @@ export function Form(props: IFormProps) {
     setIsLoading(true)
     props
       .validate(source, { ...options })
-      .then((report: any) => {
+      .then((report) => {
         setReport(report)
         setIsLoading(false)
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setError(error)
         setIsLoading(false)
       })
@@ -66,12 +66,12 @@ export function Form(props: IFormProps) {
 
   if (reportPromise) {
     reportPromise
-      .then((report: any) => {
+      .then((report) => {
         setReport(report)
         setIsLoading(false)
         setReportPromise(null)
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setError(error)
         setIsLoading(false)
         setReportPromise(null)
@@ -278,13 +278,7 @@ export function Form(props: IFormProps) {
 
 // Helpers
 
-function isDataPackage(source: any) {
-  let path = source
-
-  // Source is a file
-  if (source.name !== undefined) {
-    path = source.name
-  }
-
+function isDataPackage(source: ISource) {
+  const path = source instanceof window.File ? source.name : source
   return path.endsWith('datapackage.json')
 }
