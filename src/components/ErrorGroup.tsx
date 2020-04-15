@@ -3,10 +3,10 @@ import classNames from 'classnames'
 import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
 import defaultSpec from '../spec.json'
-import { ISpec } from '../common'
+import { ISpec, ISpecError, IErrorGroup } from '../common'
 
 export interface IErrorGroupProps {
-  errorGroup: any
+  errorGroup: IErrorGroup
   spec?: ISpec
 }
 
@@ -14,9 +14,9 @@ export function ErrorGroup(props: IErrorGroupProps) {
   const { errorGroup, spec } = props
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
   const [visibleRowsCount, setVisibleRowsCount] = useState(10)
-  const errorDetails = getErrorDetails(errorGroup, spec || defaultSpec)
-  const showHeaders = getShowHeaders(errorDetails)
-  const description = getDescription(errorDetails)
+  const specError = getSpecError(errorGroup, spec || defaultSpec)
+  const showHeaders = getShowHeaders(specError)
+  const description = getDescription(specError)
   const rowNumbers = getRowNumbers(errorGroup)
   return (
     <div className="result">
@@ -34,7 +34,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
           onClick={() => setIsDetailsVisible(!isDetailsVisible)}
           aria-expanded="false"
         >
-          {errorDetails.name}
+          {specError.name}
         </a>
       </div>
 
@@ -49,7 +49,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
           <div className="error-list">
             <p className="error-list-heading">The full list of error messages:</p>
             <ul>
-              {errorGroup.messages.map((message: any, index: any) => (
+              {errorGroup.messages.map((message, index) => (
                 <li key={index}>{message}</li>
               ))}
             </ul>
@@ -80,9 +80,9 @@ export function ErrorGroup(props: IErrorGroupProps) {
 }
 
 function ErrorGroupTable(props: {
-  errorGroup: any
+  errorGroup: IErrorGroup
   visibleRowsCount: number
-  rowNumbers: any
+  rowNumbers: number[]
   showHeaders: boolean
 }) {
   const { errorGroup, visibleRowsCount, rowNumbers, showHeaders } = props
@@ -92,17 +92,17 @@ function ErrorGroupTable(props: {
         {errorGroup.headers && showHeaders && (
           <tr className="before-fail">
             <td>1</td>
-            {errorGroup.headers.map((header: any, index: any) => (
+            {errorGroup.headers.map((header, index) => (
               <td key={index}>{header}</td>
             ))}
           </tr>
         )}
         {rowNumbers.map(
-          (rowNumber: any, index: any) =>
+          (rowNumber, index) =>
             index < visibleRowsCount && (
               <tr key={index} className={classNames({ fail: errorGroup.code.includes('row') })}>
                 <td className="result-row-index">{rowNumber || 1}</td>
-                {errorGroup.rows[rowNumber].values.map((value: any, innerIndex: any) => (
+                {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
                     key={innerIndex}
                     className={classNames({
@@ -119,8 +119,7 @@ function ErrorGroupTable(props: {
           <td className="result-row-index">
             {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
           </td>
-          {errorGroup.headers &&
-            errorGroup.headers.map((_header: any, index: any) => <td key={index} />)}
+          {errorGroup.headers && errorGroup.headers.map((_header, index) => <td key={index} />)}
         </tr>
       </tbody>
     </table>
@@ -129,7 +128,7 @@ function ErrorGroupTable(props: {
 
 // Helpers
 
-function getErrorDetails(errorGroup: any, spec: any) {
+function getSpecError(errorGroup: IErrorGroup, spec: ISpec) {
   // Get code handling legacy codes
   let code = errorGroup.code
   if (code === 'non-castable-value') {
@@ -143,19 +142,21 @@ function getErrorDetails(errorGroup: any, spec: any) {
       name: startCase(code),
       type: 'custom',
       context: 'body',
-      description: null,
+      message: 'custom',
+      description: '',
+      weight: 0,
     }
   }
 
   return details
 }
 
-function getShowHeaders(errorDetails: any) {
-  return errorDetails.context === 'body'
+function getShowHeaders(specError: ISpecError) {
+  return specError.context === 'body'
 }
 
-function getDescription(errorDetails: any) {
-  let description = errorDetails.description
+function getDescription(specError: ISpecError) {
+  let description = specError.description
   if (description) {
     description = description.replace('{validator}', '`goodtables.yml`')
     description = marked(description)
@@ -163,11 +164,8 @@ function getDescription(errorDetails: any) {
   return description
 }
 
-function getRowNumbers(errorGroup: any) {
-  return (
-    Object.keys(errorGroup.rows)
-      .map((item) => parseInt(item, 10) || null)
-      // @ts-ignore
-      .sort((a, b) => a - b)
-  )
+function getRowNumbers(errorGroup: IErrorGroup) {
+  return Object.keys(errorGroup.rows)
+    .map((item) => parseInt(item, 10))
+    .sort((a, b) => a - b)
 }
