@@ -228,13 +228,10 @@ export function Form(props: IFormProps) {
                     type="checkbox"
                     checked={(options.checks || {})[item.key] === false}
                     onChange={(ev) => {
-                      options.checks = options.checks || {}
-
-                      if (ev.target.checked) {
-                        options.checks[item.key] = false
-                      } else {
-                        delete options.checks[item.key]
-                      }
+                      const checks = options.checks || {}
+                      delete checks[item.key]
+                      if (ev.target.checked) checks[item.key] = false
+                      onOptionsChange('checks', checks)
                     }}
                   />
                   {item.label}
