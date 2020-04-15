@@ -62,3 +62,13 @@ export interface IErrorGroupRow {
   values: any[]
   badcols: Set<number>
 }
+
+// Validate
+
+export interface IValidate {
+  (source: ISource, options: IOptions): Promise<IReport>
+}
+export interface IOptions {
+  [key: string]: any
+}
+export type ISource = string | File

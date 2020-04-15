@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
+import { ISource, IReport, ISpec } from '../common'
 import { MessageGroup } from './MessageGroup'
-import { IReport, ISpec } from '../common'
 import { Report } from './Report'
 
 export interface IFormProps {
   reportPromise: any
-  source: string
+  source: ISource
   options: any
   validate: any
   spec?: ISpec
@@ -35,8 +35,8 @@ export function Form(props: IFormProps) {
     onOptionsChange('schema', '')
   }
 
-  const onSourceChange = (value: any) => {
-    setSource(value)
+  const onSourceChange = (source: ISource) => {
+    setSource(source)
   }
 
   const onOptionsChange = (key: any, value: any) => {
@@ -102,7 +102,7 @@ export function Form(props: IFormProps) {
                 name="source"
                 className="form-control"
                 type="text"
-                value={source}
+                value={source as string}
                 placeholder="http://data.source/url"
                 onChange={(ev) => onSourceChange(ev.target.value)}
               />
@@ -114,7 +114,7 @@ export function Form(props: IFormProps) {
                 className="form-control"
                 type="file"
                 placeholder="http://data.source/url"
-                onChange={(ev) => onSourceChange(ev.target.files![0])}
+                onChange={(ev) => !!ev.target.files && onSourceChange(ev.target.files[0])}
               />
             )}
 
