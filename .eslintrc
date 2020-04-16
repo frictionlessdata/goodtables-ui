@@ -5,11 +5,13 @@
     "ecmaFeatures": { "jsx": true }
   },
   "plugins": [
+    "cypress",
     "@typescript-eslint/eslint-plugin"
   ],
   "extends": [
     "standard",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:cypress/recommended"
   ],
   "settings": {
     "react": { "version": "detect" }
