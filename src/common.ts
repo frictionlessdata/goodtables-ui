@@ -42,12 +42,13 @@ export interface IReportTable {
   'row-count': number
 }
 
+// TODO: for now, there is a mix undefined/null between goodtables@1/2 (in profiles also)
 export interface IReportTableError {
   code: string
   message: string
-  'row-number'?: number
-  'column-number'?: number
-  row?: any[]
+  'row-number'?: number | null
+  'column-number'?: number | null
+  row?: any[] | null
 }
 
 // ErrorGroup

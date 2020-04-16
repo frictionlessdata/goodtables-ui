@@ -1,5 +1,8 @@
 import React from 'react'
+import { validate } from 'jsonschema'
 import defaultSpec from '../spec.json'
+import profileSpec from '../profiles/spec.json'
+import profileReport from '../profiles/report.json'
 import { removeBaseUrl } from '../helpers'
 import { IReport, ISpec } from '../common'
 import { Table } from './Table'
@@ -11,6 +14,48 @@ export interface IReportProps {
 
 export function Report(props: IReportProps) {
   const { report, spec } = props
+
+  // Invalid report
+  const reportValidation = validateReport(report)
+  if (!reportValidation.valid) {
+    return (
+      <div className="goodtables-ui-report">
+        <h5>
+          <strong>Invalid report</strong>
+        </h5>
+        <hr />
+        <div style={{ whiteSpace: 'pre', fontFamily: 'courier' }}>
+          {JSON.stringify(reportValidation.errors, null, 2)}
+        </div>
+        <hr />
+        <div style={{ whiteSpace: 'pre', fontFamily: 'courier' }}>
+          {JSON.stringify(report, null, 2)}
+        </div>
+      </div>
+    )
+  }
+
+  // Invalid spec
+  const specValidation = validateSpec(spec || defaultSpec)
+  if (!specValidation.valid) {
+    return (
+      <div className="goodtables-ui-report">
+        <h5>
+          <strong>Invalid spec</strong>
+        </h5>
+        <hr />
+        <div style={{ whiteSpace: 'pre', fontFamily: 'courier' }}>
+          {JSON.stringify(specValidation.errors, null, 2)}
+        </div>
+        <hr />
+        <div style={{ whiteSpace: 'pre', fontFamily: 'courier' }}>
+          {JSON.stringify(spec, null, 2)}
+        </div>
+      </div>
+    )
+  }
+
+  // Valid report/spec
   const processedWarnings = getProcessedWarnings(report)
   const tables = getTables(report)
   return (
@@ -50,6 +95,14 @@ export function Report(props: IReportProps) {
 }
 
 // Helpers
+
+function validateReport(report: IReport) {
+  return validate(report, profileReport)
+}
+
+function validateSpec(spec: ISpec) {
+  return validate(spec, profileSpec)
+}
 
 function getProcessedWarnings(report: IReport) {
   // Before `goodtables@1.0` there was no warnings property
