@@ -10,16 +10,17 @@
     <div class="container">
       <div id="app"></div>
     </div>
-    <script src="//unpkg.com/axios@0.15.3/dist/axios.js"></script>
     <script src="./dist/goodtables-ui.js"></script>
     <script>
-      axios.get('data/report.json').then(res => {
-        const element = document.getElementById('app')
-        const spec = goodtablesUI.spec
-        spec.errors['blank-header'].description = 'New description'
-        spec.errors['duplicate-row'].labelStyles = {backgroundColor: 'blue'}
-        spec.errors['duplicate-row'].tableStyles = {backgroundColor: '#e3e4f4'}
-        goodtablesUI.render(goodtablesUI.Report, {report: res.data, spec}, element)
+      fetch('data/report.json').then(res => {
+        res.json().then(report => {
+          const element = document.getElementById('app')
+          const spec = goodtablesUI.spec
+          spec.errors['blank-header'].description = 'New description'
+          spec.errors['duplicate-row'].labelStyles = {backgroundColor: 'blue'}
+          spec.errors['duplicate-row'].tableStyles = {backgroundColor: '#e3e4f4'}
+          goodtablesUI.render(goodtablesUI.Report, {report, spec}, element)
+        })
       })
     </script>
   </body>
