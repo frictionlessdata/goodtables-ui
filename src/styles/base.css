@@ -167,24 +167,18 @@
 }
 
 .goodtables-ui-report .result .badge.badge-error {
-     background-color: #fff;
-     border: solid 1px #F13C3F;
-     color: #F13C3F;
      position: relative;
-     z-index: 2;
-}
-
-.goodtables-ui-report .result .badge.badge-error.collapsed {
      background-color: #F13C3F;
+     cursor: pointer;
      color: #fff;
-     border-width: 0;
+     z-index: 2;
 }
 
 .goodtables-ui-report .result .error-details {
      font-size: 14px;
-     border: solid 1px #F13C3F;
+     border: solid 2px #F13C3F;
      border-radius: 3px;
-     margin-top: -3px;
+     margin-top: -2px;
 }
 
 .goodtables-ui-report .result .error-details .error-description {
@@ -241,7 +235,6 @@
 .goodtables-ui-report .result .table-view table {
      margin: 0;
      color: #595959;
-     border-collapse: separate;
 }
 
 .goodtables-ui-report .result .table-view table tr {

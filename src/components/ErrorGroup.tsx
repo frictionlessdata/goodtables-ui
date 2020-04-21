@@ -90,7 +90,7 @@ function ErrorGroupTable(props: {
 }) {
   const { specError, errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible } = props
   return (
-    <table className="table">
+    <table className="table table-sm">
       <tbody>
         {errorGroup.headers && isHeadersVisible && (
           <tr className="before-fail">
