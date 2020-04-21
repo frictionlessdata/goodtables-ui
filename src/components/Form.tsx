@@ -88,7 +88,7 @@ export function Form(props: IFormProps) {
   // Render
 
   return (
-    <form className="goodtables-ui-form panel panel-default">
+    <form className="goodtables-ui-form card card-default">
       <div className="row-source">
         <div className="form-inline">
           <label htmlFor="source">Source</label>&nbsp; [
@@ -118,16 +118,18 @@ export function Form(props: IFormProps) {
               />
             )}
 
-            <div className="input-group-btn" style={{ width: '1%' }}>
-              <button
-                className="btn btn-primary"
-                onClick={(ev) => {
-                  ev.preventDefault()
-                  onSubmit()
-                }}
-              >
-                Validate
-              </button>
+            <div className="input-group-append">
+              <div className="input-group-btn" style={{ width: '1%' }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={(ev) => {
+                    ev.preventDefault()
+                    onSubmit()
+                  }}
+                >
+                  Validate
+                </button>
+              </div>
             </div>
           </div>
           <small>
@@ -217,23 +219,24 @@ export function Form(props: IFormProps) {
         </div>
       </div>
 
-      <div className="row-flags">
+      <div className="row-flags mt-3">
         <div className="row">
           {checkOptionsControls.map((item) => (
             <div className="col-md-6" key={item.key}>
-              <div className="checkbox">
-                <label htmlFor={item.key}>
-                  <input
-                    id={item.key}
-                    type="checkbox"
-                    checked={(options.checks || {})[item.key] === false}
-                    onChange={(ev) => {
-                      const checks = options.checks || {}
-                      delete checks[item.key]
-                      if (ev.target.checked) checks[item.key] = false
-                      onOptionsChange('checks', checks)
-                    }}
-                  />
+              <div className="form-check">
+                <input
+                  id={item.key}
+                  type="checkbox"
+                  className="form-check-input"
+                  checked={(options.checks || {})[item.key] === false}
+                  onChange={(ev) => {
+                    const checks = options.checks || {}
+                    delete checks[item.key]
+                    if (ev.target.checked) checks[item.key] = false
+                    onOptionsChange('checks', checks)
+                  }}
+                />
+                <label htmlFor={item.key} className="form-check-label">
                   {item.label}
                 </label>
               </div>
