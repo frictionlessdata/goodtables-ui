@@ -12,7 +12,7 @@ list:
 
 readme:
 	# npx referencer src README.md --in-place
-	npx doctoc --maxlevel 3 README.md
+	npx doctoc --notitle --maxlevel 3 README.md
 
 release:
 	git checkout master && git pull origin && git fetch -p && git diff

@@ -15,14 +15,16 @@ A web UI for goodtables validation and report visualizations. (Demo: [FORM](http
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
 
 - [Getting Started](#getting-started)
+  - [Requirements](#requirements)
   - [Installation](#installation)
 - [Documentation](#documentation)
-  - [React](#react)
-  - [Angular](#angular)
-  - [Vue](#vue)
+  - [General usage](#general-usage)
+  - [In-React usage](#in-react-usage)
+  - [Component: `Report`](#component-report)
+  - [Component: `Form`](#component-form)
 - [API Reference](#api-reference)
   - [render(component, props, element)](#rendercomponent-props-element)
 - [Contributing](#contributing)
