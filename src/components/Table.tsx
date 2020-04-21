@@ -47,7 +47,7 @@ export function Table(props: ITableProps) {
       {table.valid && (
         <ul className="passed-tests result">
           <li>
-            <span className="label label-success">Valid Table</span>
+            <span className="badge badge-success">Valid Table</span>
           </li>
         </ul>
       )}

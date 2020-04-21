@@ -138,6 +138,8 @@
 
 .goodtables-ui-report .file.invalid .file-heading .badge {
      background-color: #F13C3F;
+     border-radius: 8px;
+     color: white;
 }
 
 .goodtables-ui-report .result {
@@ -149,20 +151,22 @@
 .goodtables-ui-report .result .count {
      font-size: 14px;
      font-weight: 600;
-     margin-right: 10px;
+     margin-right: 5px;
 }
 
-.goodtables-ui-report .result .label {
+.goodtables-ui-report .result .badge {
      font-size: 14px;
      margin-right: 10px;
+     padding: 4px 8px;
 }
 
-.goodtables-ui-report .result .label.label-warning {
+.goodtables-ui-report .result .badge.badge-warning {
      text-align: left;
      white-space: normal;
+     color: white;
 }
 
-.goodtables-ui-report .result .label.label-error {
+.goodtables-ui-report .result .badge.badge-error {
      background-color: #fff;
      border: solid 1px #F13C3F;
      color: #F13C3F;
@@ -170,7 +174,7 @@
      z-index: 2;
 }
 
-.goodtables-ui-report .result .label.label-error.collapsed {
+.goodtables-ui-report .result .badge.badge-error.collapsed {
      background-color: #F13C3F;
      color: #fff;
      border-width: 0;
@@ -410,7 +414,7 @@
      display: inline-block;
 }
 
-.goodtables-ui-report .passed-tests li .label {
+.goodtables-ui-report .passed-tests li .badge {
      display: inline-block;
      margin-bottom: 10px;
 }

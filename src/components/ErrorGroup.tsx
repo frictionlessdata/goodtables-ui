@@ -21,13 +21,13 @@ export function ErrorGroup(props: IErrorGroupProps) {
   return (
     <div className="result">
       {/* Heading */}
-      <div>
+      <div className="d-flex align-items-center">
         <span className="count">{errorGroup.count} x</span>
         <a
           role="button"
           className={classNames({
-            label: true,
-            'label-error': true,
+            badge: true,
+            'badge-error': true,
             collapsed: !isDetailsVisible,
           })}
           data-toggle="collapse"

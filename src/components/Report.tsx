@@ -73,7 +73,7 @@ export function Report(props: IReportProps) {
           <ul className="passed-tests result">
             {processedWarnings.map((warning, index) => (
               <li key={index}>
-                <span className="label label-warning">{warning}</span>
+                <span className="badge badge-warning">{warning}</span>
               </li>
             ))}
           </ul>
