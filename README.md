@@ -38,10 +38,12 @@ You can use this components in plain JavaScript code or mixing with any modern f
 
 ### Requirements
 
+> If you'd like to use `bootstrap@3` please install `goodtables-ui@1`
+
 It requires adding bootstrap and component styles to your HTML (or requiring it within your scripts):
 
 ```html
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="//unpkg.com/goodtables-ui/dist/goodtables-ui.min.css">
 ```
 
