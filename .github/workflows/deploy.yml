@@ -22,6 +22,8 @@ jobs:
         cp -r dist build/dist
         cp index.html build
         cp report.html build
+        mkdir build/data
+        cp data/report.json build/data
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
