@@ -11,7 +11,7 @@ list:
 	@grep '^\.PHONY' Makefile | cut -d' ' -f2- | tr ' ' '\n'
 
 readme:
-	npx referencer src README.md --in-place
+	# npx referencer src README.md --in-place
 	npx doctoc --maxlevel 3 README.md
 
 release:

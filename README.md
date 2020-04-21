@@ -3,9 +3,7 @@
 [![Travis](https://img.shields.io/travis/frictionlessdata/goodtables-ui/master.svg)](https://travis-ci.org/frictionlessdata/goodtables-ui)
 [![Coveralls](https://coveralls.io/repos/github/frictionlessdata/goodtables-ui/badge.svg?branch=master)](https://coveralls.io/github/frictionlessdata/goodtables-ui?branch=master)
 
-[![Saucelabs](https://saucelabs.com/browser-matrix/goodtablesui.svg)](https://saucelabs.com/u/goodtablesui)
-
-UI for `goodtables` as an framework-agnostic browser components ([DEMO](https://frictionlessdata.github.io/goodtables-ui/)).
+A web UI for goodtables validation and report visualizations. (Demo: [FORM](https://frictionlessdata.github.io/goodtables-ui/)/[REPORT](https://frictionlessdata.github.io/goodtables-ui/report.html)).
 
 ## Features
 
@@ -34,9 +32,11 @@ UI for `goodtables` as an framework-agnostic browser components ([DEMO](https://
 
 ## Getting Started
 
-You could use this components in plain JavaScript code or mixing with any modern framework (with native support for React). To render `report` you have use `goodtablesUI.render(goodtablesUI.Report, props, element)` function.
+You can use this components in plain JavaScript code or mixing with any modern framework (with native support for React). To render `report` you have use `goodtablesUI.render(goodtablesUI.Report, props, element)` function.
 
-First add bootstrap and component styles:
+### Requirements
+
+It requires adding bootstrap and component styles to your HTML (or requiring it within your scripts):
 
 ```html
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -77,11 +77,23 @@ The package could be used as pluggable script from CDN:
 
 ## Documentation
 
-### React
+### General usage
+
+This library can be used in a vanilla JavaScript environment or mixed with some framework like Angular or Vue:
+
+```javascript
+import goodtablesUI from 'goodtables-ui'
+
+const report = '<YOUR-REPORT>'
+const element = document.getElementById('report')
+goodtablesUI.render(goodtablesUI.Report, {report}, element)
+```
+
+### In-React usage
 
 > In this case your application should provide `react` and `react-dom`.
 
-You could use presented components as native React component (import from `goodtables-ui/lib` to get native React support):
+You can use the components as native components (import from `goodtables-ui/lib` to get React sources):
 
 ```javascript
 import React from 'react'
@@ -93,47 +105,29 @@ const element = document.getElementById('report')
 ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 ```
 
-### Angular
+### Component: `Report`
 
-> This example is for Angular2+. Use similliar approach for Angular1.
+The `Report` component accepts the folowing props:
+- `report` - a valid goodtables report
+- `spec?` - an optional custom goodtables spec
 
-The package's components could be used as `angular` component:
+Here is a example of the spec customization:
 
-```javascript
-import {Component, Input} from '@angular/core';
-import goodtablesUI from 'goodtablesUI'
-
-@Component({
-  selector: 'report',
-  template: '<div id="report"></div>'
-})
-class Report {
-  @Input() report: any;
-  ngAfterViewInit() {
-    const element = document.getElementById('report')
-    goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
-  }
-}
+```
+const spec = goodtablesUI.spec
+spec.errors['blank-header'].description = 'New description'
+spec.errors['duplicate-row'].hexColor = '0700fd'
 ```
 
-### Vue
+### Component: `Form`
 
-> This example is for Vue2+. Use similar approach for Vue1.
+The `Form` component accepts the following props:
+- `source` - goodtables validation source
+- `options` - goodtables validation options
+- `validate` - a function in a form of `(source: ISource, options: IOptions): Promise<IReport>`
+- `reportPromise?` - a valid goodtables report in a form of Promise
+- `spec?` - an optional custom goodtables spec
 
-The package's components could be used as `vue` component:
-
-```javascript
-import goodtablesUI from 'goodtablesUI'
-
-const Report = {
-  props: ['report'],
-  template: '<div id="report"></div>',
-  mounted() {
-    const element = document.getElementById('report')
-    goodtablesUI.render(goodtablesUI.Report, {report: this.report}, element)
-  },
-}
-```
 
 ## API Reference
 
@@ -179,19 +173,3 @@ Improved behaviour:
 #### v1.0
 
 First stable realese.
-
-#### v0.3
-
-New functionality added:
-- `Form` component now supports source/schema uploading
-
-#### v0.2
-
-New API added:
-- published `Form` component
-
-#### v0.1
-
-New API added:
-- published `Report` component
-- published `render` function
