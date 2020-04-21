@@ -3,7 +3,7 @@
 [![Travis](https://img.shields.io/travis/frictionlessdata/goodtables-ui/master.svg)](https://travis-ci.org/frictionlessdata/goodtables-ui)
 [![Coveralls](https://coveralls.io/repos/github/frictionlessdata/goodtables-ui/badge.svg?branch=master)](https://coveralls.io/github/frictionlessdata/goodtables-ui?branch=master)
 
-A web UI for goodtables validation and report visualizations. ([FORM](https://frictionlessdata.github.io/goodtables-ui/)/[REPORT](https://frictionlessdata.github.io/goodtables-ui/report.html)).
+A web UI for goodtables validation and report visualizations. (Demo: [FORM](https://frictionlessdata.github.io/goodtables-ui/)/[REPORT](https://frictionlessdata.github.io/goodtables-ui/report.html)).
 
 ## Features
 
@@ -34,7 +34,9 @@ A web UI for goodtables validation and report visualizations. ([FORM](https://fr
 
 You can use this components in plain JavaScript code or mixing with any modern framework (with native support for React). To render `report` you have use `goodtablesUI.render(goodtablesUI.Report, props, element)` function.
 
-It requires adding bootstrap and component styles:
+### Requirements
+
+It requires adding bootstrap and component styles to your HTML (or requiring it within your scripts):
 
 ```html
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -87,7 +89,7 @@ const element = document.getElementById('report')
 goodtablesUI.render(goodtablesUI.Report, {report}, element)
 ```
 
-### Usage as React components
+### In-React usage
 
 > In this case your application should provide `react` and `react-dom`.
 
@@ -102,6 +104,30 @@ const report = '<YOUR-REPORT>'
 const element = document.getElementById('report')
 ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 ```
+
+### Component: `Report`
+
+The `Report` component accepts the folowing props:
+- `report` - a valid goodtables report
+- `spec?` - an optional custom goodtables spec
+
+Here is a example of the spec customization:
+
+```
+const spec = goodtablesUI.spec
+spec.errors['blank-header'].description = 'New description'
+spec.errors['duplicate-row'].hexColor = '0700fd'
+```
+
+### Component: `Form`
+
+The `Form` component accepts the following props:
+- `source` - goodtables validation source
+- `options` - goodtables validation options
+- `validate` - a function in a form of `(source: ISource, options: IOptions): Promise<IReport>`
+- `reportPromise?` - a valid goodtables report in a form of Promise
+- `spec?` - an optional custom goodtables spec
+
 
 ## API Reference
 
@@ -147,19 +173,3 @@ Improved behaviour:
 #### v1.0
 
 First stable realese.
-
-#### v0.3
-
-New functionality added:
-- `Form` component now supports source/schema uploading
-
-#### v0.2
-
-New API added:
-- published `Form` component
-
-#### v0.1
-
-New API added:
-- published `Report` component
-- published `render` function

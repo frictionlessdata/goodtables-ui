@@ -2,8 +2,8 @@ import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
 import { getTableErrorGroups } from '../../helpers'
-import report from '../../../data/report.json'
 import { ErrorGroup } from '../ErrorGroup'
+import report from './fixtures/report.json'
 
 // Tests
 
