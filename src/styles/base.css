@@ -184,6 +184,7 @@
      font-size: 14px;
      border: solid 1px #F13C3F;
      border-radius: 3px;
+     margin-top: -3px;
 }
 
 .goodtables-ui-report .result .error-details .error-description {

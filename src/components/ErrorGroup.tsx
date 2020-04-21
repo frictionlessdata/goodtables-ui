@@ -40,7 +40,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
       </div>
 
       {/* Error details */}
-      <div className={classNames(['collapse', { in: isDetailsVisible }])}>
+      <div className={classNames(['collapse', { show: isDetailsVisible }])}>
         <div className="error-details">
           {description && (
             <div className="error-description">
