@@ -12,8 +12,7 @@ export interface ISpecError {
   weight: number
   message: string
   description: string
-  labelStyles?: { [key: string]: any }
-  tableStyles?: { [key: string]: any }
+  hexColor?: string
 }
 
 // Report

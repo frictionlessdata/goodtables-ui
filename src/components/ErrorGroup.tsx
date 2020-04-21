@@ -1,5 +1,6 @@
 import marked from 'marked'
 import classNames from 'classnames'
+import hexToRgba from 'hex-to-rgba'
 import React, { useState } from 'react'
 import startCase from 'lodash/startCase'
 import defaultSpec from '../spec.json'
@@ -33,7 +34,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
           data-toggle="collapse"
           onClick={() => setIsDetailsVisible(!isDetailsVisible)}
           aria-expanded="false"
-          style={specError.labelStyles || {}}
+          style={{ backgroundColor: getRgbaColor(specError) }}
         >
           {specError.name}
         </a>
@@ -41,15 +42,27 @@ export function ErrorGroup(props: IErrorGroupProps) {
 
       {/* Error details */}
       <div className={classNames(['collapse', { show: isDetailsVisible }])}>
-        <div className="error-details">
+        <div className="error-details" style={{ borderColor: getRgbaColor(specError) }}>
           {description && (
             <div className="error-description">
               <div dangerouslySetInnerHTML={{ __html: description }} />
             </div>
           )}
-          <div className="error-list">
-            <p className="error-list-heading">The full list of error messages:</p>
-            <ul>
+          <div className="error-list" style={{ borderTopColor: getRgbaColor(specError) }}>
+            <p
+              className="error-list-heading"
+              style={{
+                backgroundColor: getRgbaColor(specError, 0.1),
+                borderBottomColor: getRgbaColor(specError, 0.25),
+              }}
+            >
+              The full list of error messages:
+            </p>
+            <ul
+              style={{
+                backgroundColor: getRgbaColor(specError, 0.05),
+              }}
+            >
               {errorGroup.messages.map((message, index) => (
                 <li key={index}>{message}</li>
               ))}
@@ -94,7 +107,7 @@ function ErrorGroupTable(props: {
       <tbody>
         {errorGroup.headers && isHeadersVisible && (
           <tr className="before-fail">
-            <td>1</td>
+            <td className="text-center">1</td>
             {errorGroup.headers.map((header, index) => (
               <td key={index}>{header}</td>
             ))}
@@ -104,13 +117,16 @@ function ErrorGroupTable(props: {
           (rowNumber, index) =>
             index < visibleRowsCount && (
               <tr key={index} className={classNames({ fail: errorGroup.code.includes('row') })}>
-                <td style={specError.tableStyles || {}} className="result-row-index">
+                <td
+                  style={{ backgroundColor: getRgbaColor(specError, 0.25) }}
+                  className="result-row-index"
+                >
                   {rowNumber || 1}
                 </td>
                 {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
                     key={innerIndex}
-                    style={specError.tableStyles || {}}
+                    style={{ backgroundColor: getRgbaColor(specError, 0.25) }}
                     className={classNames({
                       fail: errorGroup.rows[rowNumber].badcols.has(innerIndex + 1),
                     })}
@@ -155,6 +171,10 @@ function getSpecError(errorGroup: IErrorGroup, spec: ISpec) {
   }
 
   return details
+}
+
+function getRgbaColor(specError: ISpecError, alpha: number = 1) {
+  return specError.hexColor ? hexToRgba(specError.hexColor, alpha) : undefined
 }
 
 function getIsHeadersVisible(specError: ISpecError) {
