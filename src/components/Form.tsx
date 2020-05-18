@@ -21,7 +21,7 @@ export function Form(props: IFormProps) {
   // TODO: setting default values like doesn't seem to work
   const [options, setOptions] = useState(props.options || {})
   const [report, setReport] = useState(null as IReport | null)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null as Error | null)
 
   // Event handlers
 
@@ -253,7 +253,6 @@ export function Form(props: IFormProps) {
 
       {error && (
         <div className="row-message">
-          // @ts-ignore
           <MessageGroup type="danger" title={'Error'} messages={[error.message]} />
         </div>
       )}
