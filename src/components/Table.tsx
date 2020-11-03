@@ -23,8 +23,8 @@ export function Table(props: ITableProps) {
       <h4 className="file-heading">
         <div className="inner">
           <a className="file-name" href={table.source}>
-            {splitTableFile.base}
-            {splitTableFile.sep}
+            <strong>{splitTableFile.base}</strong>
+            <strong>{splitTableFile.sep}</strong>
             <strong>{splitTableFile.name}</strong>
             {!table.valid && (
               <span

@@ -72,17 +72,19 @@ export function ErrorGroup(props: IErrorGroupProps) {
       </div>
 
       {/* Table view */}
-      <div className="table-view">
-        <div className="inner">
-          <ErrorGroupTable
-            specError={specError}
-            errorGroup={errorGroup}
-            visibleRowsCount={visibleRowsCount}
-            rowNumbers={rowNumbers}
-            isHeadersVisible={isHeadersVisible}
-          />
+      {!['source-error'].includes(errorGroup.code) && (
+        <div className="table-view">
+          <div className="inner">
+            <ErrorGroupTable
+              specError={specError}
+              errorGroup={errorGroup}
+              visibleRowsCount={visibleRowsCount}
+              rowNumbers={rowNumbers}
+              isHeadersVisible={isHeadersVisible}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Show more */}
       {visibleRowsCount < rowNumbers.length && (
