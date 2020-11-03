@@ -69,7 +69,6 @@
           "valid",
           "error-count",
           "row-count",
-          "headers",
           "errors"
         ],
         "properties": {
