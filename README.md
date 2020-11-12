@@ -111,7 +111,7 @@ ReactDOM.render(<goodtablesUI.Report report={report} />, element)
 
 ### Component: `Report`
 
-The `Report` component accepts the folowing props:
+The `Report` component accepts the following props:
 - `report` - a valid goodtables report
 - `spec?` - an optional custom goodtables spec
 
@@ -185,4 +185,4 @@ Improved behaviour:
 
 #### v1.0
 
-First stable realese.
+First stable release.
