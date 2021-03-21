@@ -9,10 +9,11 @@ import { ISpec, ISpecError, IErrorGroup } from '../common'
 export interface IErrorGroupProps {
   errorGroup: IErrorGroup
   spec?: ISpec
+  skipHeaderIndex?: boolean
 }
 
 export function ErrorGroup(props: IErrorGroupProps) {
-  const { errorGroup, spec } = props
+  const { errorGroup, spec, skipHeaderIndex } = props
   const [isDetailsVisible, setIsDetailsVisible] = useState(false)
   const [visibleRowsCount, setVisibleRowsCount] = useState(10)
   const specError = getSpecError(errorGroup, spec || defaultSpec)
@@ -81,6 +82,7 @@ export function ErrorGroup(props: IErrorGroupProps) {
               visibleRowsCount={visibleRowsCount}
               rowNumbers={rowNumbers}
               isHeadersVisible={isHeadersVisible}
+              skipHeaderIndex={skipHeaderIndex}
             />
           </div>
         </div>
@@ -102,14 +104,15 @@ function ErrorGroupTable(props: {
   visibleRowsCount: number
   rowNumbers: number[]
   isHeadersVisible: boolean
+  skipHeaderIndex?: boolean
 }) {
-  const { specError, errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible } = props
+  const { specError, errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible, skipHeaderIndex } = props
   return (
     <table className="table table-sm">
       <tbody>
         {errorGroup.headers && isHeadersVisible && (
           <tr className="before-fail">
-            <td className="text-center">1</td>
+            <td className="text-center">{skipHeaderIndex ? '' : '1'}</td>
             {errorGroup.headers.map((header, index) => (
               <td key={index}>{header}</td>
             ))}

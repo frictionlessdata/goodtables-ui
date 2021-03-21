@@ -90,6 +90,7 @@ export function Report(props: IReportProps) {
           tableNumber={index + 1}
           tablesCount={tables.length}
           spec={spec || defaultSpec}
+          skipHeaderIndex={skipHeaderIndex}
         />
       ))}
     </div>
