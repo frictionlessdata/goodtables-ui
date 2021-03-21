@@ -106,7 +106,14 @@ function ErrorGroupTable(props: {
   isHeadersVisible: boolean
   skipHeaderIndex?: boolean
 }) {
-  const { specError, errorGroup, visibleRowsCount, rowNumbers, isHeadersVisible, skipHeaderIndex } = props
+  const {
+    specError,
+    errorGroup,
+    visibleRowsCount,
+    rowNumbers,
+    isHeadersVisible,
+    skipHeaderIndex,
+  } = props
   return (
     <table className="table table-sm">
       <tbody>

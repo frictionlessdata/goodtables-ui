@@ -55,7 +55,12 @@ export function Table(props: ITableProps) {
 
       {/* Error groups */}
       {Object.values(errorGroups).map((errorGroup) => (
-        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec || defaultSpec} skipHeaderIndex={skipHeaderIndex} />
+        <ErrorGroup
+          key={errorGroup.code}
+          errorGroup={errorGroup}
+          spec={spec || defaultSpec}
+          skipHeaderIndex={skipHeaderIndex}
+        />
       ))}
     </div>
   )

@@ -5,5 +5,6 @@ export interface ITableProps {
     tableNumber: number;
     tablesCount: number;
     spec?: ISpec;
+    skipHeaderIndex?: boolean;
 }
 export declare function Table(props: ITableProps): JSX.Element;
