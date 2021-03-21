@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { ISource, IOptions, IValidate, IReport, ISpec } from '../common';
 export interface IFormProps {
     source: ISource;
@@ -6,4 +7,4 @@ export interface IFormProps {
     reportPromise?: Promise<IReport>;
     spec?: ISpec;
 }
-export declare function Form(props: IFormProps): any;
+export declare function Form(props: IFormProps): JSX.Element;

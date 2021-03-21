@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { ISpec, IReportTable } from '../common';
 export interface ITableProps {
     table: IReportTable;
@@ -5,4 +6,4 @@ export interface ITableProps {
     tablesCount: number;
     spec?: ISpec;
 }
-export declare function Table(props: ITableProps): any;
+export declare function Table(props: ITableProps): JSX.Element;
