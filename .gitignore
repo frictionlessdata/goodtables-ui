@@ -47,7 +47,7 @@ jspm_packages
 .yarn-integrity
 
 # Extra
-lib/
+#lib/
 dist/
 e2e/videos/
 package-lock.json
