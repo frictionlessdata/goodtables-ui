@@ -10,10 +10,12 @@ import { Table } from './Table'
 export interface IReportProps {
   report: IReport
   spec?: ISpec
+  skipHeaderIndex?: boolean
 }
 
 export function Report(props: IReportProps) {
-  const { report, spec } = props
+  const { report, spec, skipHeaderIndex = false } = props
+  console.log('SKIP HEADER INDEX', skipHeaderIndex)
 
   // Invalid report
   const reportValidation = validateReport(report)
@@ -88,6 +90,7 @@ export function Report(props: IReportProps) {
           tableNumber={index + 1}
           tablesCount={tables.length}
           spec={spec || defaultSpec}
+          skipHeaderIndex={skipHeaderIndex}
         />
       ))}
     </div>

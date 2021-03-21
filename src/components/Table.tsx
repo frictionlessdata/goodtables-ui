@@ -10,10 +10,11 @@ export interface ITableProps {
   tableNumber: number
   tablesCount: number
   spec?: ISpec
+  skipHeaderIndex?: boolean
 }
 
 export function Table(props: ITableProps) {
-  const { table, tableNumber, tablesCount, spec } = props
+  const { table, tableNumber, tablesCount, spec, skipHeaderIndex } = props
   const tableFile = removeBaseUrl(table.source)
   const splitTableFile = splitFilePath(tableFile)
   const errorGroups = getTableErrorGroups(table)
@@ -54,7 +55,12 @@ export function Table(props: ITableProps) {
 
       {/* Error groups */}
       {Object.values(errorGroups).map((errorGroup) => (
-        <ErrorGroup key={errorGroup.code} errorGroup={errorGroup} spec={spec || defaultSpec} />
+        <ErrorGroup
+          key={errorGroup.code}
+          errorGroup={errorGroup}
+          spec={spec || defaultSpec}
+          skipHeaderIndex={skipHeaderIndex}
+        />
       ))}
     </div>
   )
