@@ -160,6 +160,10 @@ $ npm run test
 
 Here described only breaking and the most important changes. The full changelog and documentation for all released versions could be found in nicely formatted [commit history](https://github.com/frictionlessdata/goodtables-ui/commits/master).
 
+#### v2.2
+
+- Add an option that removes the row number for the header row (#40)
+
 #### v2.1
 
 - Moved `react` to peer dependencies
