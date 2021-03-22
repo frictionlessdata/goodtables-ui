@@ -15,7 +15,6 @@ export interface IReportProps {
 
 export function Report(props: IReportProps) {
   const { report, spec, skipHeaderIndex = false } = props
-  console.log('SKIP HEADER INDEX', skipHeaderIndex)
 
   // Invalid report
   const reportValidation = validateReport(report)
