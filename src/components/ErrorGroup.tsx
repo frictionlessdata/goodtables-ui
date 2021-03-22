@@ -133,7 +133,7 @@ function ErrorGroupTable(props: {
                   style={{ backgroundColor: getRgbaColor(specError, 0.25) }}
                   className="result-row-index"
                 >
-                  {rowNumber || 1}
+                  {rowNumber || (skipHeaderIndex ? '' : 1)}
                 </td>
                 {errorGroup.rows[rowNumber].values.map((value, innerIndex) => (
                   <td
