@@ -114,6 +114,14 @@ function ErrorGroupTable(props: {
     isHeadersVisible,
     skipHeaderIndex,
   } = props
+  let afterFailRowNumber = 1
+  if (rowNumbers[rowNumbers.length - 1]) {
+    afterFailRowNumber = rowNumbers[rowNumbers.length - 1] + 1
+  } else if (skipHeaderIndex) {
+    afterFailRowNumber = 1
+  } else {
+    afterFailRowNumber = 2
+  }
   return (
     <table className="table table-sm">
       <tbody>
@@ -150,9 +158,7 @@ function ErrorGroupTable(props: {
             )
         )}
         <tr className="after-fail">
-          <td className="result-row-index">
-            {rowNumbers[rowNumbers.length - 1] ? rowNumbers[rowNumbers.length - 1] + 1 : 2}
-          </td>
+          <td className="result-row-index">{afterFailRowNumber}</td>
           {errorGroup.headers && errorGroup.headers.map((_header, index) => <td key={index} />)}
         </tr>
       </tbody>
